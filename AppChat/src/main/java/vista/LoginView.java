@@ -1,4 +1,4 @@
-package ui;
+package vista;
 
 public class LoginView {
 
