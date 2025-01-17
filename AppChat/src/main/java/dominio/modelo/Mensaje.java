@@ -1,16 +1,16 @@
 package dominio.modelo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Mensaje {
 
 	private int id;
 	private Usuario emisor;
 	private String contenido;
-	private Date fechaEnvio;
+	private LocalDateTime fechaEnvio;
 	private Boolean tipo;
 
-	public Mensaje(int id, Usuario emisor, Boolean tipo, String contenido, Date fechaEnvio) {
+	public Mensaje(int id, Usuario emisor, Boolean tipo, String contenido, LocalDateTime fechaEnvio) {
 		this.id = id;
 		this.emisor = emisor;
 		this.tipo = tipo;
@@ -37,7 +37,7 @@ public class Mensaje {
 		return contenido;
 	}
 
-	public Date getFechaEnvio() {
+	public LocalDateTime getFechaEnvio() {
 		return fechaEnvio;
 	}
 
@@ -53,7 +53,7 @@ public class Mensaje {
 		this.contenido = contenido;
 	}
 
-	public void setFechaEnvio(Date fechaEnvio) {
+	public void setFechaEnvio(LocalDateTime fechaEnvio) {
 		this.fechaEnvio = fechaEnvio;
 	}
 

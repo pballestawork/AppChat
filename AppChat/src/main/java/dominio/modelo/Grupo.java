@@ -4,12 +4,10 @@ import java.util.List;
 
 public class Grupo extends Contacto {
 
-	private String nombreGrupo;
 	private List<ContactoIndividual> miembros;
 
 	public Grupo(int id, String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
 		super(id, nombreGrupo, imagenGrupo);
-		this.nombreGrupo = nombreGrupo;
 		this.miembros = miembros;
 	}
 
@@ -17,16 +15,8 @@ public class Grupo extends Contacto {
 		super();
 	}
 
-	public String getNombreGrupo() {
-		return nombreGrupo;
-	}
-
 	public List<ContactoIndividual> getMiembros() {
 		return miembros;
-	}
-
-	public void setNombreGrupo(String nombreGrupo) {
-		this.nombreGrupo = nombreGrupo;
 	}
 
 	public void setMiembros(List<ContactoIndividual> miembros) {
