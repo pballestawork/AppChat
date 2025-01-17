@@ -2,43 +2,43 @@ package model;
 
 import java.util.List;
 
-public class Grupo {
-	
-	private int id;
+public class Grupo extends Contacto {
+
 	private String nombreGrupo;
-	private List<Usuario> miembros;
-	private String imagenGrupo;
-	
-	public Grupo(int id, String nombreGrupo, List<Usuario> miembros, String imagenGrupo) {
-		this.id = id;
+	private List<ContactoIndividual> miembros;
+
+	public Grupo(int id, String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
+		super(id, nombreGrupo, imagenGrupo);
 		this.nombreGrupo = nombreGrupo;
 		this.miembros = miembros;
-		this.imagenGrupo = imagenGrupo;
 	}
 
-	public int getId() {
-		return id;
+	public Grupo() {
+		super();
 	}
 
 	public String getNombreGrupo() {
 		return nombreGrupo;
 	}
 
-	public List<Usuario> getMiembros() {
+	public List<ContactoIndividual> getMiembros() {
 		return miembros;
 	}
 
-	public String getImagenGrupo() {
-		return imagenGrupo;
+	public void setNombreGrupo(String nombreGrupo) {
+		this.nombreGrupo = nombreGrupo;
 	}
-	
-	public void añadirMiembro(Usuario usuario) {
+
+	public void setMiembros(List<ContactoIndividual> miembros) {
+		this.miembros = miembros;
+	}
+
+	public void añadirMiembro(ContactoIndividual usuario) {
 		miembros.add(usuario);
 	}
-	
-	public void eliminarMiembro(Usuario usuario) {
+
+	public void eliminarMiembro(ContactoIndividual usuario) {
 		miembros.remove(usuario);
 	}
-	
 
 }

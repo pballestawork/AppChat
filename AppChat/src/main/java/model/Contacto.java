@@ -1,22 +1,42 @@
 package model;
 
 public class Contacto {
-	
+
 	private String nombreContacto;
-	private String telefonoContacto;
-	
-	public Contacto(String nombreContacto, String telefonoContacto) {
+	private String imagenContacto;
+	private int id;
+
+	public Contacto(int id, String nombreContacto, String imagenContacto) {
+		this.id = id;
+		this.imagenContacto = imagenContacto;
 		this.nombreContacto = nombreContacto;
-		this.telefonoContacto = telefonoContacto;
+	}
+
+	public Contacto() {
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public String getNombreContacto() {
 		return nombreContacto;
 	}
 
-	public String getTelefonoContacto() {
-		return telefonoContacto;
+	public String getImagenContacto() {
+		return imagenContacto;
 	}
-	
+
+	public void setNombreContacto(String nombreContacto) {
+		this.nombreContacto = nombreContacto;
+	}
+
+	public void setImagenContacto(String imagenContacto) {
+		this.imagenContacto = imagenContacto;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }
