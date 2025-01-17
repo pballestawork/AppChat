@@ -1,6 +1,6 @@
 package repository;
 
-import model.Usuario;
+import dominio.model.Usuario;
 
 public class UsuarioDAO {
 	

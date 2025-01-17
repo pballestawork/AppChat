@@ -2,8 +2,8 @@ package repository;
 
 import java.util.List;
 
-import model.Mensaje;
-import model.Usuario;
+import dominio.model.Mensaje;
+import dominio.model.Usuario;
 
 public class MensajeDAO {
 
