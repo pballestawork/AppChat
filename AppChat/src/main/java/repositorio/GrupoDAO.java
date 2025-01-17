@@ -1,7 +1,7 @@
-package repository;
+package repositorio;
 
-import dominio.model.Grupo;
-import dominio.model.Usuario;
+import dominio.modelo.Grupo;
+import dominio.modelo.Usuario;
 
 public class GrupoDAO {
 	

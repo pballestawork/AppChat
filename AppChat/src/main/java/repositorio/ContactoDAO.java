@@ -1,6 +1,6 @@
-package repository;
+package repositorio;
 
-import dominio.model.Contacto;
+import dominio.modelo.Contacto;
 
 public class ContactoDAO {
 	

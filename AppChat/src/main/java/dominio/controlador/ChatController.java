@@ -1,10 +1,10 @@
-package dominio.controller;
+package dominio.controlador;
 
 import java.util.List;
 
-import dominio.model.Grupo;
-import dominio.model.Mensaje;
-import dominio.model.Usuario;
+import dominio.modelo.Grupo;
+import dominio.modelo.Mensaje;
+import dominio.modelo.Usuario;
 
 public class ChatController {
 	

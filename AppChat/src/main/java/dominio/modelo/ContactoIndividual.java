@@ -1,4 +1,4 @@
-package dominio.model;
+package dominio.modelo;
 
 public class ContactoIndividual extends Contacto {
 

@@ -1,4 +1,4 @@
-package dominio.model;
+package dominio.modelo;
 
 import java.util.Date;
 
