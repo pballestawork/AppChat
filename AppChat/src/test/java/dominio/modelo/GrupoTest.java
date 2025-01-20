@@ -27,8 +27,8 @@ public class GrupoTest {
 	@Test
 	public void constructorExitoConParametros() {
 		assertTrue(grupoConParmetros.getId() == 3);
-		assertTrue(grupoConParmetros.getNombreContacto() == "nombre");
-		assertTrue(grupoConParmetros.getImagenContacto() == "imagen");
+		assertTrue(grupoConParmetros.getNombre() == "nombre");
+		assertTrue(grupoConParmetros.getImagen() == "imagen");
 		assertTrue(grupoConParmetros.getMiembros().equals(lista));
 	}
 

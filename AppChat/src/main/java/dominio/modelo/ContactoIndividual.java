@@ -2,23 +2,23 @@ package dominio.modelo;
 
 public class ContactoIndividual extends Contacto {
 
-	private String telefonoContacto;
+	private Usuario usuario;
 
-	public ContactoIndividual(int id, String nombreContacto, String telefonoContacto, String imagenContacto) {
-		super(id, nombreContacto, imagenContacto);
-		this.telefonoContacto = telefonoContacto;
+	public ContactoIndividual(int id, String nombre, Usuario usuario) {
+		super(id, nombre);
+		this.usuario = usuario;
 	}
 
 	public ContactoIndividual() {
 		super();
 	}
 
-	public String getTelefonoContacto() {
-		return telefonoContacto;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setTelefonoContacto(String telefonoContacto) {
-		this.telefonoContacto = telefonoContacto;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
-
+	
 }

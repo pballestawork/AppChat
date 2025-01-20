@@ -9,10 +9,13 @@ public class ContactoIndividualTest {
 	
 	private ContactoIndividual contactoIndividualConParmetros;
 	private ContactoIndividual contactoIndividual;
+	private Usuario user;
 
 	@Before
 	public void setup() {
-		contactoIndividualConParmetros = new ContactoIndividual(5, "nombre","69", "imagen");
+		user = new Usuario();
+		user.setNombre("Pablo");
+		contactoIndividualConParmetros = new ContactoIndividual(5, "nombre",user);
 		contactoIndividual = new ContactoIndividual();
 	}
 
@@ -24,9 +27,7 @@ public class ContactoIndividualTest {
 	@Test
 	public void constructorExitoConParametros() {
 		assertTrue(contactoIndividualConParmetros.getId() == 5);
-		assertTrue(contactoIndividualConParmetros.getNombreContacto() == "nombre");
-		assertTrue(contactoIndividualConParmetros.getTelefonoContacto() == "69");
-		assertTrue(contactoIndividualConParmetros.getImagenContacto() == "imagen");
+		assertTrue(contactoIndividualConParmetros.getNombre() == "nombre");
+		assertTrue(contactoIndividualConParmetros.getUsuario().getNombre() == "Pablo"); 
 	}
-
 }

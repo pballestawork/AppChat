@@ -1,15 +1,16 @@
 package dominio.modelo;
 
+import java.util.List;
+
 public class Contacto {
 
-	private String nombreContacto;
-	private String imagenContacto;
 	private int id;
+	private String nombre;
+	private List<Mensaje> mensajes;
 
-	public Contacto(int id, String nombreContacto, String imagenContacto) {
+	public Contacto(int id, String nombre) {
 		this.id = id;
-		this.imagenContacto = imagenContacto;
-		this.nombreContacto = nombreContacto;
+		this.nombre = nombre;
 	}
 
 	public Contacto() {
@@ -19,24 +20,33 @@ public class Contacto {
 		return id;
 	}
 
-	public String getNombreContacto() {
-		return nombreContacto;
-	}
-
-	public String getImagenContacto() {
-		return imagenContacto;
-	}
-
-	public void setNombreContacto(String nombreContacto) {
-		this.nombreContacto = nombreContacto;
-	}
-
-	public void setImagenContacto(String imagenContacto) {
-		this.imagenContacto = imagenContacto;
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Mensaje> getMensajes() {
+		return mensajes;
+	}
+
+	public void setMensajes(List<Mensaje> mensajes) {
+		this.mensajes = mensajes;
+	}	
+	
+	public void addMensaje(Mensaje mensaje) {
+		this.mensajes.add(mensaje);
+	}
+	
+	public void deleteMensaje(Mensaje mensaje) {
+		this.mensajes.remove(mensaje);
+	}
+
+	
 }

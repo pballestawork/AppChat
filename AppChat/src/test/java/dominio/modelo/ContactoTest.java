@@ -11,7 +11,7 @@ public class ContactoTest {
 
 	@Before
 	public void setup() {
-		contactoConParmetros = new Contacto(5, "nombre", "imagen");
+		contactoConParmetros = new Contacto(5, "nombre");
 		contacto = new Contacto();
 	}
 
@@ -23,7 +23,6 @@ public class ContactoTest {
 	@Test
 	public void constructorExitoConParametros() {
 		assertTrue(contactoConParmetros.getId() == 5);
-		assertTrue(contactoConParmetros.getNombreContacto() == "nombre");
-		assertTrue(contactoConParmetros.getImagenContacto() == "imagen");
+		assertTrue(contactoConParmetros.getNombre() == "nombre");
 	}
 }

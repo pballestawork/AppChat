@@ -5,10 +5,12 @@ import java.util.List;
 public class Grupo extends Contacto {
 
 	private List<ContactoIndividual> miembros;
+	private String imagen;
 
-	public Grupo(int id, String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
-		super(id, nombreGrupo, imagenGrupo);
+	public Grupo(int id, String nombreGrupo, List<ContactoIndividual> miembros, String imagen) {
+		super(id, nombreGrupo);
 		this.miembros = miembros;
+		this.setImagen(imagen);
 	}
 
 	public Grupo() {
@@ -23,12 +25,20 @@ public class Grupo extends Contacto {
 		this.miembros = miembros;
 	}
 
-	public void añadirMiembro(ContactoIndividual usuario) {
+	public void addMiembro(ContactoIndividual usuario) {
 		miembros.add(usuario);
 	}
 
-	public void eliminarMiembro(ContactoIndividual usuario) {
+	public void deleteMiembro(ContactoIndividual usuario) {
 		miembros.remove(usuario);
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
 	}
 
 }
