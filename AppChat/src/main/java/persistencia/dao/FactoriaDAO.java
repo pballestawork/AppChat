@@ -33,7 +33,7 @@ public abstract class FactoriaDAO {
 	
 	public static FactoriaDAO getInstancia() throws DAOException {
 		if(unicaInstancia == null)
-			return getInstancia(DAO_TDS);//TODO
+			return getInstancia(DAO_TDS);//FAQ Se puede conseguir este valor de otra forma??
 		else
 			return unicaInstancia;
 	}
