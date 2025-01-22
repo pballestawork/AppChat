@@ -1,6 +1,7 @@
 package dominio.modelo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Contacto {
 
@@ -48,5 +49,28 @@ public class Contacto {
 		this.mensajes.remove(mensaje);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, mensajes, nombre);
+	}
+	
+	/**
+	 * Dos contactos son iguales si comparten mismo id
+	 * NOTA: Varios contactos podrían hacer referencia 
+	 * al mismo usuario pero con distinto nombre
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Contacto other = (Contacto) obj;
+		return id == other.id;
+	}
+
+	
 	
 }

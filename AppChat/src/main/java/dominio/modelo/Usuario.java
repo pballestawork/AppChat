@@ -1,5 +1,10 @@
 package dominio.modelo;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
+
 public class Usuario {
 
 	private int id;
@@ -9,9 +14,10 @@ public class Usuario {
 	private String contrasena;
 	private String fotoPerfil;
 	private boolean esPremium;
+	private List<Contacto> contactos = new LinkedList<Contacto>();
 
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
-			boolean esPremium) {
+			boolean esPremium, List<Contacto> contactos) {
 		this.id = id;
 		this.nombre = nombre;
 		this.telefono = telefono;
@@ -19,6 +25,7 @@ public class Usuario {
 		this.contrasena = contrasena;
 		this.fotoPerfil = fotoPerfil;
 		this.esPremium = esPremium;
+		this.contactos = contactos;
 	}
 
 	public Usuario() {
@@ -83,11 +90,61 @@ public class Usuario {
 	public void setEsPremium(boolean esPremium) {
 		this.esPremium = esPremium;
 	}
+	
 
+	public List<Contacto> getContactos() {
+		return contactos;
+	}
+
+	public void setContactos(List<Contacto> contactos) {
+		this.contactos = contactos;
+	}
 	public void actualizarPerfil(String nombre, String email, String fotoPerfil) {
 		this.nombre = nombre;
 		this.email = email;
 		this.fotoPerfil = fotoPerfil;
 	}
 
+	@Override
+	public String toString() {
+		String toString = "Usuario {"
+				+ "\n\tid : " + id 
+				+ ",\n\tnombre : " + nombre 
+				+ ",\n\ttelefono : " + telefono 
+				+ ",\n\temail : " + email
+				+ ",\n\tcontrasena : " + contrasena 
+				+ ",\n\tfotoPerfil : " + fotoPerfil 
+				+ ",\n\tesPremium : " + esPremium
+				+ ",\n\tcontactos : {";
+		for (Contacto contacto : contactos) {
+			toString += "\n\t\tnombre : "+ contacto.getNombre();
+		}	
+		toString += contactos.size()>0 ? "}" : "\n\t}";
+		return toString +="\n}";	
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(contactos, contrasena, email, esPremium, fotoPerfil, id, nombre, telefono);
+	}
+
+	/**
+	 * Se considera que dos usuarios son iguales si sus telefonos son iguales
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		
+		//DONE Cambiar el return comparando valor de los atributos
+		return telefono == other.getTelefono();
+	}	
+
+	
+	
 }

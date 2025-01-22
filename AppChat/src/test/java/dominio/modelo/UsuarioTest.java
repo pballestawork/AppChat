@@ -12,7 +12,7 @@ public class UsuarioTest {
 
 	@Before
 	public void setup() {
-		usuarioConParametros = new Usuario(6, "nombre", "telefono", "email", "contrasena", "fotoPerfil", true);
+		usuarioConParametros = new Usuario(6, "nombre", "telefono", "email", "contrasena", "fotoPerfil", true,null);
 		usuario = new Usuario();
 	}
 

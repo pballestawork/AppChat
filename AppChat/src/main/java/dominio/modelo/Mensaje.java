@@ -1,6 +1,7 @@
 package dominio.modelo;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Mensaje {
 
@@ -61,4 +62,26 @@ public class Mensaje {
 		this.tipo = tipo;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(contenido, emisor, fechaEnvio, id, tipo);
+	}
+
+	/**
+	 * Dos mensajes son iguales si comparten Id
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mensaje other = (Mensaje) obj;
+		return id == other.getId();
+	}
+	
+	
+	
 }
