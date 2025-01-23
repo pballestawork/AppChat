@@ -17,12 +17,13 @@ public class Utils {
 
 		// Obtén la ruta absoluta del archivo
 		Path rutaArchivo = archivoImagen.toPath().toAbsolutePath();
-
+		
 		// Calcula la ruta relativa desde "src/main/resources" hasta el archivo
 		Path rutaRelativa = rutaBase.relativize(rutaArchivo);
 
 		// Devuelve la ruta en formato compatible con getResource()
 		return "/" + rutaRelativa.toString().replace("\\", "/");
+
 	}
 
 	public static String getRutaResourceFromString(String source) {
@@ -43,20 +44,17 @@ public class Utils {
 	 * @return devuelve cadena con id
 	 */
 	public static String concatenarIds(List<? extends Identificable> objetosIdentificables) {
-		return objetosIdentificables.stream()
-				.map(obj -> String.valueOf(obj.getId()))
-				.collect(Collectors.joining(",")); 
+		return objetosIdentificables.stream().map(obj -> String.valueOf(obj.getId())).collect(Collectors.joining(","));
 	}
 
 	/**
 	 * Metodo que crea una lista de los ids dentro de una cadena separados por ','.
-	 *  
+	 * 
 	 * @param cadenaIds Cadena con ids contactenados
 	 * @return lista de ids
 	 */
 	public static List<Integer> getIdsByCadena(String cadenaIds) {
-		return Arrays.stream(cadenaIds.split(","))
-				.map(Integer::parseInt) // Convertir cada elemento a int
+		return Arrays.stream(cadenaIds.split(",")).map(Integer::parseInt) // Convertir cada elemento a int
 				.collect(Collectors.toList());
 	}
 

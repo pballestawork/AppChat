@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -101,6 +102,39 @@ public class AgregarFotoPerfilView extends JDialog {
 		botonElegir.setForeground(Color.WHITE);
 		botonElegir.setBackground(SystemColor.textHighlight);
 		contentPane.add(botonElegir);
+		botonElegir.addActionListener(e -> {
+		    // Define la carpeta inicial (src/main/resources)
+		    File directorioInicial = new File("src/main/resources");
+		    
+		    // Configura el JFileChooser para abrir en esa carpeta
+		    JFileChooser fileChooser = new JFileChooser(directorioInicial);
+		    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Solo permite seleccionar archivos
+
+		    // Filtro opcional para permitir solo imágenes
+		    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+		        "Archivos de imagen", "png", "jpg", "jpeg", "gif"));
+
+		    int resultado = fileChooser.showOpenDialog(this); // Abre el diálogo de selección
+
+		    if (resultado == JFileChooser.APPROVE_OPTION) {
+		        // Si se selecciona un archivo
+		        File archivoSeleccionado = fileChooser.getSelectedFile();
+		        archivosSubidos.clear(); // Limpia la lista actual
+		        archivosSubidos.add(archivoSeleccionado); // Agrega el archivo seleccionado a la lista
+
+		        // Muestra la ruta del archivo en el label
+		        lblArchivoSubido.setText(archivoSeleccionado.getAbsolutePath());
+		        lblArchivoSubido.setVisible(true);
+
+		        // Carga la imagen en el JLabel para previsualizarla
+		        ImageIcon icon = new ImageIcon(archivoSeleccionado.getAbsolutePath());
+		        Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+		        imagenLabel.setIcon(new ImageIcon(img));
+		    } else if (resultado == JFileChooser.CANCEL_OPTION) {
+		        JOptionPane.showMessageDialog(this, "Selección cancelada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+		    }
+		});
+
 
 		// Panel de botones Aceptar y Cancelar
 		JPanel panelBotones = new JPanel();

@@ -6,9 +6,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import com.toedter.calendar.JDateChooser;
 
 import utils.Utils;
 
@@ -34,7 +37,7 @@ public class RegisterView extends JFrame {
 	private JTextField telefonoField;
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
-	private JTextField fechaNacimientoField;
+	private JDateChooser fechaNacimientoField;
 	private AgregarFotoPerfilView panelArrastre;
 	private File archivoImagen;
 	private String rutaArchivo;
@@ -52,7 +55,7 @@ public class RegisterView extends JFrame {
 		gbl_panel_central.columnWidths = new int[]{50, 120, 100, 20, 0, 100, 50, 0};
 		gbl_panel_central.rowHeights = new int[]{40, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 60, 8, 0, 40, 0};
 		gbl_panel_central.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_central.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_central.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_central.setLayout(gbl_panel_central);
 		
 		JLabel lblName = new JLabel("Nombre:");
@@ -172,7 +175,8 @@ public class RegisterView extends JFrame {
 		gbc_lblFechaDeNacimiento.gridy = 9;
 		panel_central.add(lblFechaDeNacimiento, gbc_lblFechaDeNacimiento);
 		
-		fechaNacimientoField = new JTextField();
+		fechaNacimientoField = new JDateChooser();
+		fechaNacimientoField.setDateFormatString("dd/MM/yyyy");
 		fechaNacimientoField.setBackground(SystemColor.inactiveCaption);
 		GridBagConstraints gbc_fechaNacimientoField = new GridBagConstraints();
 		gbc_fechaNacimientoField.insets = new Insets(0, 0, 5, 5);
@@ -218,16 +222,27 @@ public class RegisterView extends JFrame {
 			//panel de arrastre retorna la imagen en una lista de File y se obtiene la ruta
 			if (imagenes != null && !imagenes.isEmpty()) {
 			archivoImagen = imagenes.get(0);
-			rutaArchivo = Utils.getRutaResourceFromFile(archivoImagen);
-			}
-			//se dibuja la imagen en el panel de registro sobre la etiqueta “No se ha ..”
-			ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaArchivo));
-			Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			lblImagen.setIcon(new ImageIcon(imagenEscalada));
-			lblImagen.setText("");
+			try {
+	            // Obtén la ruta relativa con Utils
+	            rutaArchivo = Utils.getRutaResourceFromFile(archivoImagen);
+
+	            // Carga la imagen usando la ruta
+	            ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaArchivo));
+	            Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+	            lblImagen.setIcon(new ImageIcon(imagenEscalada)); // Actualiza el ícono
+	            lblImagen.setText(""); // Elimina el texto de advertencia
+	        } catch (Exception ex) {
+	            // Muestra un mensaje de error si ocurre una excepción
+	            JOptionPane.showMessageDialog(this, "Error al cargar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	            ex.printStackTrace();
+	        }
 			//se oculta el panel y se elimina
 			panelArrastre.setVisible(false);
 			panelArrastre.dispose();
+			} else {
+				JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna imagen","Advertencia", JOptionPane.WARNING_MESSAGE);
+			}
+			
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridwidth = 5;
