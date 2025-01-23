@@ -3,7 +3,9 @@ package dominio.modelo;
 import java.util.List;
 import java.util.Objects;
 
-public class Contacto {
+import persistencia.dao.Identificable;
+
+public class Contacto implements Identificable {
 
 	private int id;
 	private String nombre;
@@ -16,7 +18,8 @@ public class Contacto {
 
 	public Contacto() {
 	}
-
+	
+	@Override
 	public int getId() {
 		return id;
 	}

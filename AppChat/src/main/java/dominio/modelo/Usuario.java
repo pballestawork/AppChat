@@ -4,9 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import persistencia.dao.Identificable;
 
-public class Usuario {
 
+public class Usuario implements Identificable {
+	
 	private int id;
 	private String nombre;
 	private String telefono;
@@ -30,7 +32,8 @@ public class Usuario {
 
 	public Usuario() {
 	}
-
+	
+	@Override
 	public int getId() {
 		return id;
 	}

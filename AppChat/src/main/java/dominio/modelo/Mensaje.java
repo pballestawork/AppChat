@@ -3,7 +3,9 @@ package dominio.modelo;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Mensaje {
+import persistencia.dao.Identificable;
+
+public class Mensaje implements Identificable{
 
 	private int id;
 	private Usuario emisor;
@@ -22,6 +24,7 @@ public class Mensaje {
 	public Mensaje() {
 	}
 
+	@Override
 	public int getId() {
 		return id;
 	}
