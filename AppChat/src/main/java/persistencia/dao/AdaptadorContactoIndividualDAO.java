@@ -5,7 +5,9 @@ import java.util.List;
 import dominio.modelo.ContactoIndividual;
 
 public class AdaptadorContactoIndividualDAO implements IAdaptadorContactoIndividualDAO{
-
+	public static final String TIPO_CONTACTO_INDIVIDUAL = "ContactoIndividual";
+	
+	
 	@Override
 	public int add(ContactoIndividual elemento) {
 		// TODO Auto-generated method stub

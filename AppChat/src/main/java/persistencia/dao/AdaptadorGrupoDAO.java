@@ -5,7 +5,8 @@ import java.util.List;
 import dominio.modelo.Grupo;
 
 public class AdaptadorGrupoDAO implements IAdaptadorGrupoDAO{
-
+	public static final String TIPO_GRUPO = "Grupo";
+	
 	@Override
 	public int add(Grupo elemento) {
 		// TODO Auto-generated method stub

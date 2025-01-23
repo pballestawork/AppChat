@@ -6,8 +6,7 @@ public class TDSFactoriaDAO extends FactoriaDAO {
 	
 	@Override
 	public IAdaptadorUsuarioDAO getUsuarioDAO() {
-		// TODO Auto-generated method stub
-		return null;
+		return AdaptadorUsuarioDAO.getUnicaInstancia();
 	}
 
 	@Override
