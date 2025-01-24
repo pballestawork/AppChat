@@ -12,7 +12,7 @@ public class UsuarioTest {
 
 	@Before
 	public void setup() {
-		usuarioConParametros = new Usuario(6, "nombre", "telefono", "email", "contrasena", "fotoPerfil", true,null);
+		usuarioConParametros = new Usuario(6, "nombre", "telefono", "email", "contrasena", "fotoPerfil", true,"Hola",null);
 		usuario = new Usuario();
 	}
 
@@ -30,6 +30,7 @@ public class UsuarioTest {
 		assertTrue(usuarioConParametros.getContrasena() == "contrasena");
 		assertTrue(usuarioConParametros.getFotoPerfil() == "fotoPerfil");
 		assertTrue(usuarioConParametros.isEsPremium() == true);
+		assertTrue(usuarioConParametros.getSaludo() == "Hola");
 	}
 
 }

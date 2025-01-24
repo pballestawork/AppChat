@@ -12,7 +12,7 @@ public class ChatControllerStub {
 	private Usuario usuario;
 	
 	public ChatControllerStub () {
-		usuario = new Usuario(0,"Pablo","600600600","pablo@gmail.com","1234","",false,null);
+		usuario = new Usuario(0,"Pablo","600600600","pablo@gmail.com","1234","",false,"Hola",null);
 		usuario.setContactos(new LinkedList<Contacto>());
 	}
 	

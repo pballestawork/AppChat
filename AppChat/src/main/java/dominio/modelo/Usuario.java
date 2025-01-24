@@ -6,20 +6,20 @@ import java.util.Objects;
 
 import persistencia.dao.Identificable;
 
-
 public class Usuario implements Identificable {
-	
+
 	private int id;
 	private String nombre;
 	private String telefono;
 	private String email;
 	private String contrasena;
 	private String fotoPerfil;
+	private String saludo;
 	private boolean esPremium;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
 
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
-			boolean esPremium, List<Contacto> contactos) {
+			boolean esPremium, String saludo, List<Contacto> contactos) {
 		this.id = id;
 		this.nombre = nombre;
 		this.telefono = telefono;
@@ -28,11 +28,12 @@ public class Usuario implements Identificable {
 		this.fotoPerfil = fotoPerfil;
 		this.esPremium = esPremium;
 		this.contactos = contactos;
+		this.saludo = saludo;
 	}
 
 	public Usuario() {
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
@@ -56,6 +57,10 @@ public class Usuario implements Identificable {
 
 	public String getFotoPerfil() {
 		return fotoPerfil;
+	}
+
+	public String getSaludo() {
+		return saludo;
 	}
 
 	public boolean isEsPremium() {
@@ -93,15 +98,19 @@ public class Usuario implements Identificable {
 	public void setEsPremium(boolean esPremium) {
 		this.esPremium = esPremium;
 	}
-	
 
 	public List<Contacto> getContactos() {
 		return contactos;
 	}
 
+	public void setSaludo(String saludo) {
+		this.saludo = saludo;
+	}
+
 	public void setContactos(List<Contacto> contactos) {
 		this.contactos = contactos;
 	}
+
 	public void actualizarPerfil(String nombre, String email, String fotoPerfil) {
 		this.nombre = nombre;
 		this.email = email;
@@ -110,20 +119,14 @@ public class Usuario implements Identificable {
 
 	@Override
 	public String toString() {
-		String toString = "Usuario {"
-				+ "\n\tid : " + id 
-				+ ",\n\tnombre : " + nombre 
-				+ ",\n\ttelefono : " + telefono 
-				+ ",\n\temail : " + email
-				+ ",\n\tcontrasena : " + contrasena 
-				+ ",\n\tfotoPerfil : " + fotoPerfil 
-				+ ",\n\tesPremium : " + esPremium
-				+ ",\n\tcontactos : {";
+		String toString = "Usuario {" + "\n\tid : " + id + ",\n\tnombre : " + nombre + ",\n\ttelefono : " + telefono
+				+ ",\n\temail : " + email + ",\n\tcontrasena : " + contrasena + ",\n\tfotoPerfil : " + fotoPerfil
+				+ ",\n\tesPremium : " + esPremium + ",\n\tcontactos : {";
 		for (Contacto contacto : contactos) {
-			toString += "\n\t\tnombre : "+ contacto.getNombre();
-		}	
-		toString += contactos.size()>0 ? "}" : "\n\t}";
-		return toString +="\n}";	
+			toString += "\n\t\tnombre : " + contacto.getNombre();
+		}
+		toString += contactos.size() > 0 ? "}" : "\n\t}";
+		return toString += "\n}";
 	}
 
 	@Override
@@ -143,11 +146,9 @@ public class Usuario implements Identificable {
 		if (getClass() != obj.getClass())
 			return false;
 		Usuario other = (Usuario) obj;
-		
-		//DONE Cambiar el return comparando valor de los atributos
-		return telefono == other.getTelefono();
-	}	
 
-	
-	
+		// DONE Cambiar el return comparando valor de los atributos
+		return telefono == other.getTelefono();
+	}
+
 }

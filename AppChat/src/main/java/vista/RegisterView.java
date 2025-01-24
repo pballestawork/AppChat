@@ -1,7 +1,5 @@
 package vista;
 
-import java.awt.EventQueue;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -9,7 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -23,7 +20,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Font;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -39,8 +35,9 @@ public class RegisterView extends JFrame {
 	private JPasswordField passwordField_1;
 	private JDateChooser fechaNacimientoField;
 	private AgregarFotoPerfilView panelArrastre;
+	private JEditorPane textSaludoInicial;
 	private File archivoImagen;
-	private String rutaArchivo;
+	private String rutaFotoPerfil; 
 
 	public RegisterView(JFrame parent) {
 		setResizable(false);
@@ -205,14 +202,14 @@ public class RegisterView extends JFrame {
 		gbc_lblSaludoInicial.gridy = 11;
 		panel_central.add(lblSaludoInicial, gbc_lblSaludoInicial);
 		
-		JEditorPane editorPane = new JEditorPane();
-		editorPane.setBackground(SystemColor.inactiveCaption);
+		textSaludoInicial = new JEditorPane();
+		textSaludoInicial.setBackground(SystemColor.inactiveCaption);
 		GridBagConstraints gbc_editorPane = new GridBagConstraints();
 		gbc_editorPane.insets = new Insets(0, 0, 5, 5);
 		gbc_editorPane.fill = GridBagConstraints.BOTH;
 		gbc_editorPane.gridx = 2;
 		gbc_editorPane.gridy = 11;
-		panel_central.add(editorPane, gbc_editorPane);
+		panel_central.add(textSaludoInicial, gbc_editorPane);
 		
 		JButton btnNewButton = new JButton("Seleccionar Imagen");
 		btnNewButton.setBackground(SystemColor.inactiveCaption);
@@ -224,10 +221,10 @@ public class RegisterView extends JFrame {
 			archivoImagen = imagenes.get(0);
 			try {
 	            // Obtén la ruta relativa con Utils
-	            rutaArchivo = Utils.getRutaResourceFromFile(archivoImagen);
+	            rutaFotoPerfil = Utils.getRutaResourceFromFile(archivoImagen);
 
 	            // Carga la imagen usando la ruta
-	            ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaArchivo));
+	            ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaFotoPerfil));
 	            Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 	            lblImagen.setIcon(new ImageIcon(imagenEscalada)); // Actualiza el ícono
 	            lblImagen.setText(""); // Elimina el texto de advertencia
