@@ -16,7 +16,7 @@ public class MensajeTest {
 
 	@Before
 	public void setup() {
-		mensajeConParametros = new Mensaje(2,usuario,true,"contenido",date);
+		mensajeConParametros = new Mensaje(2,usuario,"contenido",date,true);
 		mensaje = new Mensaje();
 	}
 

@@ -19,6 +19,27 @@ public class Contacto implements Identificable {
 	public Contacto() {
 	}
 	
+	/**
+	 * Dos contactos son iguales si comparten mismo id
+	 * NOTA: Varios contactos podrían hacer referencia 
+	 * al mismo usuario pero con distinto nombre
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Contacto other = (Contacto) obj;
+		return id == other.id;
+	}
+	
+	/*
+	 * Getters and setters
+	 */
+	
 	@Override
 	public int getId() {
 		return id;
@@ -50,30 +71,5 @@ public class Contacto implements Identificable {
 	
 	public void deleteMensaje(Mensaje mensaje) {
 		this.mensajes.remove(mensaje);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, mensajes, nombre);
-	}
-	
-	/**
-	 * Dos contactos son iguales si comparten mismo id
-	 * NOTA: Varios contactos podrían hacer referencia 
-	 * al mismo usuario pero con distinto nombre
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Contacto other = (Contacto) obj;
-		return id == other.id;
-	}
-
-	
-	
+	}	
 }

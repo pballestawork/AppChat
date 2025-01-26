@@ -12,6 +12,11 @@ public class ContactoIndividual extends Contacto {
 	public ContactoIndividual() {
 		super();
 	}
+	
+	@Override
+	public String toString() {
+		return "ContactoIndividual [nombre= "+ super.getNombre() + ", usuario=" + usuario.getTelefono()+"]";
+	}
 
 	public Usuario getUsuario() {
 		return usuario;

@@ -1,6 +1,7 @@
 package dominio.modelo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Grupo extends Contacto {
 
@@ -16,6 +17,17 @@ public class Grupo extends Contacto {
 	public Grupo() {
 		super();
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "Grupo [nombre= "+ super.getNombre() + ", miembros=" + miembros + "]";
+	}
+	
+	
+	/*
+	 * Getters and setters
+	 */
 
 	public List<ContactoIndividual> getMiembros() {
 		return miembros;

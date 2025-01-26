@@ -13,7 +13,7 @@ public class Mensaje implements Identificable{
 	private LocalDateTime fechaEnvio;
 	private Boolean tipo;
 
-	public Mensaje(int id, Usuario emisor, Boolean tipo, String contenido, LocalDateTime fechaEnvio) {
+	public Mensaje(int id, Usuario emisor, String contenido, LocalDateTime fechaEnvio, Boolean tipo) {
 		this.id = id;
 		this.emisor = emisor;
 		this.tipo = tipo;
@@ -22,6 +22,32 @@ public class Mensaje implements Identificable{
 	}
 
 	public Mensaje() {
+	}
+	
+	/**
+	 * Dos mensajes son iguales si comparten Id
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mensaje other = (Mensaje) obj;
+		return id == other.getId();
+	}
+	
+	
+	
+	/*
+	 * Getters and setters
+	 */
+	
+	@Override
+	public String toString() {
+		return "Mensaje [emisor=" + emisor.getTelefono() + ", contenido=" + contenido + ", fechaEnvio=" + fechaEnvio + "]";
 	}
 
 	@Override
@@ -64,27 +90,4 @@ public class Mensaje implements Identificable{
 	public void setTipo(Boolean tipo) {
 		this.tipo = tipo;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(contenido, emisor, fechaEnvio, id, tipo);
-	}
-
-	/**
-	 * Dos mensajes son iguales si comparten Id
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Mensaje other = (Mensaje) obj;
-		return id == other.getId();
-	}
-	
-	
-	
 }
