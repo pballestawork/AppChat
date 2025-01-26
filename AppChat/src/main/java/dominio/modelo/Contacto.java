@@ -36,10 +36,17 @@ public class Contacto implements Identificable {
 		return id == other.id;
 	}
 	
+	
+	
 	/*
 	 * Getters and setters
 	 */
 	
+	@Override
+	public String toString() {
+		return "Contacto [id=" + id + ", nombre=" + nombre + "]";
+	}
+
 	@Override
 	public int getId() {
 		return id;

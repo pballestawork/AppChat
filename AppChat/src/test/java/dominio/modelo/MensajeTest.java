@@ -1,36 +1,111 @@
 package dominio.modelo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class MensajeTest {
+	private static final int ID_USUARIO = 1;
+	private static final String NOMBRE_USUARIO = "Pablo";
+	private static final String TELEFONO_USUARIO = "600600600";
+	private static final String CORREO_USUARIO = "pablo@gmail.com";
+	private static final String CONTRASENA_USUARIO = "contrasena";
+	private static final String FOTO_USUARIO = "fotoUsuario.png";
+	private static final boolean PREMIUM_USUARIO = false;
+	private static final String SALUDO_USUARIO = "Esto es un saludo";
+	private static final LinkedList<Contacto> CONTACTOS = new LinkedList<Contacto>();
 
-	private Mensaje mensajeConParametros;
 	private Mensaje mensaje;
-	private LocalDateTime date = LocalDateTime.now();
-	private Usuario usuario = new Usuario(); 
+	private int idMensaje;
+	private String contenido;
+	private LocalDateTime fechaAhora;
+	private Usuario usuario;
+	private boolean tipo;
 
 	@Before
-	public void setup() {
-		mensajeConParametros = new Mensaje(2,usuario,"contenido",date,true);
-		mensaje = new Mensaje();
+	public void beforeEach() {
+		usuario = new Usuario(ID_USUARIO, NOMBRE_USUARIO, TELEFONO_USUARIO, CORREO_USUARIO, CONTRASENA_USUARIO, FOTO_USUARIO,
+				PREMIUM_USUARIO, SALUDO_USUARIO, CONTACTOS);
+
+		contenido = "Mensaje beforeEach";
+		fechaAhora = LocalDateTime.now();
+		tipo = true;
+		idMensaje = 1;
+		mensaje = new Mensaje(idMensaje, usuario, contenido, fechaAhora, tipo);
 	}
 
 	@Test
-	public void constructorExito() {
-		assertTrue(mensaje.getId() == 0);
+	public void testConstructorVacioConExito() {
+		Mensaje m = new Mensaje();
+		assertTrue(m.getId() == 0);
+		assertTrue(m.getEmisor() == null);
+		assertTrue(m.getContenido() == null);
+		assertTrue(m.getFechaEnvio() == null);
+		assertTrue(m.getTipo() == null);
 	}
 
 	@Test
-	public void constructorExitoConParametros() {
-		assertTrue(mensajeConParametros.getId() == 2);
-		assertTrue(mensajeConParametros.getEmisor().equals(usuario));
-		assertTrue(mensajeConParametros.getTipo() == true);
-		assertTrue(mensajeConParametros.getContenido() == "contenido");
-		assertTrue(mensajeConParametros.getFechaEnvio().equals(date));
+	public void testConstructorParametrosConExito() {
+		String contenidoMensaje = "Mensaje constructor";
+		Mensaje m = new Mensaje(200, usuario, contenidoMensaje, fechaAhora, true);
+		assertTrue(m.getId() == 200);
+		assertTrue(m.getEmisor().equals(usuario));
+		assertTrue(m.getContenido() == contenidoMensaje);
+		assertTrue(m.getFechaEnvio().isEqual(fechaAhora));
+		assertTrue(m.getTipo() == true);
 	}
+	
+	@Test
+	public void testSettersConExito() {
+		Usuario u = new Usuario(20,"","","","","",true,"",null);
+		LocalDateTime f = LocalDateTime.now().plusMinutes(100);
+		
+		mensaje.setId(1000);
+		mensaje.setEmisor(u);
+		mensaje.setContenido("contenido");
+		mensaje.setFechaEnvio(f);
+		mensaje.setTipo(false);
+		
+		assertTrue(mensaje.getId() == 1000);
+		assertTrue(mensaje.getEmisor().equals(u));
+		assertTrue(mensaje.getContenido().equals("contenido"));
+		assertTrue(mensaje.getFechaEnvio().isEqual(f));
+		assertTrue(mensaje.getTipo() == false);
+	}
+	
+	@Test
+	public void testToStringConExito() {
+
+		String toStringDeberiaMostrar= "Mensaje [emisor=" + mensaje.getEmisor().getTelefono() + ", contenido=" + contenido
+				+ ", fechaEnvio=" + fechaAhora + "]";
+
+		assertTrue(mensaje.toString().equals(toStringDeberiaMostrar));
+	}
+	
+	@Test
+	public void testEqualsConMensajeDuplicado() {
+		Mensaje mensajeDuplicado = new Mensaje(idMensaje, usuario, contenido, fechaAhora, tipo);
+		assertEquals(mensaje, mensajeDuplicado);	
+	}
+	
+	@Test
+	public void testEqualsConMensajesIguales() {
+		assertEquals(mensaje, mensaje);	
+	}
+
+	@Test
+	public void testEqualsConMensajeNulo() {
+		assertFalse(mensaje.equals(null));
+	}
+	
+	@Test
+	public void testEqualsConClasesDistintas() {
+		assertFalse(mensaje.equals("objetoDistinto"));
+	}
+
 }

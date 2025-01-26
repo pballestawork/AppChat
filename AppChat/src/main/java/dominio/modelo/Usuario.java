@@ -125,13 +125,8 @@ public class Usuario implements Identificable {
 		for (Contacto contacto : contactos) {
 			toString += "\n\t\tnombre : " + contacto.getNombre();
 		}
-		toString += contactos.size() > 0 ? "}" : "\n\t}";
+		toString += contactos.size() == 0 ? "}" : "\n\t}";
 		return toString += "\n}";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(contactos, contrasena, email, esPremium, fotoPerfil, id, nombre, telefono);
 	}
 
 	/**
