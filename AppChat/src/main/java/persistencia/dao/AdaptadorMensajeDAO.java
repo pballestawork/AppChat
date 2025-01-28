@@ -15,7 +15,7 @@ import tds.driver.ServicioPersistencia;
 public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	private static ServicioPersistencia servicioPersistencia;
 	private static AdaptadorMensajeDAO unicaInstancia = null;
-	private IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
+	private static IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
 	private static DateTimeFormatter formatter; 
 	private final String PROP_EMISOR = "emisor";
 	private final String PROP_CONTENIDO = "contenido";
@@ -28,11 +28,6 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	private AdaptadorMensajeDAO() {
 		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		try {
-			adaptadorUsuarioDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getUsuarioDAO();
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -41,8 +36,14 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	 * @return instancia de la clase
 	 */
 	public static AdaptadorMensajeDAO getUnicaInstancia() {
-		if (unicaInstancia == null)
+		if (unicaInstancia == null) {
 			unicaInstancia = new AdaptadorMensajeDAO();
+			try {
+				adaptadorUsuarioDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getUsuarioDAO();
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return unicaInstancia;
 	}
@@ -67,7 +68,8 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		propiedadesLst.add(new Propiedad(PROP_EMISOR, String.valueOf(elemento.getEmisor().getId())));
 		propiedadesLst.add(new Propiedad(PROP_CONTENIDO, elemento.getContenido()));
 		propiedadesLst.add(new Propiedad(PROP_FECHA_ENVIO, elemento.getFechaEnvio().format(formatter)));
-
+		nuevaEntidad.setPropiedades(propiedadesLst);
+		
 		// 5. Se registra la entidad y se asocia su id con el objeto
 		nuevaEntidad = servicioPersistencia.registrarEntidad(nuevaEntidad);
 		elemento.setId(nuevaEntidad.getId());
@@ -109,6 +111,11 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		// 2. Recuperar la entidad, si no existe devolver null
 		Entidad e = servicioPersistencia.recuperarEntidad(id);
 		
+		for (Propiedad i: e.getPropiedades()) {
+				System.out.println(i.getValor());
+		}
+		
+		
 		if (e == null)
 			return null;//FAQ lanzar excepción? throw new DAOException("El mensaje con id " + id + " no existe");
 
@@ -117,6 +124,8 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		String contenido = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_CONTENIDO);
 		String fechaEnvio = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FECHA_ENVIO);
 		String idEmisor = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_EMISOR);
+		System.out.println("GetById " + "fechaEnvio sin parsear: " + fechaEnvio);
+		System.out.println("GetById " + "fechaEnvio parseada: " + LocalDateTime.parse(fechaEnvio, formatter));
 		LocalDateTime fechaEnvioParseada = LocalDateTime.parse(fechaEnvio, formatter);
 			//3.2 Añadimos en el poolDAO para evitar bidireccionalidad infinita (FAQ debería??)
 		

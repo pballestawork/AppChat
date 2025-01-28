@@ -65,7 +65,7 @@ public class AdaptadorUsuarioDAOTest {
 		assertNotEquals(id, id2);
 	}
 	
-	@Test(expected = DAOException.class)
+	@Test
 	public void agregarUsuarioDuplicado() throws DAOException {
 		int id = adaptadorUsuarioDAO.add(usuarioPablo);
 		usuarioJuan.setId(id);
@@ -73,7 +73,7 @@ public class AdaptadorUsuarioDAOTest {
 		fail("Debería haber saltado la excepción DAO por usuario existente");
 	}
 	
-	@Test(expected = DAOException.class)
+	@Test
 	public void recuperarUsuarioNoExiste() throws DAOException {
 		Usuario usuario = adaptadorUsuarioDAO.getById(0);
 		fail("Debería haber saltado una excepción DAO por no encontrar la entidad");

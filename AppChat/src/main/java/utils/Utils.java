@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,13 @@ public class Utils {
 	 * @return lista de ids
 	 */
 	public static List<Integer> getIdsByCadena(String cadenaIds) {
-		return Arrays.stream(cadenaIds.split(",")).map(Integer::parseInt) // Convertir cada elemento a int
+		if (cadenaIds == null || cadenaIds.isEmpty()) {
+	        return new LinkedList<Integer>(); // Devuelve una lista vacía si la cadena es nula o vacía
+	    }
+		
+		return Arrays.stream(cadenaIds.split(","))
+				.filter(s -> !s.isEmpty())
+				.map(Integer::parseInt) // Convertir cada elemento a int
 				.collect(Collectors.toList());
 	}
 

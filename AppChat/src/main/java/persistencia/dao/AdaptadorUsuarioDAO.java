@@ -18,8 +18,8 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	private static ServicioPersistencia servicioPersistencia;
 	private static AdaptadorUsuarioDAO unicaInstancia = null;
 	private PoolDAO poolDAO;
-	private IAdaptadorContactoIndividualDAO adaptadorContactoIndividual;
-	private IAdaptadorGrupoDAO adaptadorGrupo;
+	private static IAdaptadorContactoIndividualDAO adaptadorContactoIndividual;
+	private static IAdaptadorGrupoDAO adaptadorGrupo;
 	
 	public static final String TIPO_USUARIO = "Usuario";
 	private final String PROP_NOMBRE = "nombre";
@@ -36,12 +36,6 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	private AdaptadorUsuarioDAO() {
 		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		poolDAO = PoolDAO.getUnicaInstancia();
-		try {
-			adaptadorContactoIndividual = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getContactoIndividualDAO();
-			adaptadorGrupo = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getGrupoDAO();
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -50,8 +44,16 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	 * @return instancia de la clase
 	 */
 	public static AdaptadorUsuarioDAO getUnicaInstancia() {
-		if (unicaInstancia == null)
+		if (unicaInstancia == null) {
 			unicaInstancia = new AdaptadorUsuarioDAO();
+			//Inicializamos los adaptadores
+			try {
+				adaptadorContactoIndividual = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getContactoIndividualDAO();
+				adaptadorGrupo = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getGrupoDAO();
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return unicaInstancia;
 	}
