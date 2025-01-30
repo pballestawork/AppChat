@@ -3,11 +3,15 @@ package vista;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+
+import dominio.modelo.ContactoIndividual;
+
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -16,8 +20,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+
+import javax.swing.border.BevelBorder;
+import javax.swing.BoxLayout;
 
 public class MainView extends JFrame {
 
@@ -27,6 +34,8 @@ public class MainView extends JFrame {
 	private JPanel panelCentral;
 	private JPanel panelChat;
 	private JPanel panelBuscador;
+	private CardLayout cardLayout;
+	
 
 	/**
 	 * Launch the application.
@@ -66,7 +75,6 @@ public class MainView extends JFrame {
 		panel.setLayout(gbl_panel);
 		
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setIcon(new ImageIcon(MainView.class.getResource("/com/sun/java/swing/plaf/windows/icons/Inform.gif")));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton.fill = GridBagConstraints.VERTICAL;
@@ -126,18 +134,38 @@ public class MainView extends JFrame {
 		gbc_btnNewButton_6.gridy = 1;
 		panel.add(btnNewButton_6, gbc_btnNewButton_6);
 		
-		panelContatos = new ContactoListCellRenderer();
+		BorderLayout bl_panelContatos = new BorderLayout();
+		panelContatos = new JPanel(bl_panelContatos);
+		BorderLayout borderLayout = (BorderLayout) panelContatos.getLayout();
+		borderLayout.setHgap(150);
+		panelContatos.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		contentPane.add(panelContatos, BorderLayout.WEST);
 		
-		panelCentral = new JPanel();
-		contentPane.add(panelCentral, BorderLayout.CENTER);
-		panelCentral.setLayout(new CardLayout(0, 0));
+		 // JList para mostrar los contactos
+        JList<ContactoIndividual> listaContactos = new JList<>();
+        listaContactos.setCellRenderer(new ContactoListCellRenderer()); // Aplica el renderizador
+
+        // Agregar la lista con scroll al panel
+        JScrollPane scrollLista = new JScrollPane(listaContactos);
+        scrollLista.setPreferredSize(new Dimension(200, 600)); // Ajusta el tamaño
+        panelContatos.add(scrollLista, BorderLayout.CENTER);
 		
-		panelChat = new ChatMensajes();
-		panelCentral.add(panelChat, "chatMensajes");
+        cardLayout = new CardLayout();
+        panelCentral = new JPanel(cardLayout);
+        contentPane.add(panelCentral, BorderLayout.CENTER);
 		
-		panelBuscador = new JPanel();
-		panelCentral.add(panelBuscador, "panelBuscador");
+        // PANEL CHAT
+        panelChat = new ChatPanel();
+        panelCentral.add(panelChat, "panelChat");
+
+        // PANEL BUSCADOR
+        panelBuscador = new JPanel();
+        panelBuscador.add(new JLabel("Aquí puedes buscar mensajes"));
+        panelCentral.add(panelBuscador, "panelBuscador");
+
+        // Inicia mostrando el panel de chat
+        cardLayout.show(panelCentral, "panelChat");
+        
 	}
 
 }
