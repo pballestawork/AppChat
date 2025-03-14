@@ -2,6 +2,7 @@ package persistencia.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -40,6 +41,36 @@ public class AdaptadorUsuarioDAOTest {
 		usuarioJuan.setTelefono("900900900");
 	}
 
+	/*
+	 * add
+	 * 
+	 * - addMensajeNulo
+	 * - addMensajeVacio
+	 * - addMensajeDuplicado
+	 * - addMensajeConExito
+	 * - addMensajeDosMensajesConExito
+	 * 
+	 * getById
+	 * - getMensajeNoExiste
+	 * - getMensajeConExito
+	 * 
+	 * update
+	 * - updateMensajeNoExiste
+	 * - updateMensajeDosVeces
+	 * - updateMensaje
+	 * 
+	 * delete
+	 * 
+	 * - deleteMensajeNoExiste
+	 * - deleteMensaje
+	 * 
+	 * getAll
+	 * - getAllMensajesSinMensajes
+	 * - getAllMensajesConVariosMensajes
+	 * 
+	 * 
+	 */
+	
 	@Test
 	public void recuperarTodosUsuariosSinUsuarios() {
 		List<Usuario> usuarios = adaptadorUsuarioDAO.getAll();
@@ -48,8 +79,8 @@ public class AdaptadorUsuarioDAOTest {
 
 	@Test
 	public void agregarUsuarioCorrecto() throws DAOException {
-		int id = adaptadorUsuarioDAO.add(usuarioPablo);
-		assertNotEquals(0, id);
+		adaptadorUsuarioDAO.add(usuarioPablo);
+		assertNotEquals(0, usuarioPablo.getId());
 	}
 	
 	@Test
@@ -57,36 +88,49 @@ public class AdaptadorUsuarioDAOTest {
 		assertEquals(usuarioPablo.getId(), 0);
 		assertEquals(usuarioJuan.getId(), 0);
 		
-		int id = adaptadorUsuarioDAO.add(usuarioPablo);
-		int id2 = adaptadorUsuarioDAO.add(usuarioJuan);
+		adaptadorUsuarioDAO.add(usuarioPablo);
+		adaptadorUsuarioDAO.add(usuarioJuan);
 		
-		assertEquals(usuarioPablo.getId(), id);
-		assertEquals(usuarioJuan.getId(), id2);
-		assertNotEquals(id, id2);
+		assertNotEquals(0, usuarioPablo.getId());
+		assertNotEquals(0, usuarioJuan.getId());
+		assertNotEquals(usuarioJuan.getId(), usuarioPablo.getId());
+	}
+		
+	@Test
+	public void recuperarUsuarioNoExiste() throws DAOException {
+		Usuario usuario = adaptadorUsuarioDAO.getById(0);
+		assertNull(usuario);
+	}
+	
+	@Test
+	public void recuperarUsuarioConExito() throws DAOException {
+		adaptadorUsuarioDAO.add(usuarioPablo);
+		
+		Usuario usuario = adaptadorUsuarioDAO.getById(usuarioPablo.getId());
+		
+		assertEquals(usuarioPablo, usuario);
+		assertEquals(usuarioPablo.getContactos().size(), usuario.getContactos().size());
+		assertEquals(usuarioPablo.getContrasena(), usuario.getContrasena());
+		assertEquals(usuarioPablo.getEmail(), usuario.getEmail());
+		assertEquals(usuarioPablo.getNombre(), usuario.getNombre());
+		assertEquals(usuarioPablo.getFotoPerfil(), usuario.getFotoPerfil());
+		assertEquals(usuarioPablo.getSaludo(), usuario.getSaludo());
 	}
 	
 	@Test
 	public void agregarUsuarioDuplicado() throws DAOException {
-		int id = adaptadorUsuarioDAO.add(usuarioPablo);
-		usuarioJuan.setId(id);
+		adaptadorUsuarioDAO.add(usuarioPablo);
+		
+		usuarioJuan.setId(usuarioPablo.getId());
 		adaptadorUsuarioDAO.add(usuarioJuan);
-		fail("Debería haber saltado la excepción DAO por usuario existente");
+		
+		//Recuperamos el usuario que no deberia existir
+		Usuario u = adaptadorUsuarioDAO.getById(usuarioJuan.getId());
+		
+		assertEquals(usuarioPablo, u);
+		assertNotEquals(usuarioJuan, u);
+		assertNotEquals(usuarioPablo, usuarioJuan);
 	}
-	
-	@Test
-	public void recuperarUsuarioNoExiste() throws DAOException {
-		Usuario usuario = adaptadorUsuarioDAO.getById(0);
-		fail("Debería haber saltado una excepción DAO por no encontrar la entidad");
-	}
-	
-	
-	@Test
-	public void recuperarUsuarioConExito() throws DAOException {
-		int id = adaptadorUsuarioDAO.add(usuarioPablo);
-		Usuario usuario = adaptadorUsuarioDAO.getById(id);		
-		assertEquals(usuarioPablo, usuario);
-	}
-	
 
 }
 

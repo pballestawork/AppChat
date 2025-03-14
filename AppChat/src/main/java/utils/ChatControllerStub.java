@@ -1,6 +1,5 @@
-package appChatStub.controlador;
+package utils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,18 +15,21 @@ import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
 
 public class ChatControllerStub {	
-	private Map<String,Usuario> usuarios;
 	private Usuario usuarioActual;
+	private Map<String,Usuario> usuarios;
 	
 	
 	public ChatControllerStub () {
 		usuarioActual = null; 
 		
-		Usuario usuario = new Usuario(0,"Pablo","600600600","pablo@gmail.com","1234","",false,"Hola",null);
-		usuario.setContactos(new LinkedList<Contacto>());
+		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
 		
 		usuarios = new HashMap<String, Usuario>();
 		usuarios.put(usuario.getTelefono(),usuario);
+		usuarios.put(usuario2.getTelefono(),usuario2);
+		usuarios.put(usuario3.getTelefono(),usuario3);
 	}
 	
 	/**
@@ -50,15 +52,15 @@ public class ChatControllerStub {
 	 * @throws IllegalArgumentException
 	 * @throws ChatControllerException 
 	 */
-	public Usuario registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
+	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
 			String telefono, String contrasena, String contrasenaRepetida) throws ChatControllerException {
-		if (nombre == null || nombre.isEmpty()) {
+		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (email == null || email.isEmpty()) {
+		} else if (email == null || email.trim().isEmpty()) {
 			throw new IllegalArgumentException("El email no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.isEmpty()) {
+		} else if (telefono == null || telefono.trim().isEmpty()) {
 			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.isEmpty()) {
+		} else if (contrasena == null || contrasena.trim().isEmpty()) {
 			throw new IllegalArgumentException("La contraseña no puede ser nulo o vacio.");
 		} else if (contrasenaRepetida == null || !contrasenaRepetida.equals(contrasena)) {
 			throw new IllegalArgumentException("Las contraseñas no coinciden");
@@ -67,11 +69,11 @@ public class ChatControllerStub {
 		}
 		
 		if(usuarios.containsKey(telefono)) {
-			throw new ChatControllerException("El telefono "+telefono+" ya está registrado.");
+			throw new ChatControllerException("El telefono "+ telefono +" ya está registrado.");
 		}
 		
 		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,null,new LinkedList<Contacto>());
-		return u;
+		usuarios.put(telefono, u);
 	}
 	
 	/**
@@ -92,9 +94,9 @@ public class ChatControllerStub {
 	 * @throws ChatControllerException 
 	 */
 	public Usuario iniciarSesion(String telefono, String contrasena) throws ChatControllerException {
-		if (telefono == null || telefono.isEmpty()) {
+		if (telefono == null || telefono.trim().isEmpty()) {
 			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.isEmpty()) {
+		} else if (contrasena == null || contrasena.trim().isEmpty()) {
 			throw new IllegalArgumentException("La contraseña no puede ser nula o vacia.");
 		}
 		
@@ -106,6 +108,26 @@ public class ChatControllerStub {
 		
 		usuarioActual = u;
 		return u;
+	}
+	
+	/**
+	 * Actualiza el saludo y/o la imagen de perfil del usuario.
+	 *
+	 * @param nuevoSaludo Nuevo saludo del usuario (puede ser nulo si no se quiere actualizar).
+	 * @param nuevaImagen Nueva imagen de perfil del usuario (puede ser nula si no se quiere actualizar).
+	 */
+	public void actualizarPerfil(String nuevoSaludo, String nuevaImagen) {
+	    if (nuevoSaludo == null && nuevaImagen == null) {
+	        throw new IllegalArgumentException("Debe proporcionar al menos un campo para actualizar.");
+	    }
+
+	    if (nuevoSaludo != null) {
+	        usuarioActual.setSaludo(nuevoSaludo);
+	    }
+
+	    if (nuevaImagen != null) {
+	        usuarioActual.setFotoPerfil(nuevaImagen);
+	    }
 	}
 	
 	/**
@@ -125,10 +147,10 @@ public class ChatControllerStub {
 	 * @param nombre Nombre asociado al contacto.
 	 * @throws ChatControllerException 
 	 */
-	public void anadirContacto(String nombre, String telefono) throws ChatControllerException {
-		if (nombre == null || nombre.isEmpty()) {
+	public void agregarContacto(String nombre, String telefono) throws ChatControllerException {
+		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.isEmpty()) {
+		} else if (telefono == null || telefono.trim().isEmpty()) {
 			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
 		}
 		 
@@ -142,47 +164,36 @@ public class ChatControllerStub {
 		if(contactoYaRegistrado){
 			throw new ChatControllerException("Ya tienes un contacto asociado a este numero.");
 		}else if(!usuarios.containsKey(telefono)) {
-			throw new ChatControllerException("El numero no existe.");
+			throw new ChatControllerException("El numero "+ telefono +" no existe.");
 		}
 		
 		
-		ContactoIndividual c = new ContactoIndividual(0, nombre, usuarios.get(telefono));
+		ContactoIndividual c = new ContactoIndividual(usuarios.get(telefono).getId(), nombre, usuarios.get(telefono));
 		usuarioActual.addContacto(c);
 	}
 	
 	/**
-	 * Elimina un contacto existente de la lista de contactos.
-	 * 
-	 * Esta función permite a un usuario registrado eliminar un contacto proporcionando
-	 * su numero de telefono.
+	 * Elimina un contacto o grupo de la lista de contactos del usuario actual.
 	 * 
 	 * Se realizan las siguientes validaciones:
-	 * - Verifica que el número de teléfono exista en la lista de contactos.
+	 * - Verifica si el contacto está en la lista de contactos del usuario actual.
+	 * - Si el contacto no existe en la lista, lanza una excepción.
 	 * 
-	 * Si el contacto no existe se muestra un mensaje de error.
-	 * Si la eliminación es exitosa, se actualiza la lista de contactos y se muestra.
-	 * 
-	 * @param nombre
-	 * @param numero
-	 * @throws ChatControllerException 
+	 * @param contacto Contacto o grupo a eliminar.
+	 * @throws ChatControllerException Si el contacto no pertenece a la lista de contactos del usuario.
 	 */
-	public void eliminarContacto(String numero) throws ChatControllerException {
-		if(numero == null || numero.isEmpty()) {
-			throw new IllegalArgumentException();
-		}
-		
-		Contacto c = usuarioActual.getContactos().stream()
-	            .filter(contacto -> contacto instanceof ContactoIndividual) 
-	            .map(contacto -> (ContactoIndividual) contacto) 
-	            .filter(contacto -> contacto.getUsuario().getTelefono().equals(numero)) 
-	            .findFirst()
-	            .orElse(null);
+	public void eliminarContacto(Contacto contacto) throws ChatControllerException {
+	    if (contacto == null) {
+	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
+	    }
 
-		if(c == null) {
-			throw new ChatControllerException("No tienes ningún contacto con el número "+ numero+".");
-		}
-		
-		usuarioActual.deleteContacto(c);
+	    // Verificar si el contacto está en la lista del usuario actual
+	    if (!usuarioActual.getContactos().contains(contacto)) {
+	        throw new ChatControllerException("El contacto o grupo no está en la lista de contactos del usuario.");
+	    }
+
+	    // Eliminar el contacto de la lista
+	    usuarioActual.deleteContacto(contacto);
 	}
 	
 	
@@ -204,8 +215,8 @@ public class ChatControllerStub {
 	 * @param nombreGrupo
 	 * @throws ChatControllerException 
 	 */
-	public void crearGrupo(List<ContactoIndividual> miembros ,String nombreGrupo, String imagenGrupo) throws ChatControllerException {
-		if(nombreGrupo == null || nombreGrupo.isEmpty()) {
+	public void crearGrupo(List<ContactoIndividual> miembros,String nombreGrupo, String imagenGrupo) throws ChatControllerException {
+		if(nombreGrupo == null || nombreGrupo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre del grupo no puede ser nulo o vacío.");
 		}else if(miembros == null || miembros.isEmpty()) {
 			throw new IllegalArgumentException("La lista de miembros no puede ser nula o vacia.");
@@ -356,7 +367,7 @@ public class ChatControllerStub {
 	    if (contacto == null) {
 	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
 	    }
-	    if (contenido == null || contenido.isEmpty()) {
+	    if (contenido == null || contenido.trim().isEmpty()) {
 	        throw new IllegalArgumentException("El contenido del mensaje no puede estar vacío.");
 	    }
 

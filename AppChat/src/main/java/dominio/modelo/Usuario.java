@@ -111,6 +111,15 @@ public class Usuario implements Identificable {
 		this.contactos = contactos;
 	}
 
+	public void addContacto(Contacto contactoPedro) {
+		this.contactos.add(contactoPedro);
+	}
+	
+	public void deleteContacto(Contacto contactoPedro) {
+		this.contactos.remove(contactoPedro);
+	}
+
+	
 	public void actualizarPerfil(String nombre, String email, String fotoPerfil) {
 		this.nombre = nombre;
 		this.email = email;
@@ -121,7 +130,7 @@ public class Usuario implements Identificable {
 	public String toString() {
 		String toString = "Usuario {" + "\n\tid : " + id + ",\n\tnombre : " + nombre + ",\n\ttelefono : " + telefono
 				+ ",\n\temail : " + email + ",\n\tcontrasena : " + contrasena + ",\n\tfotoPerfil : " + fotoPerfil
-				+ ",\n\tesPremium : " + esPremium + ",\n\tcontactos : {";
+				+ ",\n\tsaludo : " + saludo + ",\n\tesPremium : " + esPremium +  ",\n\tcontactos : {";
 		for (Contacto contacto : contactos) {
 			toString += "\n\t\tnombre : " + contacto.getNombre();
 		}
@@ -145,5 +154,4 @@ public class Usuario implements Identificable {
 		// DONE Cambiar el return comparando valor de los atributos
 		return telefono == other.getTelefono();
 	}
-
 }

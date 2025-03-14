@@ -26,4 +26,35 @@ public class AdaptadorContactoIndividualDAOTest {
 	public static void beforeEach() {
 		
 	}
+	
+	/*
+	 * add
+	 * 
+	 * - addMensajeNulo
+	 * - addMensajeVacio
+	 * - addMensajeDuplicado
+	 * - addMensajeConExito
+	 * - addMensajeDosMensajesConExito
+	 * 
+	 * getById
+	 * - getMensajeNoExiste
+	 * - getMensajeConExito
+	 * 
+	 * update
+	 * - updateMensajeNoExiste
+	 * - updateMensajeDosVeces
+	 * - updateMensaje
+	 * 
+	 * delete
+	 * 
+	 * - deleteMensajeNoExiste
+	 * - deleteMensaje
+	 * 
+	 * getAll
+	 * - getAllMensajesSinMensajes
+	 * - getAllMensajesConVariosMensajes
+	 * 
+	 * 
+	 */
+	
 }
