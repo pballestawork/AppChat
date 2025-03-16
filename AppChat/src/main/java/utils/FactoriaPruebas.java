@@ -2,6 +2,7 @@ package utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +21,8 @@ public class FactoriaPruebas {
     	Usuario usuario = crearUsuario();
     		
     	ContactoIndividual contactoIndividual = crearContactoIndividual(usuario);
-    	Grupo grupo = crearGrupo(List.of(contactoIndividual));
+    	Grupo grupo = crearGrupo(Arrays.asList(contactoIndividual));
+
     	
     	contactoIndividual.addMensaje(crearMensaje(usuario, generarMensaje()));
     	grupo.addMensaje(crearMensaje(usuario, generarMensaje()));

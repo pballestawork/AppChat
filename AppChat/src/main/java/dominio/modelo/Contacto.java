@@ -1,5 +1,6 @@
 package dominio.modelo;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class Contacto implements Identificable {
 	public Contacto(int id, String nombre) {
 		this.id = id;
 		this.nombre = nombre;
+		this.mensajes = new LinkedList<Mensaje>();
 	}
 
 	public Contacto() {

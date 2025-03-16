@@ -1,6 +1,7 @@
 package utils;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -352,6 +353,40 @@ public class ChatControllerStub {
 	}
 
 	/**
+	 * Actualiza el nombre y/o la imagen de un grupo en la lista de contactos del usuario actual.
+	 * 
+	 * Se realizan las siguientes validaciones:
+	 * - El grupo no puede ser nulo.
+	 * - El grupo debe existir en la lista de contactos del usuario.
+	 * - Si el nuevo nombre es proporcionado, se actualiza.
+	 * - Si la nueva imagen es proporcionada, se actualiza.
+	 * - Si ambos valores son nulos, no se realiza ninguna actualización.
+	 *
+	 * @param grupo Grupo a actualizar.
+	 * @param nombre Nuevo nombre del grupo (puede ser nulo si no se desea actualizar).
+	 * @param imagen Nueva imagen del grupo (puede ser nula si no se desea actualizar).
+	 * @throws ChatControllerException Si el grupo no pertenece a la lista de contactos del usuario.
+	 */
+	public void actualizarGrupo(Grupo grupo, String nombre, String imagen) throws ChatControllerException {
+	    if (grupo == null) {
+	        throw new IllegalArgumentException("El grupo no puede ser nulo.");
+	    }else if (nombre == null && imagen == null) {
+	        throw new IllegalArgumentException("Debe proporcionar al menos un campo para actualizar.");
+	    }else if (!usuarioActual.getContactos().contains(grupo)) {
+	        throw new ChatControllerException("El grupo no pertenece a la lista de contactos del usuario.");
+	    }
+
+	    if (nombre != null) {
+	        grupo.setNombre(nombre);
+	    }
+
+	    if (imagen != null) {
+	        grupo.setImagen(imagen);
+	    }
+	}
+
+	
+	/**
 	 * Envía un mensaje a un contacto, ya sea un contacto individual o un grupo.
 	 *
 	 * Se realizan las siguientes validaciones:
@@ -370,25 +405,53 @@ public class ChatControllerStub {
 	    if (contenido == null || contenido.trim().isEmpty()) {
 	        throw new IllegalArgumentException("El contenido del mensaje no puede estar vacío.");
 	    }
-
-	    // Verificar si el contacto está en la lista de contactos del usuario actual
-	    boolean contactoExiste = usuarioActual.getContactos().stream()
-	            .anyMatch(c -> c.equals(contacto));
-
-	    if (!contactoExiste) {
+	    
+	    Contacto contactoRecuperado = usuarioActual.getContactos()
+	    		.stream().filter(c-> c.equals(contacto)).findFirst().orElse(null);
+	    	
+	    if (contactoRecuperado == null) {
 	        throw new ChatControllerException("El contacto no está en la lista del usuario actual.");
 	    }
 
-	    Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
-
-	    // Agregar el mensaje a la lista de mensajes del contacto
-	    contacto.addMensaje(mensaje);
+    	Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
+	    if(contactoRecuperado instanceof ContactoIndividual) {
+		    	
+	    }else if(contactoRecuperado instanceof Grupo) {
+	    	contactoRecuperado.addMensaje(mensaje);
+	    	Grupo grupo = (Grupo) contactoRecuperado;
+	    	for (ContactoIndividual contactoInd : grupo.getMiembros()) {
+	    		contactoInd.addMensaje(mensaje);
+			}
+	    }
+	    
 	}
 
-	public List<Mensaje> buscarMensajes(String filtro) {
-		// Código para buscar mensajes
-		return null;
+	/**
+	 * Busca mensajes en la lista de contactos del usuario aplicando filtros opcionales por
+	 * fragmento de texto, nombre del contacto o número de teléfono.
+	 * 
+	 * Se realizan las siguientes validaciones:
+	 * - Se pueden combinar múltiples criterios de búsqueda.
+	 * - Se buscan mensajes en la lista de contactos del usuario, ya sean enviados o recibidos.
+	 * - Los resultados se ordenan por fecha y hora de envío de manera descendente.
+	 * 
+	 * @param texto Fragmento de texto a buscar en los mensajes (puede ser nulo).
+	 * @param contacto Nombre del contacto a filtrar (puede ser nulo).
+	 * @param telefono Número de teléfono del contacto a filtrar (puede ser nulo).
+	 * @return Lista de mensajes que coincidan con los criterios de búsqueda.
+	 */
+	public List<Mensaje> buscarMensajes(String texto, String contacto, String telefono) {
+	    return usuarioActual.getContactos().stream()
+	            .flatMap(contactoObj -> contactoObj.getMensajes().stream()) // Extrae todos los mensajes de los contactos
+	            .filter(mensaje -> 
+	                (texto == null || mensaje.getContenido().contains(texto)) && // Filtrar por texto si se proporciona
+	                (contacto == null || mensaje.getEmisor().getNombre().equalsIgnoreCase(contacto)) && // Filtrar por nombre si se proporciona
+	                (telefono == null || mensaje.getEmisor().getTelefono().equals(telefono)) // Filtrar por teléfono si se proporciona
+	            )
+	            .sorted(Comparator.comparing(Mensaje::getFechaEnvio).reversed()) // Ordenar por fecha descendente
+	            .collect(Collectors.toList());
 	}
+
 	
 	public void exportarMensajesPDF(Usuario usuario,List<Mensaje> mensajes) {
         // Código para exportar mensajes a PDF

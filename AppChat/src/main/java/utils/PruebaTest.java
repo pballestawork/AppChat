@@ -45,8 +45,8 @@ public class PruebaTest {
 
 		// 6.Crear grupo // Crearemos 2 contactos para ello
 		System.out.println("6.Crear grupo // Crearemos 2 contactos para ello");
-		controlador.agregarContacto("1", "1");
-		controlador.agregarContacto("2", "2");
+		controlador.agregarContacto("c1", "1");
+		controlador.agregarContacto("c2", "2");
 
 		List<ContactoIndividual> miembrosGrupo = u.getContactos().stream()
 				.map(c -> (ContactoIndividual) c)
@@ -58,18 +58,36 @@ public class PruebaTest {
 
 		// 7.Añadir al grupo
 		System.out.println("7.Añadir al grupo");
-		controlador.agregarContacto("3", "3");
+		controlador.agregarContacto("c3", "3");
 		controlador.agregarContactoAGrupo((Grupo) u.getContactos().get(2),(ContactoIndividual) u.getContactos().get(3));
 		System.out.println((Grupo) u.getContactos().get(2));
 		
 		// 8.Eliminar del grupo
+		System.out.println("8.Añadir al grupo");
+		controlador.eliminarContactoDeGrupo((Grupo) u.getContactos().get(2), (ContactoIndividual) u.getContactos().get(1));
+		System.out.println((Grupo) u.getContactos().get(2));
+		
+		
 		// 9.Cambiar nombre o foto
-		//
+		System.out.println("9.Cambiar nombre o foto");
+		controlador.actualizarGrupo((Grupo) u.getContactos().get(2), "NIGAS", null);
+		System.out.println((Grupo) u.getContactos().get(2));
+		System.out.println(u);
+		
+		// 9.1 Eliminar grupo
+		controlador.eliminarContacto((Grupo) u.getContactos().get(2));
+		System.out.println(u);
+		
+		
 		// 10.Enviar/recibir contactos
+		controlador.enviarMensaje(u.getContactos().get(0), "Hola");
+		
 		// 11.Enviar/recibir usuarios (no contacto)
+		
 		// 12.Enviar/recibir grupo
-		//
+		
 		// 13.Convertir a premium
+		
 		// 14.Desactivar premium
 		// 15.Generar PDF
 
