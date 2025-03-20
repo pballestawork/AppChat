@@ -16,11 +16,13 @@ import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
 
 public class ChatControllerStub {	
+	private static ChatControllerStub unicaInstancia;
+	
 	private Usuario usuarioActual;
 	private Map<String,Usuario> usuarios;
 	
 	
-	public ChatControllerStub () {
+	private ChatControllerStub () {
 		usuarioActual = null; 
 		
 		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
@@ -32,6 +34,13 @@ public class ChatControllerStub {
 		usuarios.put(usuario2.getTelefono(),usuario2);
 		usuarios.put(usuario3.getTelefono(),usuario3);
 	}
+	
+	public static ChatControllerStub getUnicaInstancia() {
+		if(unicaInstancia == null)
+			unicaInstancia = new ChatControllerStub();
+		return unicaInstancia;
+	}
+	
 	
 	/**
 	 * Registra un nuevo usuario en el sistema.
@@ -167,8 +176,7 @@ public class ChatControllerStub {
 		}else if(!usuarios.containsKey(telefono)) {
 			throw new ChatControllerException("El numero "+ telefono +" no existe.");
 		}
-		
-		
+
 		ContactoIndividual c = new ContactoIndividual(usuarios.get(telefono).getId(), nombre, usuarios.get(telefono));
 		usuarioActual.addContacto(c);
 	}

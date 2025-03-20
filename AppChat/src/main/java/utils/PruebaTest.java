@@ -15,7 +15,7 @@ public class PruebaTest {
 	private static Usuario u;
 
 	public static void main(String[] args) throws ChatControllerException {
-		ChatControllerStub controlador = new ChatControllerStub();
+		ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
 
 		// 1.Registrar nuevo usuario
 		System.out.println("1.Registrar nuevo usuario");
