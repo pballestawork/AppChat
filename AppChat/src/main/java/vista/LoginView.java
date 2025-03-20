@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -13,6 +12,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
+
+import dominio.controlador.ChatControllerException;
+import dominio.modelo.Usuario;
+import utils.ChatControllerStub;
+
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -20,8 +24,9 @@ import java.awt.event.ActionEvent;
 public class LoginView {
 
 	private JFrame frmAppchat;
-	private JTextField textField;
+	private JTextField inputPhone;
 	private JPasswordField passwordField;
+	private static ChatControllerStub controlador;
 
 	/**
 	 * Launch the application.
@@ -30,6 +35,7 @@ public class LoginView {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					controlador = ChatControllerStub.getUnicaInstancia();
 					LoginView window = new LoginView();
 					window.frmAppchat.setVisible(true);
 				} catch (Exception e) {
@@ -76,18 +82,40 @@ public class LoginView {
 		panel_inferior.setBackground(SystemColor.desktop);
 		frmAppchat.getContentPane().add(panel_inferior, BorderLayout.SOUTH);
 		
-		JButton btnNewButton = new JButton("Registrar");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnRegister = new JButton("Registrar");
+		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new RegisterView(frmAppchat);
 			}
 		});
-		btnNewButton.setBackground(SystemColor.activeCaption);
-		panel_inferior.add(btnNewButton);
+		btnRegister.setBackground(SystemColor.activeCaption);
+		panel_inferior.add(btnRegister);
 		
-		JButton btnNewButton_1 = new JButton("Iniciar sesión");
-		btnNewButton_1.setBackground(SystemColor.activeCaption);
-		panel_inferior.add(btnNewButton_1);
+		JButton btnLogin = new JButton("Iniciar sesión");
+		btnLogin.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Usuario usuario = controlador.iniciarSesion( inputPhone.getText(),passwordField.getText());
+					
+					if (usuario != null) {
+		                System.out.println("Inicio de sesión exitoso: " + usuario.getNombre());
+
+		                // Abrir MainView
+		                MainView mainView = new MainView();
+		                mainView.setVisible(true);
+
+		                // Cerrar la ventana de Login
+		                frmAppchat.dispose();
+		            }
+		        } catch (ChatControllerException ex) {
+		            System.out.println("Error al iniciar sesión: " + ex.getMessage());
+		            ex.printStackTrace();
+		        }
+			}
+		});
+		btnLogin.setBackground(SystemColor.activeCaption);
+		panel_inferior.add(btnLogin);
 		
 		JPanel panel_central = new JPanel();
 		panel_central.setBackground(SystemColor.desktop);
@@ -108,16 +136,16 @@ public class LoginView {
 		gbc_lblNewLabel_1.gridy = 1;
 		panel_central.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		textField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
-		panel_central.add(textField, gbc_textField);
-		textField.setColumns(10);
+		inputPhone = new JTextField();
+		inputPhone.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		inputPhone.setBackground(SystemColor.inactiveCaption);
+		GridBagConstraints gbc_inputPhone = new GridBagConstraints();
+		gbc_inputPhone.fill = GridBagConstraints.HORIZONTAL;
+		gbc_inputPhone.insets = new Insets(0, 0, 5, 5);
+		gbc_inputPhone.gridx = 1;
+		gbc_inputPhone.gridy = 2;
+		panel_central.add(inputPhone, gbc_inputPhone);
+		inputPhone.setColumns(10);
 		
 		JLabel lblContrasea = new JLabel("Contraseña");
 		lblContrasea.setForeground(SystemColor.text);

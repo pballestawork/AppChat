@@ -10,10 +10,13 @@ import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
 
+import dominio.controlador.ChatControllerException;
+import utils.ChatControllerStub;
 import utils.Utils;
 
 import java.awt.SystemColor;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -29,7 +32,7 @@ import javax.swing.JEditorPane;
 public class RegisterView extends JFrame {
 	private JFrame parent;
 	private JTextField nameField;
-	private JTextField apellidoField;
+	private JTextField correoField;
 	private JTextField telefonoField;
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
@@ -75,25 +78,25 @@ public class RegisterView extends JFrame {
 		gbc_nameField.gridy = 1;
 		panel_central.add(nameField, gbc_nameField);
 		
-		JLabel lblApellidos = new JLabel("Apellidos:");
-		lblApellidos.setForeground(SystemColor.text);
-		lblApellidos.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblApellidos = new GridBagConstraints();
-		gbc_lblApellidos.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblApellidos.insets = new Insets(0, 0, 5, 5);
-		gbc_lblApellidos.gridx = 1;
-		gbc_lblApellidos.gridy = 3;
-		panel_central.add(lblApellidos, gbc_lblApellidos);
+		JLabel lblCorreo = new JLabel("Correo Electronico:");
+		lblCorreo.setForeground(SystemColor.text);
+		lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 16));
+		GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
+		gbc_lblCorreo.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblCorreo.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCorreo.gridx = 1;
+		gbc_lblCorreo.gridy = 3;
+		panel_central.add(lblCorreo, gbc_lblCorreo);
 		
-		apellidoField = new JTextField();
-		apellidoField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_apellidoField = new GridBagConstraints();
-		gbc_apellidoField.gridwidth = 4;
-		gbc_apellidoField.insets = new Insets(0, 0, 5, 5);
-		gbc_apellidoField.fill = GridBagConstraints.BOTH;
-		gbc_apellidoField.gridx = 2;
-		gbc_apellidoField.gridy = 3;
-		panel_central.add(apellidoField, gbc_apellidoField);
+		correoField = new JTextField();
+		correoField.setBackground(SystemColor.inactiveCaption);
+		GridBagConstraints gbc_correoField = new GridBagConstraints();
+		gbc_correoField.gridwidth = 4;
+		gbc_correoField.insets = new Insets(0, 0, 5, 5);
+		gbc_correoField.fill = GridBagConstraints.BOTH;
+		gbc_correoField.gridx = 2;
+		gbc_correoField.gridy = 3;
+		panel_central.add(correoField, gbc_correoField);
 		
 		JLabel lblContrasea = new JLabel("Contraseña:");
 		lblContrasea.setForeground(SystemColor.text);
@@ -273,8 +276,44 @@ public class RegisterView extends JFrame {
 		JButton btnSubmit = new JButton("Registrar");
 		btnSubmit.setBackground(SystemColor.activeCaption);
 		btnSubmit.addActionListener(e -> {
-			parent.setVisible(true);
-			dispose();
+			try {
+		        // Obtener datos del formulario
+		        String nombre = nameField.getText().trim();
+		        String telefono = telefonoField.getText().trim();
+		        String correo = correoField.getText().trim();
+		        String contrasena = new String(passwordField.getPassword());
+		        String contrasenaRepetida = new String(passwordField_1.getPassword());
+		        String saludo = textSaludoInicial.getText().trim();
+		        
+		        // Obtener fecha de nacimiento
+		        LocalDateTime fechaNacimiento = null;
+		        if (fechaNacimientoField.getDate() != null) {
+		            fechaNacimiento = fechaNacimientoField.getDate().toInstant()
+		                .atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+		        }
+
+		        // Validar que se haya seleccionado una imagen
+		        if (rutaFotoPerfil == null || rutaFotoPerfil.isEmpty()) {
+		            JOptionPane.showMessageDialog(this, "Por favor, seleccione una foto de perfil.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        // Intentar registrar el usuario
+		        ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
+		        controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, contrasenaRepetida, saludo);
+
+		        // Si el registro es exitoso, mostrar mensaje y volver al login
+		        JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+		        parent.setVisible(true);
+		        dispose();
+
+		    } catch (IllegalArgumentException ex) {
+		        // Capturar errores de validación
+		        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		    } catch (ChatControllerException ex) {
+		        // Capturar errores de lógica del sistema (ej. usuario ya registrado)
+		        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		    }
 		});
 		panel_inferior.add(btnSubmit);
 		setBackground(SystemColor.desktop);

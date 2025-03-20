@@ -63,7 +63,7 @@ public class ChatControllerStub {
 	 * @throws ChatControllerException 
 	 */
 	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
-			String telefono, String contrasena, String contrasenaRepetida) throws ChatControllerException {
+			String telefono, String contrasena, String contrasenaRepetida, String saludo) throws ChatControllerException {
 		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
 		} else if (email == null || email.trim().isEmpty()) {
@@ -82,7 +82,7 @@ public class ChatControllerStub {
 			throw new ChatControllerException("El telefono "+ telefono +" ya está registrado.");
 		}
 		
-		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,null,new LinkedList<Contacto>());
+		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,saludo,new LinkedList<Contacto>());
 		usuarios.put(telefono, u);
 	}
 	

@@ -19,7 +19,7 @@ public class PruebaTest {
 
 		// 1.Registrar nuevo usuario
 		System.out.println("1.Registrar nuevo usuario");
-		controlador.registrarUsuario("a", LocalDateTime.now(), "pablo@gmail.com", null, "6", "123", "123");
+		controlador.registrarUsuario("a", LocalDateTime.now(), "pablo@gmail.com", null, "6", "123", "123","saludo");
 
 		// 2.Iniciar sesión
 		System.out.println("2.Iniciar sesión");
