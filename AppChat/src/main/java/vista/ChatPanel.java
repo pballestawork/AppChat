@@ -3,6 +3,10 @@ package vista;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import dominio.modelo.ContactoIndividual;
+import dominio.modelo.Mensaje;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -82,5 +86,23 @@ public class ChatPanel extends JPanel {
             agregarMensaje(mensaje, "Tú", BubbleText.SENT);
             areaTexto.setText(""); // Limpiar el área de texto después de enviar
         }
+    }
+    
+    public void cargarMensajesDe(ContactoIndividual contacto) {
+        chatContainer.removeAll();  // Limpia los mensajes actuales
+        // Se supone que contacto.getMensajes() devuelve List<Mensaje>
+        for (Mensaje m : contacto.getMensajes()) {
+            // Suponemos que m.getTipo() devuelve true si es mensaje enviado y false si es recibido
+            int tipo = m.getTipo() ? BubbleText.SENT : BubbleText.RECEIVED;
+            BubbleText burbuja = new BubbleText(chatContainer, m.getContenido(),
+                    tipo == BubbleText.SENT ? Color.GREEN : Color.LIGHT_GRAY,
+                    m.getEmisor().getNombre(), tipo);
+            chatContainer.add(burbuja);
+        }
+        chatContainer.revalidate();
+        chatContainer.repaint();
+        SwingUtilities.invokeLater(() -> 
+            scrollChat.getVerticalScrollBar().setValue(scrollChat.getVerticalScrollBar().getMaximum())
+        );
     }
 }

@@ -100,13 +100,13 @@ public class LoginView {
 					
 					if (usuario != null) {
 		                System.out.println("Inicio de sesión exitoso: " + usuario.getNombre());
-
-		                // Abrir MainView
-		                MainView mainView = new MainView();
-		                mainView.setVisible(true);
-
+		                
 		                // Cerrar la ventana de Login
 		                frmAppchat.dispose();
+
+		                // Abrir MainView
+		                MainView mainView = new MainView(usuario);
+		                mainView.setVisible(true);
 		            }
 		        } catch (ChatControllerException ex) {
 		            System.out.println("Error al iniciar sesión: " + ex.getMessage());

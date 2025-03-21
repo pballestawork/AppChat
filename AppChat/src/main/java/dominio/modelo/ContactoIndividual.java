@@ -25,5 +25,7 @@ public class ContactoIndividual extends Contacto {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	
 	
 }

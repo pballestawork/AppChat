@@ -7,16 +7,24 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import dominio.modelo.ContactoIndividual;
+import dominio.modelo.Usuario;
+import tds.BubbleText;
+import utils.ChatControllerStub;
 
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.ImageIcon;
@@ -24,7 +32,9 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 
 import javax.swing.border.BevelBorder;
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 
 public class MainView extends JFrame {
 
@@ -35,30 +45,22 @@ public class MainView extends JFrame {
 	private JPanel panelChat;
 	private JPanel panelBuscador;
 	private CardLayout cardLayout;
+    private JList<ContactoIndividual> listaContactos;
+	private static ChatControllerStub controlador;
+	private Usuario usuarioActual;
+	private ContactoIndividual contactoSeleccionado;
 	
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainView frame = new MainView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public MainView() {
+	public MainView(Usuario usuario) {
+        this.usuarioActual = usuario;
+        initComponents();
+        cargarContactos(); 
+    }
+	
+	public void initComponents(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 750);
+        controlador = ChatControllerStub.getUnicaInstancia();
+        listaContactos = new JList<ContactoIndividual>();
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -74,13 +76,33 @@ public class MainView extends JFrame {
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		JButton btnNewButton = new JButton("");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.fill = GridBagConstraints.VERTICAL;
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 1;
-		panel.add(btnNewButton, gbc_btnNewButton);
+		JButton btnFotoPerfil = new JButton("");
+		GridBagConstraints gbc_btnFotoPerfil = new GridBagConstraints();
+		gbc_btnFotoPerfil.insets = new Insets(0, 0, 5, 5);
+		gbc_btnFotoPerfil.fill = GridBagConstraints.VERTICAL;
+		gbc_btnFotoPerfil.gridx = 1;
+		gbc_btnFotoPerfil.gridy = 1;
+		panel.add(btnFotoPerfil, gbc_btnFotoPerfil);
+		try {
+		    // Obtener la ruta de la foto de perfil del usuario actual
+		    String rutaFoto = usuarioActual.getFotoPerfil(); // Ej: "/FotosPerfil/Perfil_1.png"
+		    // Buscar el recurso en el classpath
+		    URL urlFoto = getClass().getResource(rutaFoto);
+		    if (urlFoto != null) {
+		        // Leer la imagen
+		        Image imagenOriginal = ImageIO.read(urlFoto);
+		        // Escalar la imagen (ajusta el ancho y alto según necesites)
+		        int anchoDeseado = 50;
+		        int altoDeseado = 50;
+		        Image imagenEscalada = imagenOriginal.getScaledInstance(anchoDeseado, altoDeseado, Image.SCALE_SMOOTH);
+		        // Asignar la imagen escalada como ícono del botón
+		        btnFotoPerfil.setIcon(new ImageIcon(imagenEscalada));
+		    } else {
+		        System.err.println("No se pudo cargar la imagen: " + rutaFoto);
+		    }
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
 		
 		JButton btnNewButton_2 = new JButton("Añadir Contacto");
 		btnNewButton_2.setBackground(SystemColor.inactiveCaption);
@@ -126,13 +148,22 @@ public class MainView extends JFrame {
 		gbc_btnNewButton_5.gridy = 1;
 		panel.add(btnNewButton_5, gbc_btnNewButton_5);
 		
-		JButton btnNewButton_6 = new JButton("Logout");
-		btnNewButton_6.setBackground(SystemColor.info);
-		GridBagConstraints gbc_btnNewButton_6 = new GridBagConstraints();
-		gbc_btnNewButton_6.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_6.gridx = 8;
-		gbc_btnNewButton_6.gridy = 1;
-		panel.add(btnNewButton_6, gbc_btnNewButton_6);
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.setBackground(SystemColor.info);
+		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
+		gbc_btnLogout.insets = new Insets(0, 0, 5, 5);
+		gbc_btnLogout.gridx = 8;
+		gbc_btnLogout.gridy = 1;
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controlador.cerrarSesion();
+		        LoginView login = new LoginView();
+		        login.main(null);
+		        dispose();
+            }
+		});
+		panel.add(btnLogout, gbc_btnLogout);
+		
 		
 		BorderLayout bl_panelContatos = new BorderLayout();
 		panelContatos = new JPanel(bl_panelContatos);
@@ -142,8 +173,17 @@ public class MainView extends JFrame {
 		contentPane.add(panelContatos, BorderLayout.WEST);
 		
 		 // JList para mostrar los contactos
-        JList<ContactoIndividual> listaContactos = new JList<>();
         listaContactos.setCellRenderer(new ContactoListCellRenderer()); // Aplica el renderizador
+		listaContactos.addListSelectionListener(e -> {
+			 if (!e.getValueIsAdjusting()) {
+			        ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
+			        if (contactoSeleccionado != null) {
+			            this.contactoSeleccionado = contactoSeleccionado;
+			            // Llamamos al método del ChatPanel para cargar los mensajes de este contacto
+			            ((ChatPanel) panelChat).cargarMensajesDe(contactoSeleccionado);
+			        }
+			    }
+		});
 
         // Agregar la lista con scroll al panel
         JScrollPane scrollLista = new JScrollPane(listaContactos);
@@ -157,6 +197,8 @@ public class MainView extends JFrame {
         // PANEL CHAT
         panelChat = new ChatPanel();
         panelCentral.add(panelChat, "panelChat");
+        
+        
 
         // PANEL BUSCADOR
         panelBuscador = new JPanel();
@@ -167,5 +209,28 @@ public class MainView extends JFrame {
         cardLayout.show(panelCentral, "panelChat");
         
 	}
+
+	private void cargarContactos() {
+		 usuarioActual = controlador.getUsuarioActual(); // Obtiene el usuario autenticado
+		    if (usuarioActual == null) {
+		        System.err.println("No hay usuario autenticado.");
+		        return;
+		    }else
+			{
+				System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
+			}
+
+		    List<ContactoIndividual> contactos = usuarioActual.getContactos()
+		            .stream()
+		            .filter(c -> c instanceof ContactoIndividual)
+		            .map(c -> (ContactoIndividual) c)
+		            .toList();
+
+		    DefaultListModel<ContactoIndividual> model = new DefaultListModel<>();
+		    contactos.forEach(model::addElement);
+		    listaContactos.setModel(model);
+    }
+	
+
 
 }

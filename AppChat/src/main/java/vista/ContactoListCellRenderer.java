@@ -52,7 +52,7 @@ public class ContactoListCellRenderer extends JPanel implements ListCellRenderer
 		// Configuración de la imagen
 		String fotoUsuario = contacto.getUsuario().getFotoPerfil();
 		URL url = getClass().getResource(fotoUsuario);
-		if (url != null) {
+		if (url != null && !fotoUsuario.isEmpty()) {
 			Image imagenOriginal;
 			try {
 				imagenOriginal = ImageIO.read(url);

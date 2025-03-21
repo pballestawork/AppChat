@@ -25,14 +25,51 @@ public class ChatControllerStub {
 	private ChatControllerStub () {
 		usuarioActual = null; 
 		
-		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
-		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
-		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","/FotosPerfil/Perfil_1.png",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","/FotosPerfil/Perfil_3.png",false,"Hola",new LinkedList<Contacto>());
 		
 		usuarios = new HashMap<String, Usuario>();
 		usuarios.put(usuario.getTelefono(),usuario);
 		usuarios.put(usuario2.getTelefono(),usuario2);
 		usuarios.put(usuario3.getTelefono(),usuario3);
+		
+		ContactoIndividual alvaroDePablo = FactoriaPruebas.crearContactoIndividual(usuario2);
+		ContactoIndividual lauraDePablo = FactoriaPruebas.crearContactoIndividual(usuario3);
+		
+		ContactoIndividual pabloDeAlvaro = FactoriaPruebas.crearContactoIndividual(usuario);
+		ContactoIndividual lauraDeAlvaro = FactoriaPruebas.crearContactoIndividual(usuario3);
+		
+		ContactoIndividual pabloDeLaura = FactoriaPruebas.crearContactoIndividual(usuario);
+		ContactoIndividual alvaroDeLaura = FactoriaPruebas.crearContactoIndividual(usuario2);
+		
+		usuario.addContacto(alvaroDePablo);
+		usuario.addContacto(lauraDePablo);
+		
+		usuario2.addContacto(pabloDeAlvaro);
+		usuario2.addContacto(lauraDeAlvaro);
+		
+		usuario3.addContacto(pabloDeLaura);
+		usuario3.addContacto(alvaroDeLaura);
+	
+		alvaroDePablo.addMensaje(new Mensaje(1, usuario, "Hola", LocalDateTime.now(), true));
+		alvaroDePablo.addMensaje(new Mensaje(2, usuario, "Como estas Alvaro?", LocalDateTime.now(), true));
+		alvaroDePablo.addMensaje(new Mensaje(3, usuario2, "Hola", LocalDateTime.now(), false));
+		alvaroDePablo.addMensaje(new Mensaje(4, usuario2, "Bien y tu?", LocalDateTime.now(), false));
+		alvaroDePablo.addMensaje(new Mensaje(5, usuario, "Bien gracias", LocalDateTime.now(), true));
+		
+		pabloDeAlvaro.addMensaje(new Mensaje(1, usuario, "Hola", LocalDateTime.now(), false));
+		pabloDeAlvaro.addMensaje(new Mensaje(2, usuario, "Como estas Alvaro?", LocalDateTime.now(), false));
+		pabloDeAlvaro.addMensaje(new Mensaje(3, usuario2, "Hola", LocalDateTime.now(), true));
+		pabloDeAlvaro.addMensaje(new Mensaje(4, usuario2, "Bien y tu?", LocalDateTime.now(), true));
+		pabloDeAlvaro.addMensaje(new Mensaje(5, usuario, "Bien gracias", LocalDateTime.now(), false));
+		
+		lauraDePablo.addMensaje(new Mensaje(3, usuario, "Hola", LocalDateTime.now(), true));
+		lauraDePablo.addMensaje(new Mensaje(4, usuario, "Como estas Laura?", LocalDateTime.now(), true));
+		
+		pabloDeLaura.addMensaje(new Mensaje(3, usuario, "Hola", LocalDateTime.now(), false));
+		pabloDeLaura.addMensaje(new Mensaje(4, usuario, "Como estas Laura?", LocalDateTime.now(), false));
+		
 	}
 	
 	public static ChatControllerStub getUnicaInstancia() {
@@ -118,6 +155,10 @@ public class ChatControllerStub {
 		
 		usuarioActual = u;
 		return u;
+	}
+	
+	public Usuario getUsuarioActual() {
+	    return usuarioActual; 
 	}
 	
 	/**
@@ -464,4 +505,8 @@ public class ChatControllerStub {
 	public void exportarMensajesPDF(Usuario usuario,List<Mensaje> mensajes) {
         // Código para exportar mensajes a PDF
     }
+
+	public void cerrarSesion() {
+		this.usuarioActual = null;
+	}
 }
