@@ -39,4 +39,8 @@ public class PoolDAO {
 	public boolean contiene(int id) {
 		return pool.containsKey(id);
 	}
+	
+	public void removeObject(int id) {
+		pool.remove(id);
+	}
 }
