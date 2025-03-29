@@ -1,7 +1,7 @@
 package dominio.modelo;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
 
 import persistencia.dao.Identificable;
 
@@ -12,13 +12,15 @@ public class Mensaje implements Identificable{
 	private String contenido;
 	private LocalDateTime fechaEnvio;
 	private Boolean tipo;
+	
+	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 	public Mensaje(int id, Usuario emisor, String contenido, LocalDateTime fechaEnvio, Boolean tipo) {
 		this.id = id;
 		this.emisor = emisor;
 		this.tipo = tipo;
 		this.contenido = contenido;
-		this.fechaEnvio = fechaEnvio;
+		this.fechaEnvio = fechaEnvio == null ? null : fechaEnvio.withNano(0);//Fechas ajustadas al formato
 	}
 
 	public Mensaje() {
@@ -47,7 +49,7 @@ public class Mensaje implements Identificable{
 	
 	@Override
 	public String toString() {
-		return "Mensaje [emisor=" + emisor.getTelefono() + ", contenido=" + contenido + ", fechaEnvio=" + fechaEnvio + "]";
+		return "Mensaje [emisor=" + emisor.getTelefono() + ", contenido=" + contenido + ", fechaEnvio=" + fechaEnvio.format(FORMATTER) + "]";
 	}
 
 	@Override

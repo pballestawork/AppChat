@@ -16,7 +16,6 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	private static ServicioPersistencia servicioPersistencia;
 	private static AdaptadorMensajeDAO unicaInstancia = null;
 	private static IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
-	private static DateTimeFormatter formatter; 
 	private final String PROP_EMISOR = "emisor";
 	private final String PROP_CONTENIDO = "contenido";
 	private final String PROP_FECHA_ENVIO = "fechaEnvio";
@@ -27,7 +26,6 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	 */
 	private AdaptadorMensajeDAO() {
 		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
-		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	}
 
 	/**
@@ -67,7 +65,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		List<Propiedad> propiedadesLst = new LinkedList<Propiedad>();
 		propiedadesLst.add(new Propiedad(PROP_EMISOR, String.valueOf(elemento.getEmisor().getId())));
 		propiedadesLst.add(new Propiedad(PROP_CONTENIDO, elemento.getContenido()));
-		propiedadesLst.add(new Propiedad(PROP_FECHA_ENVIO, elemento.getFechaEnvio().format(formatter)));
+		propiedadesLst.add(new Propiedad(PROP_FECHA_ENVIO, elemento.getFechaEnvio().format(Mensaje.FORMATTER)));
 		nuevaEntidad.setPropiedades(propiedadesLst);
 		
 		// 5. Se registra la entidad y se asocia su id con el objeto
@@ -95,7 +93,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 				prop.setValor(String.valueOf(elemento.getEmisor().getId()));
 				break;
 			case PROP_FECHA_ENVIO:
-				prop.setValor(elemento.getFechaEnvio().format(formatter));
+				prop.setValor(elemento.getFechaEnvio().format(Mensaje.FORMATTER));
 				break;
 			default:
 				break;
@@ -124,9 +122,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		String contenido = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_CONTENIDO);
 		String fechaEnvio = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FECHA_ENVIO);
 		String idEmisor = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_EMISOR);
-		System.out.println("GetById " + "fechaEnvio sin parsear: " + fechaEnvio);
-		System.out.println("GetById " + "fechaEnvio parseada: " + LocalDateTime.parse(fechaEnvio, formatter));
-		LocalDateTime fechaEnvioParseada = LocalDateTime.parse(fechaEnvio, formatter);
+		LocalDateTime fechaEnvioParseada = LocalDateTime.parse(fechaEnvio, Mensaje.FORMATTER);
 			//3.2 Añadimos en el poolDAO para evitar bidireccionalidad infinita (FAQ debería??)
 		
 		// 4. Recuperar referenciados y actualizar objeto

@@ -33,7 +33,7 @@ public class MensajeTest {
 				PREMIUM_USUARIO, SALUDO_USUARIO, CONTACTOS);
 
 		contenido = "Mensaje beforeEach";
-		fechaAhora = LocalDateTime.now();
+		fechaAhora = LocalDateTime.now().withNano(0);
 		tipo = true;
 		idMensaje = 1;
 		mensaje = new Mensaje(idMensaje, usuario, contenido, fechaAhora, tipo);
@@ -55,7 +55,7 @@ public class MensajeTest {
 		Mensaje m = new Mensaje(200, usuario, contenidoMensaje, fechaAhora, true);
 		assertTrue(m.getId() == 200);
 		assertTrue(m.getEmisor().equals(usuario));
-		assertTrue(m.getContenido() == contenidoMensaje);
+		assertTrue(m.getContenido().equals(contenidoMensaje));
 		assertTrue(m.getFechaEnvio().isEqual(fechaAhora));
 		assertTrue(m.getTipo() == true);
 	}
@@ -103,6 +103,7 @@ public class MensajeTest {
 		assertFalse(mensaje.equals(null));
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void testEqualsConClasesDistintas() {
 		assertFalse(mensaje.equals("objetoDistinto"));
