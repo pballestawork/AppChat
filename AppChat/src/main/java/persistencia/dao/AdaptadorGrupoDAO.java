@@ -92,12 +92,14 @@ public class AdaptadorGrupoDAO implements IAdaptadorGrupoDAO{
 			adaptadorMensaje.delete(m);
 		
 		servicioPersistencia.borrarEntidad(entidad);
-		//TODO borrar del poolDAO
+		poolDAO.removeObject(elemento.getId());
 	}
 
 	@Override
 	public void update(Grupo elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
+		if(entidad == null)
+			return;
 		
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {

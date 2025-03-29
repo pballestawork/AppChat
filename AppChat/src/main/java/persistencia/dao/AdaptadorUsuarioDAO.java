@@ -28,6 +28,7 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	private final String PROP_CONTRASENA = "contrasena";
 	private final String PROP_FOTO_PERFIL = "fotoPerfil";
 	private final String PROP_ES_PREMIUM = "esPremium";
+	private final String PROP_SALUDO = "saludo";
 	private final String PROP_CONTACTOS = "contactos";
 
 	/**
@@ -80,6 +81,7 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		propiedadesLst.add(new Propiedad(PROP_CONTRASENA, elemento.getContrasena()));
 		propiedadesLst.add(new Propiedad(PROP_FOTO_PERFIL, elemento.getFotoPerfil()));
 		propiedadesLst.add(new Propiedad(PROP_ES_PREMIUM, elemento.isEsPremium() ? "true" : "false"));// FAQ reconoce el booleano?
+		propiedadesLst.add(new Propiedad(PROP_SALUDO, elemento.getSaludo()));
 		propiedadesLst.add(new Propiedad(PROP_CONTACTOS, Utils.concatenarIds(elemento.getContactos())));
 		nuevaEntidad.setPropiedades(propiedadesLst);
 
@@ -87,10 +89,13 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		nuevaEntidad = servicioPersistencia.registrarEntidad(nuevaEntidad);
 		elemento.setId(nuevaEntidad.getId());
 	}
-
+	
 	@Override
 	public void delete(Usuario elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
+		
+		if(entidad == null)
+			return;
 		
 		for (Contacto c: elemento.getContactos()) {
 			switch (entidad.getNombre()) {
@@ -105,12 +110,14 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		} 
 		
 		servicioPersistencia.borrarEntidad(entidad);
-		//TODO borrar del poolDAO
+		poolDAO.removeObject(elemento.getId());
 	}
 
 	@Override
 	public void update(Usuario elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
+		if (entidad == null)
+			return;
 		
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {
@@ -135,6 +142,9 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 			case PROP_TELEFONO:
 				prop.setValor(elemento.getTelefono());
 				break;
+			case PROP_SALUDO:
+				prop.setValor(elemento.getSaludo());
+				break;
 			default:
 				break;
 			}
@@ -150,9 +160,10 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 
 		// 2. Recuperar la entidad, si no existe devolver null
 		Entidad e = servicioPersistencia.recuperarEntidad(id);
+		
 		if (e == null)
 			return null;
-
+		
 		// 3. Inicializamos objeto con propiedades basicas y añadir al poolDAO
 		Usuario usuario = new Usuario();
 
@@ -163,7 +174,8 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		usuario.setEmail(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_EMAIL));
 		usuario.setContrasena(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_CONTRASENA));
 		usuario.setFotoPerfil(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FOTO_PERFIL));
-		usuario.setEsPremium(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_ES_PREMIUM) == "true");
+		usuario.setSaludo(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_SALUDO));
+		usuario.setEsPremium(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_ES_PREMIUM).equals("true"));
 
 			// 3.2 Añadimos en el poolDAO para evitar bidireccionalidad infinita
 		poolDAO.addObjeto(e.getId(), usuario);

@@ -59,7 +59,7 @@ public class AdaptadorContactoIndividualDAO implements IAdaptadorContactoIndivid
 		// 1. Se comprueba que no esta registrada la entidad
 		Entidad nuevaEntidad = servicioPersistencia.recuperarEntidad(elemento.getId());
 		if (nuevaEntidad != null)
-			return;//FAQ lanzar exc? throw new DAOException("El contacto " + elemento.getNombre() + " ya existe");
+			return;
 
 		// 2. registrar las entidades dependientes
 		adaptadorUsuarioDAO.add(elemento.getUsuario());
@@ -89,12 +89,14 @@ public class AdaptadorContactoIndividualDAO implements IAdaptadorContactoIndivid
 			adaptadorMensajes.delete(m);
 		
 		servicioPersistencia.borrarEntidad(entidad);
-		//TODO borrar del poolDAO
+		poolDAO.removeObject(elemento.getId());
 	}
 
 	@Override
 	public void update(ContactoIndividual elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
+		if(entidad == null)
+			return;
 		
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {

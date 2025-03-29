@@ -77,13 +77,15 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	public void delete(Mensaje elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
 		servicioPersistencia.borrarEntidad(entidad);
-		//TODO borrar del poolDAO??		
 	}
 
 	@Override
 	public void update(Mensaje elemento) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(elemento.getId());
 		
+		if(entidad == null)
+			return;
+	
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {
 			case PROP_CONTENIDO:
@@ -108,12 +110,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		// 1. Si está en el PoolDAO se retorna (FAQ Debería entrar en el poolDAO?)
 		// 2. Recuperar la entidad, si no existe devolver null
 		Entidad e = servicioPersistencia.recuperarEntidad(id);
-		
-		for (Propiedad i: e.getPropiedades()) {
-				System.out.println(i.getValor());
-		}
-		
-		
+				
 		if (e == null)
 			return null;//FAQ lanzar excepción? throw new DAOException("El mensaje con id " + id + " no existe");
 

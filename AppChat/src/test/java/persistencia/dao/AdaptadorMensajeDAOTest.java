@@ -1,11 +1,8 @@
 package persistencia.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -13,8 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import beans.Entidad;
-import dominio.modelo.Contacto;
-import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -23,171 +18,130 @@ import tds.driver.ServicioPersistencia;
 import utils.FactoriaPruebas;
 
 public class AdaptadorMensajeDAOTest {
+
 	private static ServicioPersistencia servicioPersistencia;
+	private static IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
 	private static IAdaptadorMensajeDAO adaptadorMensajeDAO;
-	private Usuario usuarioPablo;
-	private Usuario usuarioAlvaro;
-	
-	
+
+	private Usuario emisor;
+	private Mensaje mensaje;
+
 	@BeforeClass
 	public static void setup() {
 		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
-		
-		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();//TODO quitar o se borrara todo
-		entidades.stream().forEach(e -> servicioPersistencia.borrarEntidad(e));
-		
+
+		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
+		entidades.forEach(e -> servicioPersistencia.borrarEntidad(e));
+
 		try {
-			FactoriaDAO factoriaDAO = FactoriaDAO.getInstancia();
-			
+			FactoriaDAO factoriaDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
+			adaptadorUsuarioDAO = factoriaDAO.getUsuarioDAO();
 			adaptadorMensajeDAO = factoriaDAO.getMensajeDAO();
 		} catch (DAOException e) {
-			System.out.println(e.getMessage());
+			fail(e.getMessage());
 		}
 	}
-	
+
 	@Before
 	public void beforeEach() {
-		
-		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();//TODO quitar o se borrara todo
-		entidades.stream().forEach(e -> servicioPersistencia.borrarEntidad(e));
-		
-		usuarioPablo = FactoriaPruebas.crearUsuarioCompleto();
-		usuarioPablo.setNombre("Pablo");
-		usuarioAlvaro = FactoriaPruebas.crearUsuarioCompleto();
-		usuarioAlvaro.setNombre("Alvaro");
+		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
+		entidades.forEach(e -> servicioPersistencia.borrarEntidad(e));
+
+		emisor = FactoriaPruebas.crearUsuario();
+		adaptadorUsuarioDAO.add(emisor);
+
+		mensaje = new Mensaje(0, emisor, "Hola Mundo", LocalDateTime.now().withNano(0), true);
 	}
-	
-	/*
-	 * add
-	 */
-	/*
-	 * getById
-	 * - getMensajeNoExiste
-	 * 
-	 * update
-	 * - updateMensajeNoExiste
-	 * - updateMensajeDosVeces
-	 * - updateMensaje
-	 * 
-	 * delete
-	 * 
-	 * - deleteMensajeNoExiste
-	 * - deleteMensaje
-	 * 
-	 * getAll
-	 * - getAllMensajesSinMensajes
-	 * - getAllMensajesConVariosMensajes
-	 */
-	
-	@Test
-	public void testGetAllMensajesSinMensajes() {
-		List<Mensaje> mensajes = adaptadorMensajeDAO.getAll();
-		
-		assertEquals(mensajes.size(), 0, mensajes.size());
+
+	@Test(expected = NullPointerException.class)
+	public void agregarMensajeNulo() {
+		Mensaje mensajeNulo = null;
+		adaptadorMensajeDAO.add(mensajeNulo);
+		fail();
 	}
-	
+
 	@Test
-	public void testGetAllMensajesConVariosMensajes() {
-		List<Mensaje> mensajesInicial = adaptadorMensajeDAO.getAll();
-		
-		Mensaje m1 = new Mensaje(0, usuarioPablo, "hola", LocalDateTime.now(), true);
-		Mensaje m2 = new Mensaje(0, usuarioAlvaro, "hey", LocalDateTime.now(), false);
-		
+	public void agregarMensajeCorrecto() {
+		assertEquals(0, mensaje.getId());
+		adaptadorMensajeDAO.add(mensaje);
+		assertNotEquals(0, mensaje.getId());
+	}
+
+	@Test
+	public void agregarMensajeDuplicado() {
+		adaptadorMensajeDAO.add(mensaje);
+
+		Mensaje duplicado = new Mensaje(0, emisor, "Otro mensaje", LocalDateTime.now().withNano(0), false);
+		duplicado.setId(mensaje.getId());
+
+		adaptadorMensajeDAO.add(duplicado);
+
+		Mensaje recuperado = adaptadorMensajeDAO.getById(mensaje.getId());
+		assertEquals("Hola Mundo", recuperado.getContenido());
+		assertNotEquals("Otro mensaje", recuperado.getContenido());
+	}
+
+	@Test
+	public void recuperarMensajeConExito() {
+		adaptadorMensajeDAO.add(mensaje);
+
+		Mensaje recuperado = adaptadorMensajeDAO.getById(mensaje.getId());
+
+		assertNotNull(recuperado);
+		assertEquals(mensaje.getContenido(), recuperado.getContenido());
+		assertEquals(mensaje.getEmisor(), recuperado.getEmisor());
+		assertEquals(mensaje.getFechaEnvio(), recuperado.getFechaEnvio());
+	}
+
+	@Test
+	public void recuperarMensajeNoExiste() {
+		Mensaje m = adaptadorMensajeDAO.getById(1234);
+		assertNull(m);
+	}
+
+	@Test
+	public void actualizarMensajeConExito() {
+		adaptadorMensajeDAO.add(mensaje);
+
+		mensaje.setContenido("Mensaje actualizado");
+		adaptadorMensajeDAO.update(mensaje);
+
+		Mensaje actualizado = adaptadorMensajeDAO.getById(mensaje.getId());
+		assertEquals("Mensaje actualizado", actualizado.getContenido());
+	}
+
+	@Test
+	public void actualizarMensajeNoExiste() {
+		Mensaje fantasma = new Mensaje(0, emisor, "Fantasma", LocalDateTime.now().withNano(0), true);
+		adaptadorMensajeDAO.update(fantasma); // No debería fallar
+	}
+
+	@Test
+	public void eliminarMensajeConExito() {
+		adaptadorMensajeDAO.add(mensaje);
+		assertNotNull(adaptadorMensajeDAO.getById(mensaje.getId()));
+
+		adaptadorMensajeDAO.delete(mensaje);
+		assertNull(adaptadorMensajeDAO.getById(mensaje.getId()));
+	}
+
+	@Test
+	public void eliminarMensajeNoExistente() {
+		Mensaje m = new Mensaje(99, emisor, "No existe", LocalDateTime.now().withNano(0), true);
+		adaptadorMensajeDAO.delete(m); // No debería fallar
+	}
+
+	@Test
+	public void recuperarTodosMensajes() {
+		Mensaje m1 = new Mensaje(0, emisor, "M1", LocalDateTime.now().withNano(0), true);
+		Mensaje m2 = new Mensaje(0, emisor, "M2", LocalDateTime.now().withNano(0), true);
+
 		adaptadorMensajeDAO.add(m1);
 		adaptadorMensajeDAO.add(m2);
-		
-		List<Mensaje> mensajesFinal = adaptadorMensajeDAO.getAll();
-		Mensaje m1Recuperado = mensajesFinal.get(mensajesFinal.size()-2); 
-		Mensaje m2Recuperado = mensajesFinal.get(mensajesFinal.size()-1);
-		
-		assertEquals(mensajesInicial.size()+2, mensajesFinal.size());
-		
-		//Mensaje Pablo correcto
-		assertNotEquals(m1.getId(),m1Recuperado.getId());
-		assertEquals(usuarioPablo, m1Recuperado.getEmisor());
-		assertEquals(m1.getContenido(), m1Recuperado.getContenido());
-		assertEquals(m1.getFechaEnvio(), m1Recuperado.getFechaEnvio());
-		assertEquals(m1.getTipo(), m1Recuperado.getTipo());
-		
-		
-		//Mensaje Alvaro correcto
-		assertNotEquals(m2.getId(),m2Recuperado.getId());
-		assertEquals(usuarioAlvaro, m2Recuperado.getEmisor());
-		assertEquals(m2.getContenido(), m2Recuperado.getContenido());
-		assertEquals(m2.getFechaEnvio(), m2Recuperado.getFechaEnvio());
-		assertEquals(m2.getTipo(), m2Recuperado.getTipo());
 
-	}
-	
-	@Test
-	public void testDeleteMensajeConExito() {
-		
-	}
-	
-	@Test
-	public void testDeleteMensajeNoExiste() {
-		
-	}
-	
-	@Test
-	public void testUpdateMensajeConExito() {
-		
-	}
-	
-	@Test
-	public void testUpdateMensajeDosVeces() {
-		
-	}
-	
-	@Test
-	public void testUpdateMensajeNoExiste() {
-		
-	}
-	
-	@Test
-	public void testGetMensajeNoExiste() {
-		
-	}
-	
-	@Test
-	public void testAddMensajeDosMensajesConExito() {
-	}
-	
-	@Test
-	public void testAddMensajeNulo() {
-		
-	}
+		List<Mensaje> mensajes = adaptadorMensajeDAO.getAll();
 
-	@Test
-	public void testAddMensajeConExito() {
-		List<Contacto> contactos = new LinkedList<Contacto>();
-		Usuario u = new Usuario(0,"pablo","","","","",true,"Hola", contactos);
-		Mensaje m = new Mensaje(0,u,"Mensaje",LocalDateTime.now(),true);
-		
-		adaptadorMensajeDAO.add(m);
-	
-		assertTrue(m.getId() != 0);
+		assertTrue(mensajes.contains(m1));
+		assertTrue(mensajes.contains(m2));
 	}
-	
-	@Test
-	public void testAddMensajeDuplicado() {
-		
-	}
-	
-	@Test
-	public void testGetMensajeConExito() {
-		List<Contacto> contactos = new LinkedList<Contacto>();
-		Usuario u = new Usuario(0,"pablo","","","","",true,"Hola", contactos);
-		Mensaje m = new Mensaje(0,u,"Mensaje",LocalDateTime.now(),true);
-		
-		adaptadorMensajeDAO.add(m);
-		Mensaje mensaje = adaptadorMensajeDAO.getById(m.getId());
-		assertEquals(m, mensaje);//Compara ids
-		assertEquals(m.getEmisor(), mensaje.getEmisor());
-		assertEquals(m.getFechaEnvio(), mensaje.getFechaEnvio());
-		assertEquals(m.getContenido(), mensaje.getContenido());
-		assertEquals(m.getTipo(), mensaje.getTipo());
-	}
-	
 }
-
