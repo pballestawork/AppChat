@@ -152,6 +152,7 @@ public class Usuario implements Identificable {
 		Usuario other = (Usuario) obj;
 
 		// DONE Cambiar el return comparando valor de los atributos
-		return telefono == other.getTelefono();
+		return telefono.equals(other.getTelefono());
 	}
 }
+

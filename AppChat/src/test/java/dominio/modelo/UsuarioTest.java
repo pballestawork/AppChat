@@ -111,6 +111,7 @@ public class UsuarioTest {
 				+ ",\n\temail : " + EMAIL_USUARIO 
 				+ ",\n\tcontrasena : "+ CONTRASENA_USUARIO 
 				+ ",\n\tfotoPerfil : " + FOTO_USUARIO 
+				+ ",\n\tsaludo : " + SALUDO_USUARIO
 				+ ",\n\tesPremium : " + PREMIUM_USUARIO
 				+ ",\n\tcontactos : "
 				+ "{\n\t\tnombre : Pedro"
@@ -131,6 +132,7 @@ public class UsuarioTest {
 		assertFalse(usuario.equals(null));
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void testEqualsConClasesDistintas() {
 		assertFalse(usuario.equals("objetoDistinto"));

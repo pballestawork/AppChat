@@ -2,12 +2,15 @@ package dominio.modelo;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import utils.FactoriaPruebas;
 
 public class ContactoTest {	
     protected static final int ID_CONTACTO = 1;
@@ -38,7 +41,7 @@ public class ContactoTest {
         Contacto c = new Contacto(2, "Maria");
         assertTrue(c.getId() == 2);
         assertTrue(c.getNombre().equals("Maria"));
-        assertTrue(c.getMensajes() == null);
+        assertTrue(c.getMensajes().isEmpty());
     }
 
     @Test
@@ -55,16 +58,15 @@ public class ContactoTest {
 
     @Test
     public void testAddMensajeConExito() {
-        Mensaje mensaje = new Mensaje(ID_MENSAJE, null, CONTENIDO_MENSAJE, null, null);
+        Mensaje mensaje = new Mensaje(ID_MENSAJE,null, CONTENIDO_MENSAJE,  LocalDateTime.now(), null);
         contacto.addMensaje(mensaje);
-
         assertTrue(contacto.getMensajes().contains(mensaje));
         assertTrue(contacto.getMensajes().size() == 1);
     }
 
     @Test
     public void testDeleteMensajeConExito() {
-        Mensaje mensaje = new Mensaje(ID_MENSAJE, null, CONTENIDO_MENSAJE, null, null);
+        Mensaje mensaje = new Mensaje(ID_MENSAJE, null, CONTENIDO_MENSAJE, LocalDateTime.now(), null);
         contacto.addMensaje(mensaje);
         contacto.deleteMensaje(mensaje);
 
@@ -95,7 +97,8 @@ public class ContactoTest {
         assertFalse(contacto.equals(null));
     }
 
-    @Test
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
     public void testEqualsConClasesDistintas() {
         assertFalse(contacto.equals("objetoDistinto"));
     }
