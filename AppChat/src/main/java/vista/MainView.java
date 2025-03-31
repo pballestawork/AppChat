@@ -70,8 +70,8 @@ public class MainView extends JFrame {
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{10, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0};
-		gbl_panel.rowHeights = new int[]{5, 23, 5, 0};
+		gbl_panel.columnWidths = new int[]{10, 25, 0, 0, 0, 0, 0, 0, 0, 10, 0};
+		gbl_panel.rowHeights = new int[]{5, 25, 5, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
@@ -79,7 +79,7 @@ public class MainView extends JFrame {
 		JButton btnFotoPerfil = new JButton("");
 		GridBagConstraints gbc_btnFotoPerfil = new GridBagConstraints();
 		gbc_btnFotoPerfil.insets = new Insets(0, 0, 5, 5);
-		gbc_btnFotoPerfil.fill = GridBagConstraints.VERTICAL;
+		gbc_btnFotoPerfil.fill = GridBagConstraints.BOTH;
 		gbc_btnFotoPerfil.gridx = 1;
 		gbc_btnFotoPerfil.gridy = 1;
 		panel.add(btnFotoPerfil, gbc_btnFotoPerfil);
@@ -104,7 +104,7 @@ public class MainView extends JFrame {
 		    ex.printStackTrace();
 		}
 		
-		JButton btnNewButton_2 = new JButton("Añadir Contacto");
+		JButton btnNewButton_2 = new JButton("+C");
 		btnNewButton_2.setBackground(SystemColor.inactiveCaption);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -116,7 +116,11 @@ public class MainView extends JFrame {
 		gbc_btnNewButton_2.gridy = 1;
 		panel.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		JButton btnNewButton_1 = new JButton("Añádir Grupo");
+		JButton btnNewButton_1 = new JButton("+G");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnNewButton_1.setBackground(SystemColor.inactiveCaption);
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
@@ -124,7 +128,7 @@ public class MainView extends JFrame {
 		gbc_btnNewButton_1.gridy = 1;
 		panel.add(btnNewButton_1, gbc_btnNewButton_1);
 		
-		JButton btnNewButton_3 = new JButton("Ver Contactos");
+		JButton btnNewButton_3 = new JButton("Contactos");
 		btnNewButton_3.setBackground(SystemColor.inactiveCaption);
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
@@ -196,6 +200,7 @@ public class MainView extends JFrame {
 		
         // PANEL CHAT
         panelChat = new ChatPanel();
+        ((ChatPanel) panelChat).setUsuarioActual(usuarioActual);
         panelCentral.add(panelChat, "panelChat");
         
         

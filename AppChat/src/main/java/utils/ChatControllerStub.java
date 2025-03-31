@@ -464,7 +464,7 @@ public class ChatControllerStub {
 
     	Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
 	    if(contactoRecuperado instanceof ContactoIndividual) {
-		    	
+	    	contactoRecuperado.addMensaje(mensaje);	
 	    }else if(contactoRecuperado instanceof Grupo) {
 	    	contactoRecuperado.addMensaje(mensaje);
 	    	Grupo grupo = (Grupo) contactoRecuperado;
