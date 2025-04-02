@@ -17,6 +17,8 @@ import utils.ChatControllerStub;
 
 import java.awt.BorderLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.GridBagConstraints;
@@ -107,8 +109,16 @@ public class MainView extends JFrame {
 		JButton btnNewButton_2 = new JButton("+C");
 		btnNewButton_2.setBackground(SystemColor.inactiveCaption);
 		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        // Crear un JDialog modal para agregar un contacto
+		        JDialog dialog = new JDialog(MainView.this, "Agregar Contacto", true);
+		        dialog.getContentPane().add(new AgregarContactoPanel());
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(MainView.this);
+		        dialog.setVisible(true);
+		        // Una vez cerrado el diálogo, se podría actualizar la lista de contactos
+		        cargarContactos();
+		    }
 		});
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
