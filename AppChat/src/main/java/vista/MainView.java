@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -140,6 +141,31 @@ public class MainView extends JFrame {
 		
 		JButton btnNewButton_3 = new JButton("Contactos");
 		btnNewButton_3.setBackground(SystemColor.inactiveCaption);
+		btnNewButton_3.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        // Suponiendo que usuarioActual ya está asignado en MainView
+		        if (usuarioActual != null) {
+		            // Extraer la lista de contactos individuales del usuario
+		            List<ContactoIndividual> contactos = usuarioActual.getContactos()
+		                .stream()
+		                .filter(c -> c instanceof ContactoIndividual)
+		                .map(c -> (ContactoIndividual) c)
+		                .toList();
+		            
+		            // Crear el panel de contactos con la lista obtenida
+		            ContactosTablePanel panelContactos = new ContactosTablePanel(contactos);
+		            
+		            // Mostrar el panel en un diálogo modal
+		            JDialog dialog = new JDialog(MainView.this, "Lista de Contactos", true);
+		            dialog.getContentPane().add(panelContactos);
+		            dialog.pack();
+		            dialog.setLocationRelativeTo(MainView.this);
+		            dialog.setVisible(true);
+		        } else {
+		            JOptionPane.showMessageDialog(MainView.this, "No hay usuario autenticado.", "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_3.gridx = 5;

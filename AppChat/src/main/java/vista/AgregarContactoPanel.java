@@ -55,7 +55,7 @@ public class AgregarContactoPanel extends JPanel {
         panelBotones.add(btnCancelar);
         add(panelBotones, BorderLayout.SOUTH);
         
-        verticalStrut = Box.createVerticalStrut(20);
+        verticalStrut = Box.createVerticalStrut(10);
         add(verticalStrut, BorderLayout.NORTH);
         
         horizontalStrut = Box.createHorizontalStrut(20);
