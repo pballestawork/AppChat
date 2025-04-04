@@ -1,5 +1,6 @@
 package dominio.modelo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +18,9 @@ public class Usuario implements Identificable {
 	private String saludo;
 	private boolean esPremium;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
-
+	//TODO Add localdate fechaNacimiento
+	
+	
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
 			boolean esPremium, String saludo, List<Contacto> contactos) {
 		this.id = id;
@@ -27,9 +30,15 @@ public class Usuario implements Identificable {
 		this.contrasena = contrasena;
 		this.fotoPerfil = fotoPerfil;
 		this.esPremium = esPremium;
-		this.contactos = contactos;
+		this.contactos = contactos != null ? contactos : new ArrayList<>();
 		this.saludo = saludo;
 	}
+	
+	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
+			boolean esPremium, String saludo) {
+		this(id, nombre, telefono, email, contrasena, fotoPerfil, esPremium, saludo, new ArrayList<>());
+	}
+
 
 	public Usuario() {
 	}

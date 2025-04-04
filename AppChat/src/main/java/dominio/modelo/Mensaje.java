@@ -41,17 +41,27 @@ public class Mensaje implements Identificable{
 		return id == other.getId();
 	}
 	
+	@Override
+	public Mensaje clone() {
+	    Mensaje clon = new Mensaje();
+	    clon.id = this.id;
+	    clon.emisor = this.emisor;
+	    clon.contenido = this.contenido;
+	    clon.fechaEnvio = this.fechaEnvio;
+	    clon.tipo = this.tipo;
+	    return clon;
+	}
+	
+	@Override
+	public String toString() {
+		return "Mensaje [emisor=" + emisor.getTelefono() + ", contenido=" + contenido + ", fechaEnvio=" + fechaEnvio.format(FORMATTER) + "]";
+	}
 	
 	
 	/*
 	 * Getters and setters
 	 */
 	
-	@Override
-	public String toString() {
-		return "Mensaje [emisor=" + emisor.getTelefono() + ", contenido=" + contenido + ", fechaEnvio=" + fechaEnvio.format(FORMATTER) + "]";
-	}
-
 	@Override
 	public int getId() {
 		return id;
