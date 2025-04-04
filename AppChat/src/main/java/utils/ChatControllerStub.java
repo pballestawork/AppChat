@@ -290,31 +290,6 @@ public class ChatControllerStub {
 		usuarioActual.addContacto(g);
 	}
 
-	/**
-	 * Elimina un grupo de contactos de la lista de contactos del usuario.
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - El grupo no puede ser nulo.
-	 * - El grupo debe existir en la lista de contactos del usuario.
-	 *
-	 * Si la eliminación es exitosa, el grupo se elimina de la lista de contactos del usuario.
-	 *
-	 * @param grupo Grupo a eliminar.
-	 * @throws ChatControllerException Si el grupo no existe en la lista de contactos del usuario.
-	 */
-	public void eliminarGrupo(Grupo grupo) throws ChatControllerException {
-	    if (grupo == null) {
-	        throw new IllegalArgumentException("El grupo no puede ser nulo.");
-	    }
-
-	    // Verificar si el grupo está en la lista de contactos del usuario actual
-	    boolean eliminado = usuarioActual.getContactos().removeIf(contacto -> 
-	            contacto instanceof Grupo && contacto.equals(grupo));
-
-	    if (!eliminado) {
-	        throw new ChatControllerException("El grupo no existe en la lista de contactos del usuario.");
-	    }
-	}
 	
 	/**
 	 * Añade un contacto individual a un grupo existente.
