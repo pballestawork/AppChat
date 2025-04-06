@@ -7,17 +7,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import com.toedter.calendar.JDateChooser;
-
 import dominio.controlador.ChatControllerException;
+import dominio.modelo.Usuario;
 import utils.ChatControllerStub;
 import utils.Utils;
-
 import java.awt.SystemColor;
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.LinkedList;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -30,304 +28,317 @@ import javax.swing.JPasswordField;
 import javax.swing.JEditorPane;
 
 public class RegisterView extends JFrame {
-	private JFrame parent;
-	private JTextField nameField;
-	private JTextField correoField;
-	private JTextField telefonoField;
-	private JPasswordField passwordField;
-	private JPasswordField passwordField_1;
-	private JDateChooser fechaNacimientoField;
-	private AgregarFotoPerfilView panelArrastre;
-	private JEditorPane textSaludoInicial;
-	private File archivoImagen;
-	private String rutaFotoPerfil; 
+    private JFrame parent;
+    private JTextField nameField;
+    private JTextField correoField;
+    private JTextField telefonoField;
+    private JPasswordField passwordField;
+    private JPasswordField passwordField_1;
+    private JDateChooser fechaNacimientoField;
+    private AgregarFotoPerfilView panelArrastre;
+    private JEditorPane textSaludoInicial;
+    private File archivoImagen;
+    private String rutaFotoPerfil; 
 
-	public RegisterView(JFrame parent) {
-		setResizable(false);
-		this.parent = parent;
-		getContentPane().setBackground(SystemColor.desktop);
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		
-		JPanel panel_central = new JPanel();
-		panel_central.setBackground(SystemColor.desktop);
-		getContentPane().add(panel_central, BorderLayout.CENTER);
-		GridBagLayout gbl_panel_central = new GridBagLayout();
-		gbl_panel_central.columnWidths = new int[]{50, 120, 100, 20, 0, 100, 50, 0};
-		gbl_panel_central.rowHeights = new int[]{40, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 60, 8, 0, 40, 0};
-		gbl_panel_central.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_central.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel_central.setLayout(gbl_panel_central);
-		
-		JLabel lblName = new JLabel("Nombre:");
-		lblName.setForeground(SystemColor.text);
-		lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblName = new GridBagConstraints();
-		gbc_lblName.anchor = GridBagConstraints.WEST;
-		gbc_lblName.insets = new Insets(0, 0, 5, 5);
-		gbc_lblName.gridx = 1;
-		gbc_lblName.gridy = 1;
-		panel_central.add(lblName, gbc_lblName);
-		
-		nameField = new JTextField();
-		nameField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_nameField = new GridBagConstraints();
-		gbc_nameField.gridwidth = 4;
-		gbc_nameField.insets = new Insets(0, 0, 5, 5);
-		gbc_nameField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_nameField.gridx = 2;
-		gbc_nameField.gridy = 1;
-		panel_central.add(nameField, gbc_nameField);
-		
-		JLabel lblCorreo = new JLabel("Correo Electronico:");
-		lblCorreo.setForeground(SystemColor.text);
-		lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
-		gbc_lblCorreo.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblCorreo.insets = new Insets(0, 0, 5, 5);
-		gbc_lblCorreo.gridx = 1;
-		gbc_lblCorreo.gridy = 3;
-		panel_central.add(lblCorreo, gbc_lblCorreo);
-		
-		correoField = new JTextField();
-		correoField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_correoField = new GridBagConstraints();
-		gbc_correoField.gridwidth = 4;
-		gbc_correoField.insets = new Insets(0, 0, 5, 5);
-		gbc_correoField.fill = GridBagConstraints.BOTH;
-		gbc_correoField.gridx = 2;
-		gbc_correoField.gridy = 3;
-		panel_central.add(correoField, gbc_correoField);
-		
-		JLabel lblContrasea = new JLabel("Contraseña:");
-		lblContrasea.setForeground(SystemColor.text);
-		lblContrasea.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblContrasea = new GridBagConstraints();
-		gbc_lblContrasea.anchor = GridBagConstraints.WEST;
-		gbc_lblContrasea.insets = new Insets(0, 0, 5, 5);
-		gbc_lblContrasea.gridx = 1;
-		gbc_lblContrasea.gridy = 5;
-		panel_central.add(lblContrasea, gbc_lblContrasea);
-		
-		passwordField = new JPasswordField();
-		passwordField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_passwordField = new GridBagConstraints();
-		gbc_passwordField.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordField.fill = GridBagConstraints.BOTH;
-		gbc_passwordField.gridx = 2;
-		gbc_passwordField.gridy = 5;
-		panel_central.add(passwordField, gbc_passwordField);
-		
-		JLabel lblContrasena_1 = new JLabel("Contraseña:");
-		lblContrasena_1.setForeground(SystemColor.text);
-		lblContrasena_1.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblContrasena_1 = new GridBagConstraints();
-		gbc_lblContrasena_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblContrasena_1.anchor = GridBagConstraints.EAST;
-		gbc_lblContrasena_1.gridx = 4;
-		gbc_lblContrasena_1.gridy = 5;
-		panel_central.add(lblContrasena_1, gbc_lblContrasena_1);
-		
-		passwordField_1 = new JPasswordField();
-		passwordField_1.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_passwordField_1 = new GridBagConstraints();
-		gbc_passwordField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordField_1.fill = GridBagConstraints.BOTH;
-		gbc_passwordField_1.gridx = 5;
-		gbc_passwordField_1.gridy = 5;
-		panel_central.add(passwordField_1, gbc_passwordField_1);
-		
-		JLabel lblTelfono = new JLabel("Teléfono:");
-		lblTelfono.setForeground(SystemColor.text);
-		lblTelfono.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblTelfono = new GridBagConstraints();
-		gbc_lblTelfono.anchor = GridBagConstraints.WEST;
-		gbc_lblTelfono.insets = new Insets(0, 0, 5, 5);
-		gbc_lblTelfono.gridx = 1;
-		gbc_lblTelfono.gridy = 7;
-		panel_central.add(lblTelfono, gbc_lblTelfono);
-		
-		telefonoField = new JTextField();
-		telefonoField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_telefonoField = new GridBagConstraints();
-		gbc_telefonoField.insets = new Insets(0, 0, 5, 5);
-		gbc_telefonoField.fill = GridBagConstraints.BOTH;
-		gbc_telefonoField.gridx = 2;
-		gbc_telefonoField.gridy = 7;
-		panel_central.add(telefonoField, gbc_telefonoField);
-		
-		JLabel lblFotoPerfil = new JLabel("Foto de perfil:");
-		lblFotoPerfil.setForeground(SystemColor.text);
-		lblFotoPerfil.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
-		gbc_lblFotoPerfil.gridwidth = 2;
-		gbc_lblFotoPerfil.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFotoPerfil.gridx = 4;
-		gbc_lblFotoPerfil.gridy = 7;
-		panel_central.add(lblFotoPerfil, gbc_lblFotoPerfil);
-		
-		JLabel lblFechaDeNacimiento = new JLabel("Fecha de nacimiento:");
-		lblFechaDeNacimiento.setForeground(SystemColor.text);
-		lblFechaDeNacimiento.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblFechaDeNacimiento = new GridBagConstraints();
-		gbc_lblFechaDeNacimiento.anchor = GridBagConstraints.EAST;
-		gbc_lblFechaDeNacimiento.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFechaDeNacimiento.gridx = 1;
-		gbc_lblFechaDeNacimiento.gridy = 9;
-		panel_central.add(lblFechaDeNacimiento, gbc_lblFechaDeNacimiento);
-		
-		fechaNacimientoField = new JDateChooser();
-		fechaNacimientoField.setDateFormatString("dd/MM/yyyy");
-		fechaNacimientoField.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_fechaNacimientoField = new GridBagConstraints();
-		gbc_fechaNacimientoField.insets = new Insets(0, 0, 5, 5);
-		gbc_fechaNacimientoField.fill = GridBagConstraints.BOTH;
-		gbc_fechaNacimientoField.gridx = 2;
-		gbc_fechaNacimientoField.gridy = 9;
-		panel_central.add(fechaNacimientoField, gbc_fechaNacimientoField);
-		
-		JLabel lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
-		lblImagen.setForeground(SystemColor.text);
-		GridBagConstraints gbc_lblImagen = new GridBagConstraints();
-		gbc_lblImagen.gridheight = 3;
-		gbc_lblImagen.gridwidth = 2;
-		gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
-		gbc_lblImagen.gridx = 4;
-		gbc_lblImagen.gridy = 9;
-		panel_central.add(lblImagen, gbc_lblImagen);
-		
-		JLabel lblSaludoInicial = new JLabel("Saludo inicial:");
-		lblSaludoInicial.setForeground(SystemColor.text);
-		lblSaludoInicial.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblSaludoInicial = new GridBagConstraints();
-		gbc_lblSaludoInicial.anchor = GridBagConstraints.WEST;
-		gbc_lblSaludoInicial.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSaludoInicial.gridx = 1;
-		gbc_lblSaludoInicial.gridy = 11;
-		panel_central.add(lblSaludoInicial, gbc_lblSaludoInicial);
-		
-		textSaludoInicial = new JEditorPane();
-		textSaludoInicial.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_editorPane = new GridBagConstraints();
-		gbc_editorPane.insets = new Insets(0, 0, 5, 5);
-		gbc_editorPane.fill = GridBagConstraints.BOTH;
-		gbc_editorPane.gridx = 2;
-		gbc_editorPane.gridy = 11;
-		panel_central.add(textSaludoInicial, gbc_editorPane);
-		
-		JButton btnNewButton = new JButton("Seleccionar Imagen");
-		btnNewButton.setBackground(SystemColor.inactiveCaption);
-		btnNewButton.addActionListener(e -> {
-			panelArrastre = new AgregarFotoPerfilView(parent);
-			List<File> imagenes = panelArrastre.showDialog();
-			//panel de arrastre retorna la imagen en una lista de File y se obtiene la ruta
-			if (imagenes != null && !imagenes.isEmpty()) {
-			archivoImagen = imagenes.get(0);
-			try {
-	            // Obtén la ruta relativa con Utils
-	            rutaFotoPerfil = Utils.getRutaResourceFromFile(archivoImagen);
-
-	            // Carga la imagen usando la ruta
-	            ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaFotoPerfil));
-	            Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-	            lblImagen.setIcon(new ImageIcon(imagenEscalada)); // Actualiza el ícono
-	            lblImagen.setText(""); // Elimina el texto de advertencia
-	        } catch (Exception ex) {
-	            // Muestra un mensaje de error si ocurre una excepción
-	            JOptionPane.showMessageDialog(this, "Error al cargar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	            ex.printStackTrace();
-	        }
-			//se oculta el panel y se elimina
-			panelArrastre.setVisible(false);
-			panelArrastre.dispose();
-			} else {
-				JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna imagen","Advertencia", JOptionPane.WARNING_MESSAGE);
-			}
-			
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.gridwidth = 5;
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 13;
-		panel_central.add(btnNewButton, gbc_btnNewButton);
-		
-		JPanel panel_superior = new JPanel();
-		panel_superior.setBackground(SystemColor.desktop);
-		getContentPane().add(panel_superior, BorderLayout.NORTH);
-		
-		JLabel lblNewLabel = new JLabel("AppChat");
-		lblNewLabel.setForeground(SystemColor.text);
-		lblNewLabel.setFont(new Font("Segoe UI Black", Font.BOLD, 60));
-		panel_superior.add(lblNewLabel);
-		
-		JPanel panel_inferior = new JPanel();
-		panel_inferior.setBackground(SystemColor.desktop);
-		getContentPane().add(panel_inferior, BorderLayout.SOUTH);
-		
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.setBackground(new Color(153, 180, 209));
-		btnCancelar.addActionListener(e -> {
-			parent.setVisible(true);
-			dispose();
-		});
-		panel_inferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		panel_inferior.add(btnCancelar);
-		
-		JButton btnSubmit = new JButton("Registrar");
-		btnSubmit.setBackground(SystemColor.activeCaption);
-		btnSubmit.addActionListener(e -> {
-			try {
-		        // Obtener datos del formulario
-		        String nombre = nameField.getText().trim();
-		        String telefono = telefonoField.getText().trim();
-		        String correo = correoField.getText().trim();
-		        String contrasena = new String(passwordField.getPassword());
-		        String contrasenaRepetida = new String(passwordField_1.getPassword());
-		        String saludo = textSaludoInicial.getText().trim();
-		        
-		        // Obtener fecha de nacimiento
-		        LocalDateTime fechaNacimiento = null;
-		        if (fechaNacimientoField.getDate() != null) {
-		            fechaNacimiento = fechaNacimientoField.getDate().toInstant()
-		                .atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
-		        }
-
-		        // Validar que se haya seleccionado una imagen
-		        if (rutaFotoPerfil == null || rutaFotoPerfil.isEmpty()) {
-		            JOptionPane.showMessageDialog(this, "Por favor, seleccione una foto de perfil.", "Error", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-
-		        // Intentar registrar el usuario
-		        ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
-		        controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, contrasenaRepetida, saludo);
-
-		        // Si el registro es exitoso, mostrar mensaje y volver al login
-		        JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
-		        parent.setVisible(true);
-		        dispose();
-
-		    } catch (IllegalArgumentException ex) {
-		        // Capturar errores de validación
-		        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		    } catch (ChatControllerException ex) {
-		        // Capturar errores de lógica del sistema (ej. usuario ya registrado)
-		        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		    }
-		});
-		panel_inferior.add(btnSubmit);
-		setBackground(SystemColor.desktop);
-		setAlwaysOnTop(true);
-		// Configuración de la ventana
-		setTitle("Registro");
-		setSize(700, 600);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        setLocationRelativeTo(null);
+    public RegisterView(JFrame parent) {
+        setResizable(false);
+        this.parent = parent;
+        getContentPane().setBackground(SystemColor.desktop);
+        getContentPane().setLayout(new BorderLayout(0, 0));
         
+        JPanel panel_central = new JPanel();
+        panel_central.setBackground(SystemColor.desktop);
+        getContentPane().add(panel_central, BorderLayout.CENTER);
+        GridBagLayout gbl_panel_central = new GridBagLayout();
+        gbl_panel_central.columnWidths = new int[]{50, 120, 100, 20, 0, 100, 50, 0};
+        gbl_panel_central.rowHeights = new int[]{40, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 60, 8, 0, 40, 0};
+        gbl_panel_central.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_central.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        panel_central.setLayout(gbl_panel_central);
+        
+        // Nombre
+        JLabel lblName = new JLabel("Nombre:");
+        lblName.setForeground(SystemColor.text);
+        lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblName = new GridBagConstraints();
+        gbc_lblName.anchor = GridBagConstraints.WEST;
+        gbc_lblName.insets = new Insets(0, 0, 5, 5);
+        gbc_lblName.gridx = 1;
+        gbc_lblName.gridy = 1;
+        panel_central.add(lblName, gbc_lblName);
+        
+        nameField = new JTextField();
+        nameField.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_nameField = new GridBagConstraints();
+        gbc_nameField.gridwidth = 4;
+        gbc_nameField.insets = new Insets(0, 0, 5, 5);
+        gbc_nameField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_nameField.gridx = 2;
+        gbc_nameField.gridy = 1;
+        panel_central.add(nameField, gbc_nameField);
+        
+        // Correo electrónico
+        JLabel lblCorreo = new JLabel("Correo Electronico:");
+        lblCorreo.setForeground(SystemColor.text);
+        lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
+        gbc_lblCorreo.fill = GridBagConstraints.HORIZONTAL;
+        gbc_lblCorreo.insets = new Insets(0, 0, 5, 5);
+        gbc_lblCorreo.gridx = 1;
+        gbc_lblCorreo.gridy = 3;
+        panel_central.add(lblCorreo, gbc_lblCorreo);
+        
+        correoField = new JTextField();
+        correoField.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_correoField = new GridBagConstraints();
+        gbc_correoField.gridwidth = 4;
+        gbc_correoField.insets = new Insets(0, 0, 5, 5);
+        gbc_correoField.fill = GridBagConstraints.BOTH;
+        gbc_correoField.gridx = 2;
+        gbc_correoField.gridy = 3;
+        panel_central.add(correoField, gbc_correoField);
+        
+        // Contraseña
+        JLabel lblContrasea = new JLabel("Contraseña:");
+        lblContrasea.setForeground(SystemColor.text);
+        lblContrasea.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblContrasea = new GridBagConstraints();
+        gbc_lblContrasea.anchor = GridBagConstraints.WEST;
+        gbc_lblContrasea.insets = new Insets(0, 0, 5, 5);
+        gbc_lblContrasea.gridx = 1;
+        gbc_lblContrasea.gridy = 5;
+        panel_central.add(lblContrasea, gbc_lblContrasea);
+        
+        passwordField = new JPasswordField();
+        passwordField.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_passwordField = new GridBagConstraints();
+        gbc_passwordField.insets = new Insets(0, 0, 5, 5);
+        gbc_passwordField.fill = GridBagConstraints.BOTH;
+        gbc_passwordField.gridx = 2;
+        gbc_passwordField.gridy = 5;
+        panel_central.add(passwordField, gbc_passwordField);
+        
+        // Repetir contraseña
+        JLabel lblContrasena_1 = new JLabel("Contraseña:");
+        lblContrasena_1.setForeground(SystemColor.text);
+        lblContrasena_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblContrasena_1 = new GridBagConstraints();
+        gbc_lblContrasena_1.insets = new Insets(0, 0, 5, 5);
+        gbc_lblContrasena_1.anchor = GridBagConstraints.EAST;
+        gbc_lblContrasena_1.gridx = 4;
+        gbc_lblContrasena_1.gridy = 5;
+        panel_central.add(lblContrasena_1, gbc_lblContrasena_1);
+        
+        passwordField_1 = new JPasswordField();
+        passwordField_1.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_passwordField_1 = new GridBagConstraints();
+        gbc_passwordField_1.insets = new Insets(0, 0, 5, 5);
+        gbc_passwordField_1.fill = GridBagConstraints.BOTH;
+        gbc_passwordField_1.gridx = 5;
+        gbc_passwordField_1.gridy = 5;
+        panel_central.add(passwordField_1, gbc_passwordField_1);
+        
+        // Teléfono
+        JLabel lblTelfono = new JLabel("Teléfono:");
+        lblTelfono.setForeground(SystemColor.text);
+        lblTelfono.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblTelfono = new GridBagConstraints();
+        gbc_lblTelfono.anchor = GridBagConstraints.WEST;
+        gbc_lblTelfono.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTelfono.gridx = 1;
+        gbc_lblTelfono.gridy = 7;
+        panel_central.add(lblTelfono, gbc_lblTelfono);
+        
+        telefonoField = new JTextField();
+        telefonoField.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_telefonoField = new GridBagConstraints();
+        gbc_telefonoField.insets = new Insets(0, 0, 5, 5);
+        gbc_telefonoField.fill = GridBagConstraints.BOTH;
+        gbc_telefonoField.gridx = 2;
+        gbc_telefonoField.gridy = 7;
+        panel_central.add(telefonoField, gbc_telefonoField);
+        
+        // Foto de perfil
+        JLabel lblFotoPerfil = new JLabel("Foto de perfil:");
+        lblFotoPerfil.setForeground(SystemColor.text);
+        lblFotoPerfil.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
+        gbc_lblFotoPerfil.gridwidth = 2;
+        gbc_lblFotoPerfil.insets = new Insets(0, 0, 5, 5);
+        gbc_lblFotoPerfil.gridx = 4;
+        gbc_lblFotoPerfil.gridy = 7;
+        panel_central.add(lblFotoPerfil, gbc_lblFotoPerfil);
+        
+        // Fecha de nacimiento
+        JLabel lblFechaDeNacimiento = new JLabel("Fecha de nacimiento:");
+        lblFechaDeNacimiento.setForeground(SystemColor.text);
+        lblFechaDeNacimiento.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblFechaDeNacimiento = new GridBagConstraints();
+        gbc_lblFechaDeNacimiento.anchor = GridBagConstraints.EAST;
+        gbc_lblFechaDeNacimiento.insets = new Insets(0, 0, 5, 5);
+        gbc_lblFechaDeNacimiento.gridx = 1;
+        gbc_lblFechaDeNacimiento.gridy = 9;
+        panel_central.add(lblFechaDeNacimiento, gbc_lblFechaDeNacimiento);
+        
+        fechaNacimientoField = new JDateChooser();
+        fechaNacimientoField.setDateFormatString("dd/MM/yyyy");
+        fechaNacimientoField.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_fechaNacimientoField = new GridBagConstraints();
+        gbc_fechaNacimientoField.insets = new Insets(0, 0, 5, 5);
+        gbc_fechaNacimientoField.fill = GridBagConstraints.BOTH;
+        gbc_fechaNacimientoField.gridx = 2;
+        gbc_fechaNacimientoField.gridy = 9;
+        panel_central.add(fechaNacimientoField, gbc_fechaNacimientoField);
+        
+        // Imagen/Foto seleccionada
+        JLabel lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
+        lblImagen.setForeground(SystemColor.text);
+        GridBagConstraints gbc_lblImagen = new GridBagConstraints();
+        gbc_lblImagen.gridheight = 3;
+        gbc_lblImagen.gridwidth = 2;
+        gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
+        gbc_lblImagen.gridx = 4;
+        gbc_lblImagen.gridy = 9;
+        panel_central.add(lblImagen, gbc_lblImagen);
+        
+        // Saludo inicial
+        JLabel lblSaludoInicial = new JLabel("Saludo inicial:");
+        lblSaludoInicial.setForeground(SystemColor.text);
+        lblSaludoInicial.setFont(new Font("Tahoma", Font.BOLD, 16));
+        GridBagConstraints gbc_lblSaludoInicial = new GridBagConstraints();
+        gbc_lblSaludoInicial.anchor = GridBagConstraints.WEST;
+        gbc_lblSaludoInicial.insets = new Insets(0, 0, 5, 5);
+        gbc_lblSaludoInicial.gridx = 1;
+        gbc_lblSaludoInicial.gridy = 11;
+        panel_central.add(lblSaludoInicial, gbc_lblSaludoInicial);
+        
+        textSaludoInicial = new JEditorPane();
+        textSaludoInicial.setBackground(SystemColor.inactiveCaption);
+        GridBagConstraints gbc_editorPane = new GridBagConstraints();
+        gbc_editorPane.insets = new Insets(0, 0, 5, 5);
+        gbc_editorPane.fill = GridBagConstraints.BOTH;
+        gbc_editorPane.gridx = 2;
+        gbc_editorPane.gridy = 11;
+        panel_central.add(textSaludoInicial, gbc_editorPane);
+        
+        // Botón para seleccionar imagen de perfil
+        JButton btnNewButton = new JButton("Seleccionar Imagen");
+        btnNewButton.setBackground(SystemColor.inactiveCaption);
+        btnNewButton.addActionListener(e -> {
+            panelArrastre = new AgregarFotoPerfilView(parent);
+            java.util.List<File> imagenes = panelArrastre.showDialog();
+            if (imagenes != null && !imagenes.isEmpty()) {
+                archivoImagen = imagenes.get(0);
+                try {
+                    rutaFotoPerfil = Utils.getRutaResourceFromFile(archivoImagen);
+                    ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaFotoPerfil));
+                    Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                    lblImagen.setIcon(new ImageIcon(imagenEscalada));
+                    lblImagen.setText("");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error al cargar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+                panelArrastre.setVisible(false);
+                panelArrastre.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna imagen", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+        gbc_btnNewButton.gridwidth = 5;
+        gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
+        gbc_btnNewButton.gridx = 1;
+        gbc_btnNewButton.gridy = 13;
+        panel_central.add(btnNewButton, gbc_btnNewButton);
+        
+        JPanel panel_superior = new JPanel();
+        panel_superior.setBackground(SystemColor.desktop);
+        getContentPane().add(panel_superior, BorderLayout.NORTH);
+        
+        JLabel lblNewLabel = new JLabel("AppChat");
+        lblNewLabel.setForeground(SystemColor.text);
+        lblNewLabel.setFont(new Font("Segoe UI Black", Font.BOLD, 60));
+        panel_superior.add(lblNewLabel);
+        
+        JPanel panel_inferior = new JPanel();
+        panel_inferior.setBackground(SystemColor.desktop);
+        getContentPane().add(panel_inferior, BorderLayout.SOUTH);
+        
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(new Color(153, 180, 209));
+        btnCancelar.addActionListener(e -> {
+            parent.setVisible(true);
+            dispose();
+        });
+        panel_inferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel_inferior.add(btnCancelar);
+        
+        JButton btnSubmit = new JButton("Registrar");
+        btnSubmit.setBackground(SystemColor.activeCaption);
+        btnSubmit.addActionListener(e -> {
+            try {
+                String nombre = nameField.getText().trim();
+                String telefono = telefonoField.getText().trim();
+                String correo = correoField.getText().trim();
+                String contrasena = new String(passwordField.getPassword());
+                String contrasenaRepetida = new String(passwordField_1.getPassword());
+                String saludo = textSaludoInicial.getText().trim();
+                
+                LocalDateTime fechaNacimiento = null;
+                if (fechaNacimientoField.getDate() != null) {
+                    fechaNacimiento = fechaNacimientoField.getDate().toInstant()
+                        .atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+                }
+                
+                // Validaciones de formato:
+                if (!nombre.matches("[A-Za-zÀ-ÿ\\s]+")) {
+                    JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras y espacios.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                    JOptionPane.showMessageDialog(this, "El correo electrónico no tiene un formato válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!telefono.matches("\\d+")) {
+                    JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (fechaNacimiento == null) {
+                    JOptionPane.showMessageDialog(this, "Debe seleccionar una fecha de nacimiento válida.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!contrasena.equals(contrasenaRepetida)) {
+                    JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (rutaFotoPerfil == null || rutaFotoPerfil.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Por favor, seleccione una foto de perfil.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
+                controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, contrasenaRepetida, saludo);
+                
+                JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                parent.setVisible(true);
+                dispose();
+                
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ChatControllerException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        panel_inferior.add(btnSubmit);
+        setBackground(SystemColor.desktop);
+        setAlwaysOnTop(true);
+        setTitle("Registro");
+        setSize(700, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
         parent.setVisible(false);
-
-		setVisible(true);
-	}
-
+        setVisible(true);
+    }
 }
