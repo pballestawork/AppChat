@@ -12,7 +12,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import dominio.modelo.ContactoIndividual;
+import dominio.modelo.Contacto;
 import dominio.modelo.Usuario;
+import dominio.modelo.Grupo;
 import tds.BubbleText;
 import utils.ChatControllerStub;
 
@@ -64,10 +66,10 @@ public class MainView extends JFrame {
 	private JPanel panelChat;
 	private JPanel panelBuscador;
 	private CardLayout cardLayout;
-    private JList<ContactoIndividual> listaContactos;
+    private JList<Contacto> listaContactos;
 	private static ChatControllerStub controlador;
 	private Usuario usuarioActual;
-	private ContactoIndividual contactoSeleccionado;
+	private Contacto contactoSeleccionado;
 	
 	public MainView(Usuario usuario) {
         this.usuarioActual = usuario;
@@ -80,7 +82,7 @@ public class MainView extends JFrame {
 		setBounds(100, 100, 850, 750);
 		setTitle("AppChat - Mensajería");
         controlador = ChatControllerStub.getUnicaInstancia();
-        listaContactos = new JList<ContactoIndividual>();
+        listaContactos = new JList<Contacto>();
 		contentPane = new JPanel();
 		contentPane.setBackground(COLOR_FONDO);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -258,37 +260,46 @@ public class MainView extends JFrame {
 		panelContatos.add(panelTituloContactos, BorderLayout.NORTH);
 		
 		// JList para mostrar los contactos con estilo mejorado
-        listaContactos.setCellRenderer(new ContactoListCellRenderer());
+        listaContactos.setCellRenderer(new ContactoGenericoListCellRenderer());
         listaContactos.setBackground(COLOR_FONDO);
         listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         listaContactos.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
+                Contacto contactoSeleccionado = listaContactos.getSelectedValue();
                 if (contactoSeleccionado != null) {
-                    if (!contactoSeleccionado.tieneNombre()) {
-                        String nuevoNombre = utils.DialogoUtils.mostrarDialogoEntrada(
-                                MainView.this, 
-                                "Asigne un nombre al contacto seleccionado:", 
-                                "Asignar nombre");
-                                
-                        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-                            contactoSeleccionado.setNombre(nuevoNombre.trim());
-                            cargarContactos();
-                            DefaultListModel<ContactoIndividual> model = (DefaultListModel<ContactoIndividual>) listaContactos.getModel();
-                            for (int i = 0; i < model.getSize(); i++) {
-                                if (model.getElementAt(i).equals(contactoSeleccionado)) {
-                                    listaContactos.setSelectedIndex(i);
-                                    break;
+                    if (contactoSeleccionado instanceof ContactoIndividual) {
+                        ContactoIndividual contactoInd = (ContactoIndividual) contactoSeleccionado;
+                        
+                        // Si el contacto no tiene nombre, pedimos al usuario que le asigne uno
+                        if (!contactoInd.tieneNombre()) {
+                            String nuevoNombre = utils.DialogoUtils.mostrarDialogoEntrada(
+                                    MainView.this, 
+                                    "Asigne un nombre al contacto seleccionado:", 
+                                    "Asignar nombre");
+                                    
+                            if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+                                contactoInd.setNombre(nuevoNombre.trim());
+                                cargarContactos();
+                                // Volvemos a seleccionar el contacto tras recargar la lista
+                                DefaultListModel<Contacto> model = (DefaultListModel<Contacto>) listaContactos.getModel();
+                                for (int i = 0; i < model.getSize(); i++) {
+                                    if (model.getElementAt(i).equals(contactoInd)) {
+                                        listaContactos.setSelectedIndex(i);
+                                        break;
+                                    }
                                 }
+                            } else {
+                                return;
                             }
-                        } else {
-                            return;
                         }
-                    }
-                    contactoSeleccionado = listaContactos.getSelectedValue();
-                    MainView.this.contactoSeleccionado = contactoSeleccionado;
-                    if (contactoSeleccionado != null) {
-                        ((ChatPanel) panelChat).cargarMensajesDe(contactoSeleccionado);
+                        
+                        // Guardamos la referencia y cargamos los mensajes del contacto individual
+                        MainView.this.contactoSeleccionado = contactoInd;
+                        ((ChatPanel) panelChat).cargarMensajesDe(contactoInd);
+                    } else if (contactoSeleccionado instanceof Grupo) {
+                        // Si es un grupo, cargamos sus mensajes
+                        Grupo grupo = (Grupo) contactoSeleccionado;
+                        ((ChatPanel) panelChat).cargarMensajesDe(grupo);
                     }
                 }
             }
@@ -345,23 +356,19 @@ public class MainView extends JFrame {
 	}
 
 	private void cargarContactos() {
-		 usuarioActual = controlador.getUsuarioActual(); // Obtiene el usuario autenticado
-		    if (usuarioActual == null) {
-		        System.err.println("No hay usuario autenticado.");
-		        return;
-		    }else
-			{
-				System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
-			}
+		usuarioActual = controlador.getUsuarioActual(); // Obtiene el usuario autenticado
+		if (usuarioActual == null) {
+			System.err.println("No hay usuario autenticado.");
+			return;
+		} else {
+			System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
+		}
 
-		    List<ContactoIndividual> contactos = usuarioActual.getContactos()
-		            .stream()
-		            .filter(c -> c instanceof ContactoIndividual)
-		            .map(c -> (ContactoIndividual) c)
-		            .toList();
+		// Obtener todos los contactos (individuales y grupos)
+		List<Contacto> contactos = usuarioActual.getContactos();
 
-		    DefaultListModel<ContactoIndividual> model = new DefaultListModel<>();
-		    contactos.forEach(model::addElement);
-		    listaContactos.setModel(model);
-    }
+		DefaultListModel<Contacto> model = new DefaultListModel<>();
+		contactos.forEach(model::addElement);
+		listaContactos.setModel(model);
+	}
 }

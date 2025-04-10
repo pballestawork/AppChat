@@ -20,6 +20,7 @@ public class ChatControllerStub {
 	
 	private Usuario usuarioActual;
 	private Map<String,Usuario> usuarios;
+	private List<ContactoIndividual> usuariosGrupo;
 	
 	
 	private ChatControllerStub () {
@@ -74,6 +75,12 @@ public class ChatControllerStub {
 		
 		pabloDeLaura.addMensaje(new Mensaje(3, usuario, "Hola", LocalDateTime.now(), false));
 		pabloDeLaura.addMensaje(new Mensaje(4, usuario, "Como estas Laura?", LocalDateTime.now(), false));
+		
+		usuariosGrupo = new LinkedList<ContactoIndividual>();
+		usuariosGrupo.add(alvaroDePablo);
+		usuariosGrupo.add(lauraDePablo);
+		
+		usuario.crearGrupo("Grupo", usuariosGrupo, "/FotosPerfil/Perfil_2.png");
 		
 	}
 	

@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import dominio.modelo.Contacto;
 import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -43,7 +44,7 @@ public class ChatPanel extends JPanel {
     private final JButton btnEmoji;
     
     // Datos
-    private ContactoIndividual contactoActual;
+    private Contacto contactoActual;
     private Usuario usuarioActual;
     private final ChatControllerStub controlador;
 
@@ -240,7 +241,7 @@ public class ChatPanel extends JPanel {
     }
 
     // Método para cargar historial de mensajes
-    public void cargarMensajesDe(ContactoIndividual contacto) {
+    public void cargarMensajesDe(Contacto contacto) {
         this.contactoActual = contacto;
         chatContainer.removeAll();
         
@@ -255,7 +256,7 @@ public class ChatPanel extends JPanel {
                     int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
                     agregarBurbujaEmoji(emojiId, m.getEmisor().getNombre(), tipo);
                 } catch (NumberFormatException e) {
-                    // Si hay un error al parsear el ID, mostrarlo como texto normal
+                    // Si hay error al parsear el ID, mostrarlo como texto normal
                     agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
                 }
             } else {
@@ -264,6 +265,7 @@ public class ChatPanel extends JPanel {
         }
         actualizarVistaMensajes();
     }
+
     
     // Método para agregar una burbuja de mensaje de texto
     private void agregarBurbujaMensaje(String contenido, String emisor, int tipo) {
