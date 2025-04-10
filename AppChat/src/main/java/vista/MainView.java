@@ -182,6 +182,15 @@ public class MainView extends JFrame {
 		
 		JButton btnNewButton_5 = new JButton("Buscar Mensajes");
 		btnNewButton_5.setBackground(SystemColor.inactiveCaption);
+		btnNewButton_5.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog(MainView.this, "Buscar Mensajes", true);
+                dialog.getContentPane().add(new SearchView());
+                dialog.pack();
+                dialog.setLocationRelativeTo(MainView.this);
+                dialog.setVisible(true);
+            }
+        });
 		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
 		gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_5.gridx = 7;

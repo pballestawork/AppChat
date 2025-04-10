@@ -12,9 +12,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
+
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
 import utils.ChatControllerStub;
+
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
