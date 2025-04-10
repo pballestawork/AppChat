@@ -167,6 +167,12 @@ public class MainView extends JFrame {
 		JButton btnAgregarGrupo = crearBoton("+G", "Agregar Grupo", colorBotonPrimario, colorTextoBoton);
 		btnAgregarGrupo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			    JDialog dialog = new JDialog(MainView.this, "Crear Grupo", true);
+		        dialog.getContentPane().add(new GroupView());
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(MainView.this);
+		        dialog.setVisible(true);
+		        cargarContactos(); // Recargar contactos para mostrar el nuevo grupo
 			}
 		});
 		
@@ -260,7 +266,6 @@ public class MainView extends JFrame {
                 ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
                 if (contactoSeleccionado != null) {
                     if (!contactoSeleccionado.tieneNombre()) {
-                        // Usando DialogoUtils para mantener la estética consistente
                         String nuevoNombre = utils.DialogoUtils.mostrarDialogoEntrada(
                                 MainView.this, 
                                 "Asigne un nombre al contacto seleccionado:", 
