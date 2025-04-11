@@ -260,7 +260,7 @@ public class MainView extends JFrame {
 		panelContatos.add(panelTituloContactos, BorderLayout.NORTH);
 		
 		// JList para mostrar los contactos con estilo mejorado
-        listaContactos.setCellRenderer(new ContactoGenericoListCellRenderer());
+        listaContactos.setCellRenderer(new ContactoListCellRenderer());
         listaContactos.setBackground(COLOR_FONDO);
         listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         listaContactos.addListSelectionListener(e -> {
