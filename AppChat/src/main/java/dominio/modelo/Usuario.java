@@ -19,7 +19,6 @@ public class Usuario implements Identificable {
 	private String saludo;
 	private boolean esPremium;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
-	private static final AtomicInteger contadorGrupoId = new AtomicInteger(1);
 	//TODO Add localdate fechaNacimiento
 	
 		
@@ -175,9 +174,7 @@ public class Usuario implements Identificable {
 	 * @return El grupo creado
 	 */
 	public Grupo crearGrupo(String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
-		// Asignar un ID único automáticamente usando el contador atómico
-		int nuevoId = contadorGrupoId.getAndIncrement();
-		Grupo grupo = new Grupo(nuevoId, nombreGrupo, miembros, imagenGrupo);
+		Grupo grupo = new Grupo(0, nombreGrupo, miembros, imagenGrupo);
 		this.addContacto(grupo);
 		return grupo;
 	}
