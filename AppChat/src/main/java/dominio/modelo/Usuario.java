@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import persistencia.dao.Identificable;
 
@@ -18,9 +19,10 @@ public class Usuario implements Identificable {
 	private String saludo;
 	private boolean esPremium;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
+	private static final AtomicInteger contadorGrupoId = new AtomicInteger(1);
 	//TODO Add localdate fechaNacimiento
 	
-	
+		
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
 			boolean esPremium, String saludo, List<Contacto> contactos) {
 		this.id = id;
@@ -166,13 +168,16 @@ public class Usuario implements Identificable {
 	
 	/**
 	 * Crea un nuevo grupo con los miembros especificados y lo añade a la lista de contactos.
+	 * El grupo recibirá automáticamente un ID único.
 	 * @param nombreGrupo Nombre que se le asignará al grupo
 	 * @param miembros Lista de contactos individuales que serán miembros del grupo
 	 * @param imagenGrupo Imagen asociada al grupo (puede ser null)
 	 * @return El grupo creado
 	 */
 	public Grupo crearGrupo(String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
-		Grupo grupo = new Grupo(0, nombreGrupo, miembros, imagenGrupo);
+		// Asignar un ID único automáticamente usando el contador atómico
+		int nuevoId = contadorGrupoId.getAndIncrement();
+		Grupo grupo = new Grupo(nuevoId, nombreGrupo, miembros, imagenGrupo);
 		this.addContacto(grupo);
 		return grupo;
 	}

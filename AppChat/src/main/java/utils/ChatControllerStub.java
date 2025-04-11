@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import dominio.controlador.ChatControllerException;
@@ -21,11 +22,14 @@ public class ChatControllerStub {
 	private Usuario usuarioActual;
 	private Map<String,Usuario> usuarios;
 	private List<ContactoIndividual> usuariosGrupo;
+	private AtomicInteger contadorGrupoId;
 	
 	
 	private ChatControllerStub () {
 		usuarioActual = null; 
+		contadorGrupoId = new AtomicInteger(1); // Inicializar contador de IDs para grupos
 		
+		// Inicialización de usuarios
 		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola",new LinkedList<Contacto>());
 		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","/FotosPerfil/Perfil_1.png",false,"Hola",new LinkedList<Contacto>());
 		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","/FotosPerfil/Perfil_3.png",false,"Hola",new LinkedList<Contacto>());
@@ -37,6 +41,7 @@ public class ChatControllerStub {
 		usuarios.put(usuario3.getTelefono(),usuario3);
 		usuarios.put(usuario4.getTelefono(),usuario4);
 		
+		// Crear contactos
 		ContactoIndividual alvaroDePablo = FactoriaPruebas.crearContactoIndividual(usuario2);
 		ContactoIndividual lauraDePablo = FactoriaPruebas.crearContactoIndividual(usuario3);
 		ContactoIndividual pepeDePablo = FactoriaPruebas.crearContactoIndividual(usuario4);
@@ -48,6 +53,7 @@ public class ChatControllerStub {
 		ContactoIndividual pabloDeLaura = FactoriaPruebas.crearContactoIndividual(usuario);
 		ContactoIndividual alvaroDeLaura = FactoriaPruebas.crearContactoIndividual(usuario2);
 		
+		// Asignar contactos a usuarios
 		usuario.addContacto(alvaroDePablo);
 		usuario.addContacto(lauraDePablo);
 		usuario.addContacto(pepeDePablo);
@@ -58,6 +64,7 @@ public class ChatControllerStub {
 		usuario3.addContacto(pabloDeLaura);
 		usuario3.addContacto(alvaroDeLaura);
 	
+		// Añadir mensajes iniciales
 		alvaroDePablo.addMensaje(new Mensaje(1, usuario, "Hola", LocalDateTime.now(), true));
 		alvaroDePablo.addMensaje(new Mensaje(2, usuario, "Como estas Alvaro?", LocalDateTime.now(), true));
 		alvaroDePablo.addMensaje(new Mensaje(3, usuario2, "Hola", LocalDateTime.now(), false));
@@ -76,12 +83,13 @@ public class ChatControllerStub {
 		pabloDeLaura.addMensaje(new Mensaje(3, usuario, "Hola", LocalDateTime.now(), false));
 		pabloDeLaura.addMensaje(new Mensaje(4, usuario, "Como estas Laura?", LocalDateTime.now(), false));
 		
+		// Crear grupo
 		usuariosGrupo = new LinkedList<ContactoIndividual>();
 		usuariosGrupo.add(alvaroDePablo);
 		usuariosGrupo.add(lauraDePablo);
 		
+		// Ahora usamos el método simplificado que genera un ID único automáticamente
 		usuario.crearGrupo("Grupo", usuariosGrupo, "/FotosPerfil/Perfil_2.png");
-		
 	}
 	
 	public static ChatControllerStub getUnicaInstancia() {
@@ -277,7 +285,7 @@ public class ChatControllerStub {
 	 * @param nombreGrupo
 	 * @throws ChatControllerException 
 	 */
-	public void crearGrupo(List<ContactoIndividual> miembros,String nombreGrupo, String imagenGrupo) throws ChatControllerException {
+	public void crearGrupo(List<ContactoIndividual> miembros, String nombreGrupo, String imagenGrupo) throws ChatControllerException {
 		if(nombreGrupo == null || nombreGrupo.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre del grupo no puede ser nulo o vacío.");
 		}else if(miembros == null || miembros.isEmpty()) {
@@ -298,8 +306,8 @@ public class ChatControllerStub {
 			}
 		}
 		
-		Grupo g = new Grupo(0, nombreGrupo, miembros, imagenGrupo);
-		usuarioActual.addContacto(g);
+		 // Utilizar el método de Usuario que ahora genera IDs automáticamente
+		Grupo nuevoGrupo = usuarioActual.crearGrupo(nombreGrupo, miembros, imagenGrupo);
 	}
 
 	
@@ -442,24 +450,65 @@ public class ChatControllerStub {
 	        throw new IllegalArgumentException("El contenido del mensaje no puede estar vacío.");
 	    }
 	    
+	    // PROBLEMA: Múltiples contactos tienen el mismo ID (0), lo que causa confusión
+	    // en lugar de buscar solo por ID, buscaremos también por nombre para diferenciarlos
 	    Contacto contactoRecuperado = usuarioActual.getContactos()
-	    		.stream().filter(c-> c.equals(contacto)).findFirst().orElse(null);
-	    	
+	            .stream()
+	            .filter(c -> c.getId() == contacto.getId() && c.getNombre().equals(contacto.getNombre()))
+	            .findFirst()
+	            .orElse(null);
+	    
+	    // Si no se encuentra, intentar buscar solo por nombre como respaldo
+	    if (contactoRecuperado == null) {
+	        contactoRecuperado = usuarioActual.getContactos()
+	            .stream()
+	            .filter(c -> c.getNombre().equals(contacto.getNombre()))
+	            .findFirst()
+	            .orElse(null);
+	    }
+	    
+	    // Finalmente, si aún no encontramos nada, intentar por equals
+	    if (contactoRecuperado == null) {
+	        contactoRecuperado = usuarioActual.getContactos()
+	            .stream().filter(c -> c.equals(contacto)).findFirst().orElse(null);
+	    }
+	    
 	    if (contactoRecuperado == null) {
 	        throw new ChatControllerException("El contacto no está en la lista del usuario actual.");
 	    }
 
-    	Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
-	    if(contactoRecuperado instanceof ContactoIndividual) {
-	    	contactoRecuperado.addMensaje(mensaje);	
-	    }else if(contactoRecuperado instanceof Grupo) {
-	    	contactoRecuperado.addMensaje(mensaje);
-	    	Grupo grupo = (Grupo) contactoRecuperado;
-	    	for (ContactoIndividual contactoInd : grupo.getMiembros()) {
-	    		contactoInd.addMensaje(mensaje);
-			}
+	    Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
+	    if (contactoRecuperado instanceof ContactoIndividual) {
+	        // Enviar mensaje a contacto individual
+	        contactoRecuperado.addMensaje(mensaje);
+	    } else if (contactoRecuperado instanceof Grupo) {
+	        // Enviar mensaje a grupo
+	        Grupo grupo = (Grupo) contactoRecuperado;
+	        
+	        // Añadir el mensaje al grupo
+	        contactoRecuperado.addMensaje(mensaje);
+	        
+	        // Comprobar si es un emoji
+	        if (contenido.startsWith("EMOJI:")) {
+	            // Si es un emoji, enviarlo tal cual a los miembros del grupo
+	            // para que se procese correctamente como emoji
+	            Mensaje mensajeEmoji = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
+	            
+	            // Añadir información del grupo en los metadatos del mensaje pero preservar el formato de emoji
+	            for (ContactoIndividual contactoInd : grupo.getMiembros()) {
+	                contactoInd.addMensaje(mensajeEmoji);
+	            }
+	        } else {
+	            // Para mensajes normales, añadir el prefijo del grupo
+	            String prefijoGrupo = grupo.getNombre() + " - ";
+	            String mensajeGrupo = prefijoGrupo + contenido;
+	            Mensaje mensajeConPrefijo = new Mensaje(0, usuarioActual, mensajeGrupo, LocalDateTime.now(), true);
+	            
+	            for (ContactoIndividual contactoInd : grupo.getMiembros()) {
+	                contactoInd.addMensaje(mensajeConPrefijo);
+	            }
+	        }
 	    }
-	    
 	}
 
 	/**

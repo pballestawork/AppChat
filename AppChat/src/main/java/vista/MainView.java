@@ -267,6 +267,10 @@ public class MainView extends JFrame {
             if (!e.getValueIsAdjusting()) {
                 Contacto contactoSeleccionado = listaContactos.getSelectedValue();
                 if (contactoSeleccionado != null) {
+                    // Información de depuración
+                    System.out.println("Contacto seleccionado en MainView: " + contactoSeleccionado.getNombre());
+                    System.out.println("ID del contacto: " + contactoSeleccionado.getId());
+                    
                     if (contactoSeleccionado instanceof ContactoIndividual) {
                         ContactoIndividual contactoInd = (ContactoIndividual) contactoSeleccionado;
                         
@@ -289,16 +293,29 @@ public class MainView extends JFrame {
                                     }
                                 }
                             } else {
+                                // Si el usuario cancela, no hacemos nada
+                                System.out.println("Asignación de nombre cancelada");
                                 return;
                             }
                         }
                         
-                        // Guardamos la referencia y cargamos los mensajes del contacto individual
+                        // Guardamos la referencia explícitamente
                         MainView.this.contactoSeleccionado = contactoInd;
+                        System.out.println("Contacto individual seleccionado en MainView: " + contactoInd.getNombre());
+                        
+                        // Cargamos los mensajes del contacto individual en el panel de chat
                         ((ChatPanel) panelChat).cargarMensajesDe(contactoInd);
                     } else if (contactoSeleccionado instanceof Grupo) {
-                        // Si es un grupo, cargamos sus mensajes
+                        // Si es un grupo, actualizamos la referencia y cargamos sus mensajes
                         Grupo grupo = (Grupo) contactoSeleccionado;
+                        
+                        // Guardamos la referencia explícitamente
+                        MainView.this.contactoSeleccionado = grupo;
+                        System.out.println("Grupo seleccionado en MainView: " + grupo.getNombre());
+                        System.out.println("ID del grupo: " + grupo.getId());
+                        System.out.println("Número de miembros: " + grupo.getMiembros().size());
+                        
+                        // Cargamos los mensajes del grupo en el panel de chat
                         ((ChatPanel) panelChat).cargarMensajesDe(grupo);
                     }
                 }
