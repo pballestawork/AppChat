@@ -214,16 +214,38 @@ public class MainView extends JFrame {
 		
 		 // JList para mostrar los contactos
         listaContactos.setCellRenderer(new ContactoListCellRenderer()); // Aplica el renderizador
-		listaContactos.addListSelectionListener(e -> {
-			 if (!e.getValueIsAdjusting()) {
-			        ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
-			        if (contactoSeleccionado != null) {
-			            this.contactoSeleccionado = contactoSeleccionado;
-			            // Llamamos al método del ChatPanel para cargar los mensajes de este contacto
-			            ((ChatPanel) panelChat).cargarMensajesDe(contactoSeleccionado);
-			        }
-			    }
-		});
+        listaContactos.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
+                if (contactoSeleccionado != null) {
+                    if (!contactoSeleccionado.tieneNombre()) {
+                        String nuevoNombre = JOptionPane.showInputDialog(
+                                MainView.this, 
+                                "Asigne un nombre al contacto seleccionado:", 
+                                "Asignar nombre", 
+                                JOptionPane.PLAIN_MESSAGE);
+                        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+                            contactoSeleccionado.setNombre(nuevoNombre.trim());
+                            cargarContactos();
+                            DefaultListModel<ContactoIndividual> model = (DefaultListModel<ContactoIndividual>) listaContactos.getModel();
+                            for (int i = 0; i < model.getSize(); i++) {
+                                if (model.getElementAt(i).equals(contactoSeleccionado)) {
+                                    listaContactos.setSelectedIndex(i);
+                                    break;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                    contactoSeleccionado = listaContactos.getSelectedValue();
+                    MainView.this.contactoSeleccionado = contactoSeleccionado;
+                    if (contactoSeleccionado != null) {
+                        ((ChatPanel) panelChat).cargarMensajesDe(contactoSeleccionado);
+                    }
+                }
+            }
+        });
 
         // Agregar la lista con scroll al panel
         JScrollPane scrollLista = new JScrollPane(listaContactos);

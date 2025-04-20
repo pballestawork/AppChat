@@ -25,6 +25,10 @@ public class ContactoIndividual extends Contacto {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	
+	public boolean tieneNombre() {
+		return this.getNombre() != null && this.getNombre().length() > 0;
+	}
 
 	
 	

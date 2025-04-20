@@ -28,14 +28,18 @@ public class ChatControllerStub {
 		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola",new LinkedList<Contacto>());
 		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","/FotosPerfil/Perfil_1.png",false,"Hola",new LinkedList<Contacto>());
 		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","/FotosPerfil/Perfil_3.png",false,"Hola",new LinkedList<Contacto>());
+		Usuario usuario4 = new Usuario(3,"Pepe","4","pepe@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola,soy pepe",new LinkedList<Contacto>());
 		
 		usuarios = new HashMap<String, Usuario>();
 		usuarios.put(usuario.getTelefono(),usuario);
 		usuarios.put(usuario2.getTelefono(),usuario2);
 		usuarios.put(usuario3.getTelefono(),usuario3);
+		usuarios.put(usuario4.getTelefono(),usuario4);
 		
 		ContactoIndividual alvaroDePablo = FactoriaPruebas.crearContactoIndividual(usuario2);
 		ContactoIndividual lauraDePablo = FactoriaPruebas.crearContactoIndividual(usuario3);
+		ContactoIndividual pepeDePablo = FactoriaPruebas.crearContactoIndividual(usuario4);
+		pepeDePablo.setNombre("");
 		
 		ContactoIndividual pabloDeAlvaro = FactoriaPruebas.crearContactoIndividual(usuario);
 		ContactoIndividual lauraDeAlvaro = FactoriaPruebas.crearContactoIndividual(usuario3);
@@ -45,6 +49,7 @@ public class ChatControllerStub {
 		
 		usuario.addContacto(alvaroDePablo);
 		usuario.addContacto(lauraDePablo);
+		usuario.addContacto(pepeDePablo);
 		
 		usuario2.addContacto(pabloDeAlvaro);
 		usuario2.addContacto(lauraDeAlvaro);
