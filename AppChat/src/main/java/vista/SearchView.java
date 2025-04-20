@@ -29,6 +29,7 @@ import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
 import dominio.modelo.Contacto;
 import dominio.modelo.ContactoIndividual;
+import dominio.modelo.Grupo;
 import tds.BubbleText;
 import utils.ChatControllerStub;
 
@@ -362,15 +363,37 @@ public class SearchView extends JPanel {
                 JPanel panelContactos = new JPanel(new BorderLayout());
                 panelContactos.setOpaque(false);
                 
-                // Determinar el emisor y receptor basado en el tipo de mensaje
+                // Determinar el emisor y receptor basado en la información del mensaje
                 String nombreEmisor = m.getEmisor().getNombre();
-                String etiquetaEmisor = m.getTipo() ? "De: " + nombreEmisor + " (tú)" : "De: " + nombreEmisor;
                 
-                // Para mensajes enviados, el usuario actual es el emisor
-                // Para mensajes recibidos, el usuario actual es el receptor
-                String etiquetaReceptor = m.getTipo() ? 
-                        "Para: " + determinarReceptor(m, usuarioActual) : 
-                        "Para: " + usuarioActual.getNombre() + " (tú)";
+                // Crear etiqueta para el emisor
+                String etiquetaEmisor;
+                if (m.getEmisor().equals(usuarioActual)) {
+                    etiquetaEmisor = "De: " + nombreEmisor + " (tú)";
+                } else {
+                    etiquetaEmisor = "De: " + nombreEmisor;
+                }
+                
+                // Crear etiqueta para el receptor
+                String etiquetaReceptor;
+                if (m.getReceptor() != null) {
+                    // Si el mensaje tiene receptor definido, usarlo
+                    String nombreReceptor = m.getReceptor().getNombre();
+                    
+                    if (m.getReceptor() instanceof ContactoIndividual &&
+                        ((ContactoIndividual)m.getReceptor()).getUsuario().equals(usuarioActual)) {
+                        etiquetaReceptor = "Para: " + nombreReceptor + " (tú)";
+                    } else {
+                        etiquetaReceptor = "Para: " + nombreReceptor;
+                    }
+                } else {
+                    // Si no tiene receptor definido (compatibilidad), usar la lógica antigua
+                    if (m.getTipo()) {
+                        etiquetaReceptor = "Para: " + determinarReceptor(m, usuarioActual);
+                    } else {
+                        etiquetaReceptor = "Para: " + usuarioActual.getNombre() + " (tú)";
+                    }
+                }
                 
                 JLabel lblEmisor = new JLabel(etiquetaEmisor);
                 lblEmisor.setFont(new Font("Arial", Font.BOLD, 11));
@@ -445,19 +468,39 @@ public class SearchView extends JPanel {
      * Método auxiliar para determinar el receptor de un mensaje
      */
     private String determinarReceptor(Mensaje mensaje, Usuario usuarioActual) {
-        // Buscar en los contactos del usuario actual
-        for (Contacto contacto : usuarioActual.getContactos()) {
-            // Solo consideramos contactos individuales
-            if (contacto instanceof ContactoIndividual) {
-                // Si este contacto contiene el mensaje y el mensaje es enviado por el usuario actual
-                if (contacto.getMensajes().contains(mensaje) && mensaje.getTipo()) {
-                    return ((ContactoIndividual) contacto).getUsuario().getNombre();
+        // Si el tipo de mensaje es true, el mensaje ha sido enviado por el usuario actual
+        // Si el tipo de mensaje es false, el mensaje ha sido recibido por el usuario actual
+        
+        if (mensaje.getTipo()) {
+            // Si el mensaje es enviado por el usuario actual
+            // Tenemos que buscar el destinatario del mensaje en los contactos
+            
+            // Recorrer todos los contactos del usuario actual (tanto individuales como grupos)
+            for (Contacto contacto : usuarioActual.getContactos()) {
+                // Comprobar si este contacto tiene el mensaje en su lista de mensajes
+                if (contacto.getMensajes().contains(mensaje)) {
+                    // Si encontramos el mensaje en este contacto, este es el destinatario
+                    if (contacto instanceof Grupo) {
+                        // Es un grupo - mostrar el nombre del grupo
+                        return contacto.getNombre();
+                    } else if (contacto instanceof ContactoIndividual) {
+                        // Es un contacto individual - mostrar su nombre, o el nombre de usuario si no tiene nombre
+                        ContactoIndividual contactoInd = (ContactoIndividual) contacto;
+                        return contactoInd.getNombre().isEmpty() ? 
+                               contactoInd.getUsuario().getNombre() : 
+                               contactoInd.getNombre();
+                    }
                 }
             }
+            
+            // Si no se encuentra el contacto, puede ser que el mensaje no esté 
+            // correctamente asociado a un contacto en este usuario
+            return "desconocido";
+        } else {
+            // Si el mensaje es recibido por el usuario actual
+            // El receptor es el usuario actual
+            return usuarioActual.getNombre();
         }
-        
-        // Si no se puede determinar el receptor, mostrar "desconocido"
-        return "desconocido";
     }
     
     private JTextArea crearAreaTextoMensaje(String contenido) {
