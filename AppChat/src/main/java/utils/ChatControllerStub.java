@@ -120,74 +120,20 @@ public class ChatControllerStub {
 	}
 	
 	
-	/**
-	 * Registra un nuevo usuario en el sistema.
-	 *
-	 * Esta función recibe los datos ingresados por el usuario en el formulario de registro,
-	 * valida que los campos obligatorios estén completos y que las contraseñas coincidan.
-	 * 
-	 * Si el número de teléfono ya está registrado, se muestra un mensaje de error.
-	 * En caso de que el registro sea exitoso, el usuario recibe una confirmación y es 
-	 * redirigido a la página de inicio de sesión.
-	 * 
-	 * @param nombre
-	 * @param fechaNacimiento
-	 * @param email
-	 * @param fotoPerfil
-	 * @param telefono
-	 * @param contrasena
-	 * @param contrasenaRepetida
-	 * @throws IllegalArgumentException
-	 * @throws ChatControllerException 
-	 */
 	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
-			String telefono, String contrasena, String contrasenaRepetida, String saludo) throws ChatControllerException {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (email == null || email.trim().isEmpty()) {
-			throw new IllegalArgumentException("El email no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.trim().isEmpty()) {
-			throw new IllegalArgumentException("La contraseña no puede ser nulo o vacio.");
-		} else if (contrasenaRepetida == null || !contrasenaRepetida.equals(contrasena)) {
-			throw new IllegalArgumentException("Las contraseñas no coinciden");
-		} else if(fechaNacimiento != null && fechaNacimiento.isAfter(LocalDateTime.now())) {
-			throw new IllegalArgumentException("La fecha de nacimiento no puede ser posterior a la fecha actual.");
-		}
+			String telefono, String contrasena,String saludo) throws ChatControllerException {
 		
 		if(usuarios.containsKey(telefono)) {
 			throw new ChatControllerException("El telefono "+ telefono +" ya está registrado.");
 		}
 		
-		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,saludo,new LinkedList<Contacto>());
+		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false ,saludo);
+		
 		usuarios.put(telefono, u);
 	}
 	
-	/**
-	 * Inicia sesión en la aplicación verificando las credenciales del usuario.
-	 *
-	 * Esta función recibe el número de teléfono y la contraseña ingresados por el usuario, 
-	 * valida que coincidan con los datos de un usuario registrado en el sistema y, si son 
-	 * correctos, permite el acceso a la aplicación.
-	 *
-	 * Si las credenciales son válidas, se retorna el usuario correspondiente y se redirige 
-	 * a la pantalla principal de la aplicación.
-	 * Si el número de teléfono no está registrado o la contraseña es incorrecta, se muestra 
-	 * un mensaje de error adecuado.
-	 *
-	 * @param telefono Número de teléfono del usuario registrado.
-	 * @param contrasena Contraseña del usuario.
-	 * @return Objeto Usuario si las credenciales son correctas, o null si son inválidas.
-	 * @throws ChatControllerException 
-	 */
-	public Usuario iniciarSesion(String telefono, String contrasena) throws ChatControllerException {
-		if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.trim().isEmpty()) {
-			throw new IllegalArgumentException("La contraseña no puede ser nula o vacia.");
-		}
-		
+	
+	public Usuario iniciarSesion(String telefono, String contrasena) throws ChatControllerException {	
 		Usuario u = usuarios.get(telefono);
 		
 		if(u == null || !u.getContrasena().equals(contrasena)) {
@@ -202,17 +148,8 @@ public class ChatControllerStub {
 	    return usuarioActual; 
 	}
 	
-	/**
-	 * Actualiza el saludo y/o la imagen de perfil del usuario.
-	 *
-	 * @param nuevoSaludo Nuevo saludo del usuario (puede ser nulo si no se quiere actualizar).
-	 * @param nuevaImagen Nueva imagen de perfil del usuario (puede ser nula si no se quiere actualizar).
-	 */
 	public void actualizarPerfil(String nuevoSaludo, String nuevaImagen) {
-	    if (nuevoSaludo == null && nuevaImagen == null) {
-	        throw new IllegalArgumentException("Debe proporcionar al menos un campo para actualizar.");
-	    }
-
+	    
 	    if (nuevoSaludo != null) {
 	        usuarioActual.setSaludo(nuevoSaludo);
 	    }
@@ -221,31 +158,9 @@ public class ChatControllerStub {
 	        usuarioActual.setFotoPerfil(nuevaImagen);
 	    }
 	}
-	
-	/**
-	 * Añade un nuevo contacto a la lista de contactos del usuario.
-	 *
-	 * Esta función permite a un usuario registrado agregar un contacto proporcionando 
-	 * un número de teléfono y un nombre asociado. 
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - Verifica que el número de teléfono no esté ya en la lista de contactos del usuario.
-	 * - Comprueba que el número de teléfono existe en el sistema.
-	 *
-	 * Si el número no existe en el sistema, se muestra un mensaje de error.
-	 * Si la adición es exitosa, el contacto se guarda y se muestra en la lista de contactos del usuario.
-	 *
-	 * @param numeroTelefono Número de teléfono del contacto a agregar.
-	 * @param nombre Nombre asociado al contacto.
-	 * @throws ChatControllerException 
-	 */
+
 	public void agregarContacto(String nombre, String telefono) throws ChatControllerException {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		}
-		 
+		
 		List<Contacto> contactos = usuarioActual.getContactos();
 		boolean contactoYaRegistrado = contactos.stream()
 	            .filter(contacto -> contacto instanceof ContactoIndividual) 
@@ -263,21 +178,8 @@ public class ChatControllerStub {
 		usuarioActual.addContacto(c);
 	}
 	
-	/**
-	 * Elimina un contacto o grupo de la lista de contactos del usuario actual.
-	 * 
-	 * Se realizan las siguientes validaciones:
-	 * - Verifica si el contacto está en la lista de contactos del usuario actual.
-	 * - Si el contacto no existe en la lista, lanza una excepción.
-	 * 
-	 * @param contacto Contacto o grupo a eliminar.
-	 * @throws ChatControllerException Si el contacto no pertenece a la lista de contactos del usuario.
-	 */
-	public void eliminarContacto(Contacto contacto) throws ChatControllerException {
-	    if (contacto == null) {
-	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
-	    }
 
+	public void eliminarContacto(Contacto contacto) throws ChatControllerException {
 	    // Verificar si el contacto está en la lista del usuario actual
 	    if (!usuarioActual.getContactos().contains(contacto)) {
 	        throw new ChatControllerException("El contacto o grupo no está en la lista de contactos del usuario.");
@@ -288,31 +190,8 @@ public class ChatControllerStub {
 	}
 	
 	
-	
-	
-	/**
-	 * Crea un nuevo grupo de contactos.
-	 *
-	 * Esta función permite al usuario crear un grupo proporcionando un nombre y, opcionalmente, 
-	 * una imagen. Además, puede añadir varios contactos existentes al grupo.
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - El nombre del grupo no puede estar vacío.
-	 * - Solo se pueden agregar contactos que ya existan en la lista del usuario.
-	 *
-	 * Si la creación es exitosa, el grupo se añade a la lista de contactos del usuario.
-	 *
-	 * @param miembros
-	 * @param nombreGrupo
-	 * @throws ChatControllerException 
-	 */
 	public void crearGrupo(List<ContactoIndividual> miembros, String nombreGrupo, String imagenGrupo) throws ChatControllerException {
-		if(nombreGrupo == null || nombreGrupo.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre del grupo no puede ser nulo o vacío.");
-		}else if(miembros == null || miembros.isEmpty()) {
-			throw new IllegalArgumentException("La lista de miembros no puede ser nula o vacia.");
-		}
-		
+
 		Map<String, ContactoIndividual> contactosMap = usuarioActual.getContactos().stream()
 		        .filter(c -> c instanceof ContactoIndividual)
 		        .map(c -> (ContactoIndividual) c)
@@ -328,30 +207,11 @@ public class ChatControllerStub {
 		}
 		
 		 // Utilizar el método de Usuario que ahora genera IDs automáticamente
-		Grupo nuevoGrupo = usuarioActual.crearGrupo(nombreGrupo, miembros, imagenGrupo);
+		usuarioActual.crearGrupo(nombreGrupo, miembros, imagenGrupo);
 	}
 
 	
-	/**
-	 * Añade un contacto individual a un grupo existente.
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - El grupo y el contacto no pueden ser nulos.
-	 * - El grupo debe existir en la lista de contactos del usuario.
-	 * - El contacto debe estar en la lista de contactos del usuario antes de ser agregado al grupo.
-	 * - El contacto no debe estar ya en el grupo.
-	 *
-	 * @param grupo Grupo al que se añadirá el contacto.
-	 * @param contactoIndividual Contacto individual a añadir.
-	 * @throws ChatControllerException Si el grupo no pertenece al usuario o el contacto no está en su lista.
-	 */
 	public void agregarContactoAGrupo(Grupo grupo, ContactoIndividual contactoIndividual) throws ChatControllerException {
-	    if (grupo == null) {
-	        throw new IllegalArgumentException("El grupo no puede ser nulo.");
-	    }
-	    if (contactoIndividual == null) {
-	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
-	    }
 
 	    // Verificar si el grupo pertenece a la lista de contactos del usuario actual
 	    boolean grupoExiste = usuarioActual.getContactos().stream()
@@ -380,25 +240,8 @@ public class ChatControllerStub {
 	    grupo.addMiembro(contactoIndividual);
 	}
 	
-	/**
-	 * Elimina un contacto individual de un grupo existente.
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - El grupo y el contacto no pueden ser nulos.
-	 * - El grupo debe existir en la lista de contactos del usuario.
-	 * - El contacto debe estar en el grupo antes de poder eliminarlo.
-	 *
-	 * @param grupo Grupo del que se eliminará el contacto.
-	 * @param contactoIndividual Contacto individual a eliminar del grupo.
-	 * @throws ChatControllerException Si el grupo no pertenece al usuario o el contacto no está en el grupo.
-	 */
+
 	public void eliminarContactoDeGrupo(Grupo grupo, ContactoIndividual contactoIndividual) throws ChatControllerException {
-	    if (grupo == null) {
-	        throw new IllegalArgumentException("El grupo no puede ser nulo.");
-	    }
-	    if (contactoIndividual == null) {
-	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
-	    }
 
 	    // Verificar si el grupo pertenece a la lista de contactos del usuario actual
 	    boolean grupoExiste = usuarioActual.getContactos().stream()
@@ -417,30 +260,7 @@ public class ChatControllerStub {
 	    grupo.deleteMiembro(contactoIndividual);
 	}
 
-	/**
-	 * Actualiza el nombre y/o la imagen de un grupo en la lista de contactos del usuario actual.
-	 * 
-	 * Se realizan las siguientes validaciones:
-	 * - El grupo no puede ser nulo.
-	 * - El grupo debe existir en la lista de contactos del usuario.
-	 * - Si el nuevo nombre es proporcionado, se actualiza.
-	 * - Si la nueva imagen es proporcionada, se actualiza.
-	 * - Si ambos valores son nulos, no se realiza ninguna actualización.
-	 *
-	 * @param grupo Grupo a actualizar.
-	 * @param nombre Nuevo nombre del grupo (puede ser nulo si no se desea actualizar).
-	 * @param imagen Nueva imagen del grupo (puede ser nula si no se desea actualizar).
-	 * @throws ChatControllerException Si el grupo no pertenece a la lista de contactos del usuario.
-	 */
 	public void actualizarGrupo(Grupo grupo, String nombre, String imagen) throws ChatControllerException {
-	    if (grupo == null) {
-	        throw new IllegalArgumentException("El grupo no puede ser nulo.");
-	    }else if (nombre == null && imagen == null) {
-	        throw new IllegalArgumentException("Debe proporcionar al menos un campo para actualizar.");
-	    }else if (!usuarioActual.getContactos().contains(grupo)) {
-	        throw new ChatControllerException("El grupo no pertenece a la lista de contactos del usuario.");
-	    }
-
 	    if (nombre != null) {
 	        grupo.setNombre(nombre);
 	    }
@@ -450,26 +270,7 @@ public class ChatControllerStub {
 	    }
 	}
 
-	
-	/**
-	 * Envía un mensaje a un contacto, ya sea un contacto individual o un grupo.
-	 *
-	 * Se realizan las siguientes validaciones:
-	 * - El contacto debe existir en la lista de contactos del usuario actual.
-	 *
-	 * El mensaje se guarda en la lista de mensajes del contacto.
-	 *
-	 * @param contacto Destinatario del mensaje (puede ser ContactoIndividual o Grupo).
-	 * @param contenido Contenido del mensaje.
-	 * @throws ChatControllerException Si el contacto no está en la lista del usuario actual.
-	 */
 	public void enviarMensaje(Contacto contacto, String contenido) throws ChatControllerException {
-	    if (contacto == null) {
-	        throw new IllegalArgumentException("El contacto no puede ser nulo.");
-	    }
-	    if (contenido == null || contenido.trim().isEmpty()) {
-	        throw new IllegalArgumentException("El contenido del mensaje no puede estar vacío.");
-	    }
 	    
 	    // PROBLEMA: Múltiples contactos tienen el mismo ID (0), lo que causa confusión
 	    // en lugar de buscar solo por ID, buscaremos también por nombre para diferenciarlos
@@ -560,20 +361,7 @@ public class ChatControllerStub {
 	    }
 	}
 
-	/**
-	 * Busca mensajes en la lista de contactos del usuario aplicando filtros opcionales por
-	 * fragmento de texto, nombre del contacto o número de teléfono.
-	 * 
-	 * Se realizan las siguientes validaciones:
-	 * - Se pueden combinar múltiples criterios de búsqueda.
-	 * - Se buscan mensajes en la lista de contactos del usuario, ya sean enviados o recibidos.
-	 * - Los resultados se ordenan por fecha y hora de envío de manera descendente.
-	 * 
-	 * @param texto Fragmento de texto a buscar en los mensajes (puede ser nulo).
-	 * @param contacto Nombre del contacto a filtrar (puede ser nulo).
-	 * @param telefono Número de teléfono del contacto a filtrar (puede ser nulo).
-	 * @return Lista de mensajes que coincidan con los criterios de búsqueda.
-	 */
+
 	public List<Mensaje> buscarMensajes(String texto, String contacto, String telefono) {
 	    return usuarioActual.getContactos().stream()
 	            .flatMap(contactoObj -> contactoObj.getMensajes().stream()) // Extrae todos los mensajes de los contactos

@@ -14,6 +14,7 @@ import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
 import dominio.repositorio.EntidadNoEncontrada;
+import dominio.repositorio.IRepositorioUsuarios;
 import dominio.repositorio.RepositorioException;
 import dominio.repositorio.RepositorioString;
 import dominio.repositorio.RepositorioUsuarios;
@@ -28,7 +29,7 @@ public class ChatController {
 	private static ChatController unicaInstancia;
 	private Usuario usuarioActual;
 
-	private static RepositorioString<Usuario> repositorioUsuarios;
+	private static IRepositorioUsuarios repositorioUsuarios;
 	private static IAdaptadorUsuarioDAO usuarioDAO;
 	private static IAdaptadorContactoIndividualDAO contactoIndividualDAO;
 	private static IAdaptadorGrupoDAO grupoDAO;
@@ -61,35 +62,13 @@ public class ChatController {
 
 	/**
 	 * Registra un nuevo usuario en el sistema.
-	 *
-	 * Esta función recibe los datos ingresados por el usuario en el formulario de
-	 * registro, valida que los campos obligatorios estén completos y que las
-	 * contraseñas coincidan.
 	 * 
 	 * Si el número de teléfono ya está registrado, se muestra un mensaje de error.
-	 * En caso de que el registro sea exitoso, el usuario recibe una confirmación y
-	 * es redirigido a la página de inicio de sesión.
-	 * 
-	 * @param nombre
-	 * @param fechaNacimiento
-	 * @param email
-	 * @param fotoPerfil
-	 * @param telefono
-	 * @param contrasena
-	 * @param contrasenaRepetida
-	 * @throws IllegalArgumentException
-	 * @throws ChatControllerException
-	 * @throws RepositorioException
 	 */
 	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
-			String telefono, String contrasena, String contrasenaRepetida, String saludo) throws RepositorioException {
-		if (contrasenaRepetida == null || !contrasenaRepetida.equals(contrasena)) {
-			throw new IllegalArgumentException("Las contraseñas no coinciden");
-		} else if (fechaNacimiento != null && fechaNacimiento.isAfter(LocalDateTime.now())) {
-			throw new IllegalArgumentException("La fecha de nacimiento no puede ser posterior a la fecha actual.");
-		}
-
-		Usuario u = new Usuario(0, nombre, telefono, email, contrasena, fotoPerfil, false, saludo);
+			String telefono, String contrasena, String saludo) throws RepositorioException {
+	
+		Usuario u = repositorioUsuarios.add(nombre, telefono, email, contrasena, fotoPerfil, saludo);
 		usuarioDAO.add(u);
 		repositorioUsuarios.add(u);
 	}

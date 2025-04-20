@@ -431,7 +431,7 @@ public class RegisterView extends JFrame {
                 }
                 
                 ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
-                controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, contrasenaRepetida, saludo);
+                controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, saludo);
                 
                 JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 parent.setVisible(true);
