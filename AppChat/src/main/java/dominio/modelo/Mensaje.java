@@ -5,13 +5,13 @@ import java.time.format.DateTimeFormatter;
 
 import persistencia.dao.Identificable;
 
-public class Mensaje implements Identificable{
+public class Mensaje implements Identificable, Cloneable {
 
 	private int id;
 	private Usuario emisor;
 	private String contenido;
 	private LocalDateTime fechaEnvio;
-	private Boolean tipo;
+	private Boolean tipo; // true = mensaje enviado, false = mensaje recibido
 	
 	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -20,7 +20,8 @@ public class Mensaje implements Identificable{
 		this.emisor = emisor;
 		this.tipo = tipo;
 		this.contenido = contenido;
-		this.fechaEnvio = fechaEnvio == null ? null : fechaEnvio.withNano(0);//Fechas ajustadas al formato
+		// Ajustar la fecha al formato sin nanosegundos para consistencia
+		this.fechaEnvio = fechaEnvio == null ? LocalDateTime.now().withNano(0) : fechaEnvio.withNano(0);
 	}
 
 	public Mensaje() {
@@ -101,5 +102,24 @@ public class Mensaje implements Identificable{
 
 	public void setTipo(Boolean tipo) {
 		this.tipo = tipo;
+	}
+	
+	/**
+	 * Verifica si este mensaje fue enviado por un usuario específico
+	 * @param usuario El usuario a verificar
+	 * @return true si el usuario es el emisor del mensaje, false en caso contrario
+	 */
+	public boolean esEnviadoPor(Usuario usuario) {
+		return usuario != null && emisor != null && emisor.equals(usuario);
+	}
+	
+	/**
+	 * Comprueba si el mensaje contiene el texto especificado (ignorando mayúsculas/minúsculas)
+	 * @param texto El texto a buscar
+	 * @return true si el mensaje contiene el texto, false en caso contrario
+	 */
+	public boolean contienePalabra(String texto) {
+		return texto != null && contenido != null && 
+		       contenido.toLowerCase().contains(texto.toLowerCase());
 	}
 }

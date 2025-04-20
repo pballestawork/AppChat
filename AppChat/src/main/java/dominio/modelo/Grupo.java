@@ -1,5 +1,6 @@
 package dominio.modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,12 +11,13 @@ public class Grupo extends Contacto {
 
 	public Grupo(int id, String nombreGrupo, List<ContactoIndividual> miembros, String imagen) {
 		super(id, nombreGrupo);
-		this.miembros = miembros;
-		this.setImagen(imagen);
+		this.miembros = miembros != null ? miembros : new ArrayList<>();
+		this.imagen = imagen;
 	}
 
 	public Grupo() {
 		super();
+		this.miembros = new ArrayList<>();
 	}
 	
 	
@@ -52,5 +54,21 @@ public class Grupo extends Contacto {
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
-
+	
+	/**
+	 * Verifica si un contacto es miembro del grupo
+	 * @param contacto El contacto a verificar
+	 * @return true si el contacto es miembro del grupo, false en caso contrario
+	 */
+	public boolean esMiembro(ContactoIndividual contacto) {
+		return contacto != null && miembros.contains(contacto);
+	}
+	
+	/**
+	 * Obtiene el número de miembros del grupo
+	 * @return Cantidad de miembros
+	 */
+	public int getNumeroMiembros() {
+		return miembros.size();
+	}
 }

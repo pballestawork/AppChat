@@ -129,6 +129,54 @@ public class Usuario implements Identificable {
 	}
 
 	
+	/**
+	 * Busca un contacto individual por el número de teléfono del usuario asociado.
+	 * @param telefono El número de teléfono a buscar
+	 * @return El ContactoIndividual si se encuentra, null en caso contrario
+	 */
+	public ContactoIndividual buscarContactoPorTelefono(String telefono) {
+		return contactos.stream()
+				.filter(contacto -> contacto instanceof ContactoIndividual)
+				.map(contacto -> (ContactoIndividual) contacto)
+				.filter(c -> c.getUsuario().getTelefono().equals(telefono))
+				.findFirst()
+				.orElse(null);
+	}
+	
+	/**
+	 * Verifica si existe un contacto con el número de teléfono especificado.
+	 * @param telefono El número de teléfono a verificar
+	 * @return true si existe un contacto con ese teléfono, false en caso contrario
+	 */
+	public boolean tieneContactoConTelefono(String telefono) {
+		return buscarContactoPorTelefono(telefono) != null;
+	}
+	
+	/**
+	 * Crea un nuevo contacto individual asociado a un usuario externo y lo añade a la lista de contactos.
+	 * @param nombre Nombre que se le asignará al contacto
+	 * @param usuarioContacto Usuario al que hace referencia el contacto
+	 * @return El contacto individual creado
+	 */
+	public ContactoIndividual crearContactoIndividual(String nombre, Usuario usuarioContacto) {
+		ContactoIndividual contacto = new ContactoIndividual(usuarioContacto.getId(), nombre, usuarioContacto);
+		this.addContacto(contacto);
+		return contacto;
+	}
+	
+	/**
+	 * Crea un nuevo grupo con los miembros especificados y lo añade a la lista de contactos.
+	 * @param nombreGrupo Nombre que se le asignará al grupo
+	 * @param miembros Lista de contactos individuales que serán miembros del grupo
+	 * @param imagenGrupo Imagen asociada al grupo (puede ser null)
+	 * @return El grupo creado
+	 */
+	public Grupo crearGrupo(String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
+		Grupo grupo = new Grupo(0, nombreGrupo, miembros, imagenGrupo);
+		this.addContacto(grupo);
+		return grupo;
+	}
+
 	public void actualizarPerfil(String nombre, String email, String fotoPerfil) {
 		this.nombre = nombre;
 		this.email = email;

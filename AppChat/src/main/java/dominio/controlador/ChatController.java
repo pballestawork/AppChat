@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import dominio.modelo.Contacto;
 import dominio.modelo.ContactoIndividual;
@@ -82,15 +83,7 @@ public class ChatController {
 	 */
 	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
 			String telefono, String contrasena, String contrasenaRepetida, String saludo) throws RepositorioException {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (email == null || email.trim().isEmpty()) {
-			throw new IllegalArgumentException("El email no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.trim().isEmpty()) {
-			throw new IllegalArgumentException("La contraseña no puede ser nulo o vacio.");
-		} else if (contrasenaRepetida == null || !contrasenaRepetida.equals(contrasena)) {
+		if (contrasenaRepetida == null || !contrasenaRepetida.equals(contrasena)) {
 			throw new IllegalArgumentException("Las contraseñas no coinciden");
 		} else if (fechaNacimiento != null && fechaNacimiento.isAfter(LocalDateTime.now())) {
 			throw new IllegalArgumentException("La fecha de nacimiento no puede ser posterior a la fecha actual.");
@@ -123,11 +116,6 @@ public class ChatController {
 	 */
 	public Usuario iniciarSesion(String telefono, String contrasena)
 			throws ChatControllerException, RepositorioException, EntidadNoEncontrada {
-		if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		} else if (contrasena == null || contrasena.trim().isEmpty()) {
-			throw new IllegalArgumentException("La contraseña no puede ser nula o vacia.");
-		}
 
 		Usuario u = repositorioUsuarios.getById(telefono);
 
@@ -188,27 +176,20 @@ public class ChatController {
 	 */
 	public void agregarContacto(String nombre, String telefono)
 			throws ChatControllerException, RepositorioException, EntidadNoEncontrada {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
-		} else if (telefono == null || telefono.trim().isEmpty()) {
-			throw new IllegalArgumentException("El telefono no puede ser nulo o vacio.");
-		}
 
-		List<Contacto> contactos = usuarioActual.getContactos();
-		boolean contactoYaRegistrado = contactos.stream().filter(contacto -> contacto instanceof ContactoIndividual)
-				.map(contacto -> (ContactoIndividual) contacto).map(ContactoIndividual::getUsuario)
-				.anyMatch(usuario -> usuario.getTelefono().equals(telefono));
-
-		if (contactoYaRegistrado) {
+		if (usuarioActual.tieneContactoConTelefono(telefono)) {
 			throw new ChatControllerException("Ya tienes un contacto asociado a este numero.");
-		} else if (repositorioUsuarios.getById(telefono) == null) {
+		} 
+		Usuario usuarioDestino = repositorioUsuarios.getById(telefono);
+		if (usuarioDestino == null) {
 			throw new ChatControllerException("El numero " + telefono + " no existe.");
 		}
-		Usuario u = repositorioUsuarios.getById(telefono);
-		ContactoIndividual c = new ContactoIndividual(u.getId(), nombre, u);
-		usuarioActual.addContacto(c);
-
-		contactoIndividualDAO.add(c);
+		
+		// Usar el método de Usuario para crear el contacto (patrón GRASP Creador)
+		ContactoIndividual nuevoContacto = usuarioActual.crearContactoIndividual(nombre, usuarioDestino);
+		
+		// Persistir cambios
+		contactoIndividualDAO.add(nuevoContacto);
 		usuarioDAO.update(usuarioActual);
 	}
 
@@ -224,9 +205,6 @@ public class ChatController {
 	 *                                 contactos del usuario.
 	 */
 	public void eliminarContacto(Contacto contacto) throws ChatControllerException {
-		if (contacto == null) {
-			throw new IllegalArgumentException("El contacto/grupo no puede ser nulo.");
-		}
 
 		// Verificar si el contacto está en la lista del usuario actual
 		if (!usuarioActual.getContactos().contains(contacto)) {
@@ -263,10 +241,6 @@ public class ChatController {
 	 */
 	public void crearGrupo(List<ContactoIndividual> miembros, String nombreGrupo, String imagenGrupo)
 			throws ChatControllerException {
-		if (nombreGrupo == null || nombreGrupo.trim().isEmpty()) {
-			throw new IllegalArgumentException("El nombre del grupo no puede ser nulo o vacío.");
-		} else if (miembros == null || miembros.isEmpty()) {
-			throw new IllegalArgumentException("La lista de miembros no puede ser nula o vacia.");
 		}
 
 		Map<String, ContactoIndividual> contactosMap = usuarioActual.getContactos().stream()
@@ -280,9 +254,9 @@ public class ChatController {
 			}
 		}
 
-		Grupo g = new Grupo(0, nombreGrupo, miembros, imagenGrupo);
-		usuarioActual.addContacto(g);
-		grupoDAO.add(g);
+		Grupo nuevoGrupo = usuarioActual.crearGrupo(nombreGrupo, miembros, imagenGrupo);
+		
+		grupoDAO.add(nuevoGrupo);
 		usuarioDAO.update(usuarioActual);
 	}
 
@@ -302,12 +276,6 @@ public class ChatController {
 	public void agregarContactoAGrupo(Grupo grupo, ContactoIndividual contactoIndividual)// TODO lista mejor?? //TODO
 																							// mejor usar ids?
 			throws ChatControllerException {
-		if (grupo == null) {
-			throw new IllegalArgumentException("El grupo no puede ser nulo.");
-		}
-		if (contactoIndividual == null) {
-			throw new IllegalArgumentException("El contacto no puede ser nulo.");
-		}
 
 		// Verificar si el grupo pertenece a la lista de contactos del usuario actual
 		boolean grupoExiste = usuarioActual.getContactos().stream()
@@ -349,12 +317,6 @@ public class ChatController {
 	 */
 	public void eliminarContactoDeGrupo(Grupo grupo, ContactoIndividual contactoIndividual)
 			throws ChatControllerException {
-		if (grupo == null) {
-			throw new IllegalArgumentException("El grupo no puede ser nulo.");
-		}
-		if (contactoIndividual == null) {
-			throw new IllegalArgumentException("El contacto no puede ser nulo.");
-		}
 
 		// Verificar si el grupo pertenece a la lista de contactos del usuario actual
 		boolean grupoExiste = usuarioActual.getContactos().stream()
@@ -392,9 +354,7 @@ public class ChatController {
 	 *                                 contactos del usuario.
 	 */
 	public void actualizarGrupo(Grupo grupo, String nombre, String imagen) throws ChatControllerException {
-		if (grupo == null) {
-			throw new IllegalArgumentException("El grupo no puede ser nulo.");
-		} else if (nombre == null && imagen == null) {
+		if (nombre == null && imagen == null) {
 			throw new IllegalArgumentException("Debe proporcionar al menos un campo para actualizar.");
 		} else if (!usuarioActual.getContactos().contains(grupo)) {
 			throw new ChatControllerException("El grupo no pertenece a la lista de contactos del usuario.");
@@ -502,11 +462,44 @@ public class ChatController {
 	 * @return Lista de mensajes que coincidan con los criterios de búsqueda.
 	 */
 	public List<Mensaje> buscarMensajes(String texto, String contacto, String telefono) {
-		return usuarioActual.getContactos().stream().flatMap(contactoObj -> contactoObj.getMensajes().stream())
-				.filter(mensaje -> (texto == null || mensaje.getContenido().contains(texto))
-						&& (contacto == null || mensaje.getEmisor().getNombre().equalsIgnoreCase(contacto))
-						&& (telefono == null || mensaje.getEmisor().getTelefono().equals(telefono)))
-				.sorted(Comparator.comparing(Mensaje::getFechaEnvio).reversed()).collect(Collectors.toList());
+		// Obtener todos los mensajes de todos los contactos
+		Stream<Mensaje> mensajes = usuarioActual.getContactos().stream()
+				.flatMap(contactoObj -> contactoObj.getMensajes().stream());
+		
+		// Aplicar filtros si están especificados
+		mensajes = aplicarFiltrosBusqueda(mensajes, texto, contacto, telefono);
+		
+		// Ordenar por fecha de envío (más reciente primero)
+		return mensajes.sorted(Comparator.comparing(Mensaje::getFechaEnvio).reversed())
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Aplica filtros a un stream de mensajes según los criterios especificados
+	 * 
+	 * @param mensajes Stream de mensajes a filtrar
+	 * @param texto Texto a buscar en el contenido (puede ser nulo)
+	 * @param contacto Nombre del contacto a filtrar (puede ser nulo)
+	 * @param telefono Teléfono del contacto a filtrar (puede ser nulo)
+	 * @return Stream filtrado según los criterios
+	 */
+	private Stream<Mensaje> aplicarFiltrosBusqueda(Stream<Mensaje> mensajes, String texto, String contacto, String telefono) {
+		// Filtrar por texto en el contenido si se especifica
+		if (texto != null && !texto.trim().isEmpty()) {
+			mensajes = mensajes.filter(mensaje -> mensaje.contienePalabra(texto));
+		}
+		
+		// Filtrar por nombre de contacto si se especifica
+		if (contacto != null && !contacto.trim().isEmpty()) {
+			mensajes = mensajes.filter(mensaje -> mensaje.getEmisor().getNombre().equalsIgnoreCase(contacto));
+		}
+		
+		// Filtrar por número de teléfono si se especifica
+		if (telefono != null && !telefono.trim().isEmpty()) {
+			mensajes = mensajes.filter(mensaje -> mensaje.getEmisor().getTelefono().equals(telefono));
+		}
+		
+		return mensajes;
 	}
 
 	public void exportarMensajesPDF(Usuario usuario, List<Mensaje> mensajes) {
