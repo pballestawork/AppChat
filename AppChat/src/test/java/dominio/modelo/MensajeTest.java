@@ -26,17 +26,20 @@ public class MensajeTest {
 	private LocalDateTime fechaAhora;
 	private Usuario usuario;
 	private boolean tipo;
+	private Contacto receptor;
 
 	@Before
 	public void beforeEach() {
 		usuario = new Usuario(ID_USUARIO, NOMBRE_USUARIO, TELEFONO_USUARIO, CORREO_USUARIO, CONTRASENA_USUARIO, FOTO_USUARIO,
 				PREMIUM_USUARIO, SALUDO_USUARIO, CONTACTOS);
-
+		
+		receptor = new ContactoIndividual(0, NOMBRE_USUARIO, usuario);
+		
 		contenido = "Mensaje beforeEach";
 		fechaAhora = LocalDateTime.now().withNano(0);
 		tipo = true;
 		idMensaje = 1;
-		mensaje = new Mensaje(idMensaje, usuario, contenido, fechaAhora, tipo);
+		mensaje = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora, tipo);
 	}
 
 	@Test
@@ -52,7 +55,7 @@ public class MensajeTest {
 	@Test
 	public void testConstructorParametrosConExito() {
 		String contenidoMensaje = "Mensaje constructor";
-		Mensaje m = new Mensaje(200, usuario, contenidoMensaje, fechaAhora, true);
+		Mensaje m = new Mensaje(200, usuario, receptor, contenidoMensaje, fechaAhora, true);
 		assertTrue(m.getId() == 200);
 		assertTrue(m.getEmisor().equals(usuario));
 		assertTrue(m.getContenido().equals(contenidoMensaje));
@@ -89,7 +92,7 @@ public class MensajeTest {
 	
 	@Test
 	public void testEqualsConMensajeDuplicado() {
-		Mensaje mensajeDuplicado = new Mensaje(idMensaje, usuario, contenido, fechaAhora, tipo);
+		Mensaje mensajeDuplicado = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora, tipo);
 		assertEquals(mensaje, mensajeDuplicado);	
 	}
 	

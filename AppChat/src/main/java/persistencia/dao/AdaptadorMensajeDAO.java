@@ -124,7 +124,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		
 		// 4. Recuperar referenciados y actualizar objeto
 		Usuario emisor = adaptadorUsuarioDAO.getById(Integer.parseInt(idEmisor));
-		Mensaje mensaje = new Mensaje(e.getId(),emisor,contenido,fechaEnvioParseada,true);//TODO tratar el tipo
+		Mensaje mensaje = new Mensaje(e.getId(),emisor,null,contenido,fechaEnvioParseada,true);//TODO tratar el tipo //TODO Tratar el receptor
 		
 		// 5. Retornar objeto
 		return mensaje;

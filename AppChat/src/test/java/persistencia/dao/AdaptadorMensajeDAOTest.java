@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import beans.Entidad;
+import dominio.modelo.Contacto;
 import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -24,6 +25,7 @@ public class AdaptadorMensajeDAOTest {
 	private static IAdaptadorMensajeDAO adaptadorMensajeDAO;
 
 	private Usuario emisor;
+	private Contacto receptor;
 	private Mensaje mensaje;
 
 	@BeforeClass
@@ -48,9 +50,10 @@ public class AdaptadorMensajeDAOTest {
 		entidades.forEach(e -> servicioPersistencia.borrarEntidad(e));
 
 		emisor = FactoriaPruebas.crearUsuario();
+		receptor = FactoriaPruebas.crearContactoIndividual(emisor);
 		adaptadorUsuarioDAO.add(emisor);
 
-		mensaje = new Mensaje(0, emisor, "Hola Mundo", LocalDateTime.now().withNano(0), true);
+		mensaje = new Mensaje(0, emisor, receptor, "Hola Mundo", LocalDateTime.now().withNano(0), true);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -71,7 +74,7 @@ public class AdaptadorMensajeDAOTest {
 	public void agregarMensajeDuplicado() {
 		adaptadorMensajeDAO.add(mensaje);
 
-		Mensaje duplicado = new Mensaje(0, emisor, "Otro mensaje", LocalDateTime.now().withNano(0), false);
+		Mensaje duplicado = new Mensaje(0, emisor, receptor, "Otro mensaje", LocalDateTime.now().withNano(0), false);
 		duplicado.setId(mensaje.getId());
 
 		adaptadorMensajeDAO.add(duplicado);
@@ -112,7 +115,7 @@ public class AdaptadorMensajeDAOTest {
 
 	@Test
 	public void actualizarMensajeNoExiste() {
-		Mensaje fantasma = new Mensaje(0, emisor, "Fantasma", LocalDateTime.now().withNano(0), true);
+		Mensaje fantasma = new Mensaje(0, emisor, receptor, "Fantasma", LocalDateTime.now().withNano(0), true);
 		adaptadorMensajeDAO.update(fantasma); // No debería fallar
 	}
 
@@ -127,14 +130,14 @@ public class AdaptadorMensajeDAOTest {
 
 	@Test
 	public void eliminarMensajeNoExistente() {
-		Mensaje m = new Mensaje(99, emisor, "No existe", LocalDateTime.now().withNano(0), true);
+		Mensaje m = new Mensaje(99, emisor, receptor, "No existe", LocalDateTime.now().withNano(0), true);
 		adaptadorMensajeDAO.delete(m); // No debería fallar
 	}
 
 	@Test
 	public void recuperarTodosMensajes() {
-		Mensaje m1 = new Mensaje(0, emisor, "M1", LocalDateTime.now().withNano(0), true);
-		Mensaje m2 = new Mensaje(0, emisor, "M2", LocalDateTime.now().withNano(0), true);
+		Mensaje m1 = new Mensaje(0, emisor, receptor, "M1", LocalDateTime.now().withNano(0), true);
+		Mensaje m2 = new Mensaje(0, emisor, receptor, "M2", LocalDateTime.now().withNano(0), true);
 
 		adaptadorMensajeDAO.add(m1);
 		adaptadorMensajeDAO.add(m2);

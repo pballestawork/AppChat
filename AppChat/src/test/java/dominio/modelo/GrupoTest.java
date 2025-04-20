@@ -35,7 +35,7 @@ public class GrupoTest extends ContactoTest {
         assertTrue(g.getId() == 0);
         assertTrue(g.getNombre() == null);
         assertTrue(g.getMensajes() == null);
-        assertTrue(g.getMiembros() == null);
+        assertTrue(g.getMiembros().isEmpty());
         assertTrue(g.getImagen() == null);
     }
 

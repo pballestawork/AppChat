@@ -58,7 +58,7 @@ public class ContactoTest {
 
     @Test
     public void testAddMensajeConExito() {
-        Mensaje mensaje = new Mensaje(ID_MENSAJE,null, CONTENIDO_MENSAJE,  LocalDateTime.now(), null);
+        Mensaje mensaje = new Mensaje(ID_MENSAJE,null, null,  CONTENIDO_MENSAJE,  LocalDateTime.now(), null);
         contacto.addMensaje(mensaje);
         assertTrue(contacto.getMensajes().contains(mensaje));
         assertTrue(contacto.getMensajes().size() == 1);
@@ -66,7 +66,7 @@ public class ContactoTest {
 
     @Test
     public void testDeleteMensajeConExito() {
-        Mensaje mensaje = new Mensaje(ID_MENSAJE, null, CONTENIDO_MENSAJE, LocalDateTime.now(), null);
+        Mensaje mensaje = new Mensaje(ID_MENSAJE, null, null, CONTENIDO_MENSAJE, LocalDateTime.now(), null);
         contacto.addMensaje(mensaje);
         contacto.deleteMensaje(mensaje);
 

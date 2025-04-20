@@ -241,7 +241,6 @@ public class ChatController {
 	 */
 	public void crearGrupo(List<ContactoIndividual> miembros, String nombreGrupo, String imagenGrupo)
 			throws ChatControllerException {
-		}
 
 		Map<String, ContactoIndividual> contactosMap = usuarioActual.getContactos().stream()
 				.filter(c -> c instanceof ContactoIndividual).map(c -> (ContactoIndividual) c)
@@ -400,7 +399,7 @@ public class ChatController {
 			throw new ChatControllerException("El contacto no está en la lista del usuario actual.");
 		}
 
-		Mensaje mensaje = new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
+		Mensaje mensaje = null;//TODO new Mensaje(0, usuarioActual, contenido, LocalDateTime.now(), true);
 		if (contactoRecuperado instanceof ContactoIndividual) {
 			enviarMensajeContactoIndividual((ContactoIndividual) contactoRecuperado, mensaje);
 		} else if (contactoRecuperado instanceof Grupo) {
