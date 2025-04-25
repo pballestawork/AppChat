@@ -56,22 +56,44 @@ public class ContactosTablePanel extends JPanel {
         table.getTableHeader().setForeground(COLOR_PRIMARIO);
         table.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_PRIMARIO));
         
-        // Configurar el renderizador para centrar texto
+        // Configurar el renderizador para centrar texto y manejar texto largo
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer); // Teléfono centrado
+        
+        // Renderizador para wrapping text en nombre y saludo
+        DefaultTableCellRenderer wrapRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public void setValue(Object value) {
+                if (value != null) {
+                    // Si el texto es demasiado largo, añadir elipsis
+                    String text = value.toString();
+                    if (text.length() > 40) {
+                        text = text.substring(0, 37) + "...";
+                    }
+                    setText(text);
+                } else {
+                    setText("");
+                }
+            }
+        };
+        
+        // Aplicar el renderizador de texto con elipsis a las columnas de nombre y saludo
+        table.getColumnModel().getColumn(0).setCellRenderer(wrapRenderer); // Nombre
+        table.getColumnModel().getColumn(2).setCellRenderer(wrapRenderer); // Saludo
         
         // Configurar ancho de columnas
         table.getColumnModel().getColumn(0).setPreferredWidth(150); // Nombre
         table.getColumnModel().getColumn(1).setPreferredWidth(100); // Teléfono
         table.getColumnModel().getColumn(2).setPreferredWidth(250); // Saludo
         
-        // Crear scroll con bordes mejorados
+        // Crear scroll con bordes mejorados y desactivar scroll horizontal
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_PRIMARIO, 1),
                 BorderFactory.createEmptyBorder(0, 0, 0, 0)
         ));
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Desactivar scroll horizontal
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
         

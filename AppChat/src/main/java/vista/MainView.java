@@ -204,6 +204,28 @@ public class MainView extends JFrame {
 		
 		// Botón Premium
 		JButton btnPremium = crearBoton("Premium", null, new Color(255, 215, 0), COLOR_TEXTO);
+		btnPremium.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        if (usuarioActual != null) {
+		            if (usuarioActual.isEsPremium()) {
+		                // Si ya es premium, mostrar el diálogo de opciones premium
+		                PremiumOptionsDialog dialogoOpciones = new PremiumOptionsDialog(MainView.this, usuarioActual);
+		                dialogoOpciones.setVisible(true);
+		            } else {
+		                // Si no es premium, mostrar el diálogo de actualización
+		                PremiumDialog dialogoPremium = new PremiumDialog(MainView.this, usuarioActual);
+		                dialogoPremium.setVisible(true);
+		                // Refrescar información de contactos por si cambió el estado premium
+		                cargarContactos();
+		            }
+		        } else {
+		            JOptionPane.showMessageDialog(MainView.this, 
+		                "No hay usuario autenticado.", 
+		                "Error", 
+		                JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
 		
 		// Botón Buscar Mensajes
 		JButton btnBuscarMensajes = crearBoton("Buscar Mensajes", null, colorBotonPrimario, colorTextoBoton);
@@ -327,6 +349,7 @@ public class MainView extends JFrame {
         scrollLista.setPreferredSize(new Dimension(220, 600));
         scrollLista.setBorder(BorderFactory.createEmptyBorder());
         scrollLista.getVerticalScrollBar().setUnitIncrement(16);
+        scrollLista.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Desactivar scroll horizontal
         panelContatos.add(scrollLista, BorderLayout.CENTER);
 		
         // Panel central con CardLayout para cambiar entre vistas

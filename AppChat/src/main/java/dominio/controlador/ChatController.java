@@ -485,6 +485,55 @@ public class ChatController {
 	}
 
 	public void cerrarSesion() {
-		return;
+			this.usuarioActual = null;
+	}
+	
+	/**
+	 * Actualiza el estado premium del usuario actual.
+	 * En una implementación real, este método también realizaría la integración con un sistema de pagos.
+	 * 
+	 * @return true si la actualización fue exitosa, false en caso contrario
+	 */
+	public boolean actualizarUsuarioAPremium() {
+		if (usuarioActual == null) {
+			return false;
+		}
+		
+		// Si el usuario ya es premium, no hacemos nada pero indicamos éxito
+		if (usuarioActual.isEsPremium()) {
+			return true;
+		}
+		
+		try {
+			// Actualizar el estado premium del usuario
+			usuarioActual.convertirAPremium();
+			// Persistir el cambio en la base de datos
+			usuarioDAO.update(usuarioActual);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Genera un informe PDF con los contactos y grupos del usuario actual.
+	 * Esta funcionalidad solo está disponible para usuarios premium.
+	 * 
+	 * @param rutaDestino Ruta donde se guardará el archivo PDF
+	 * @return true si el PDF se generó correctamente, false en caso contrario
+	 */
+	public boolean generarInformePDF(String rutaDestino) {
+		if (usuarioActual == null) {
+			return false;
+		}
+		
+		// Verificar que el usuario es premium
+		if (!usuarioActual.isEsPremium()) {
+			return false;
+		}
+		
+		// Utilizar el generador de PDF
+		return utils.PDFGenerator.generarInformeContactos(usuarioActual, rutaDestino);
 	}
 }

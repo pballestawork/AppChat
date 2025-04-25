@@ -87,10 +87,32 @@ public class PruebaTest {
 		// 12.Enviar/recibir grupo
 		
 		// 13.Convertir a premium
+		System.out.println("13.Convertir a premium");
+		boolean resultadoPremium = controlador.actualizarUsuarioAPremium();
+		System.out.println("¿Usuario actualizado a premium correctamente? " + resultadoPremium);
+		System.out.println("Estado premium del usuario: " + u.isEsPremium());
 		
-		// 14.Desactivar premium
-		// 15.Generar PDF
-
+		// 14.Generar PDF
+		System.out.println("14.Generar PDF");
+		// Crear un archivo PDF en la carpeta temporal del sistema
+		String rutaPDF = System.getProperty("java.io.tmpdir") + "informe_contactos_test.pdf";
+		boolean resultadoPDF = controlador.generarInformePDF(rutaPDF);
+		System.out.println("¿PDF generado correctamente? " + resultadoPDF);
+		System.out.println("Ruta del PDF generado: " + rutaPDF);
+		
+		// Enviar mensajes adicionales para probar que se incluyen en el PDF
+		System.out.println("15.Enviar mensajes adicionales para probar el PDF");
+		controlador.enviarMensaje(u.getContactos().get(0), "Este es un mensaje de prueba para el PDF");
+		controlador.enviarMensaje(u.getContactos().get(0), "Otro mensaje para verificar que se incluye en el PDF");
+		
+		// Generar otro PDF con los nuevos mensajes
+		String rutaPDF2 = System.getProperty("java.io.tmpdir") + "informe_contactos_test_con_mensajes.pdf";
+		boolean resultadoPDF2 = controlador.generarInformePDF(rutaPDF2);
+		System.out.println("¿Segundo PDF generado correctamente? " + resultadoPDF2);
+		System.out.println("Ruta del segundo PDF: " + rutaPDF2);
+		
+		// Mostrar mensaje de finalización
+		System.out.println("\nPruebas completadas correctamente. Verifique los archivos PDF generados.");
 	}
 
 	/*
