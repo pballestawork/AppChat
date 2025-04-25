@@ -1,4 +1,4 @@
-package utils;
+package dominio.modelo;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package utils;
+package dominio.modelo;
 
 /**
  * Class representing a discount with a name and percentage.

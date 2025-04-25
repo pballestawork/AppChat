@@ -28,9 +28,9 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dominio.modelo.Usuario;
+import dominio.modelo.Descuento;
+import dominio.modelo.DescuentoFactory;
 import utils.ChatControllerStub;
-import utils.Descuento;
-import utils.DescuentoFactory;
 
 /**
  * Dialog that allows users to upgrade to premium with discount selection.
