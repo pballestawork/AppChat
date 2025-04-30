@@ -1,5 +1,6 @@
 package dominio.repositorio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,9 +39,9 @@ public class RepositorioUsuarios implements IRepositorioUsuarios{
 	
 	@Override
 	public Usuario add(String nombre, String telefono, String email, String contrasena, String fotoPerfil,
-			String saludo) throws RepositorioException {
+			String saludo, LocalDate fechaNacimiento) throws RepositorioException {
 		
-		Usuario u = new Usuario(0,nombre, telefono, email, contrasena, fotoPerfil, false ,saludo);
+		Usuario u = new Usuario(0,nombre, telefono, email, contrasena, fotoPerfil, false ,saludo, fechaNacimiento);
 		
 		if (this.entidades.containsKey(u.getTelefono()))
 			throw new RepositorioException(u.getTelefono() + " ya existe en el repositorio");
@@ -52,7 +53,7 @@ public class RepositorioUsuarios implements IRepositorioUsuarios{
 	
 	@Override
 	public String add(Usuario entity) throws RepositorioException {
-		Usuario u = add(entity.getNombre(),entity.getTelefono(),entity.getEmail(),entity.getContrasena(),entity.getFotoPerfil(),entity.getSaludo());
+		Usuario u = add(entity.getNombre(),entity.getTelefono(),entity.getEmail(),entity.getContrasena(),entity.getFotoPerfil(),entity.getSaludo(), entity.getFechaNacimiento());
 		return u.getTelefono(); 
 	}
 

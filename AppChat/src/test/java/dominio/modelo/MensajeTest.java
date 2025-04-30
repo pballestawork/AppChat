@@ -3,6 +3,8 @@ package dominio.modelo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 
@@ -19,6 +21,7 @@ public class MensajeTest {
 	private static final boolean PREMIUM_USUARIO = false;
 	private static final String SALUDO_USUARIO = "Esto es un saludo";
 	private static final LinkedList<Contacto> CONTACTOS = new LinkedList<Contacto>();
+	private static final LocalDate FECHA_NACIMIENTO = LocalDate.of(1999, 1, 1);
 
 	private Mensaje mensaje;
 	private int idMensaje;
@@ -31,7 +34,7 @@ public class MensajeTest {
 	@Before
 	public void beforeEach() {
 		usuario = new Usuario(ID_USUARIO, NOMBRE_USUARIO, TELEFONO_USUARIO, CORREO_USUARIO, CONTRASENA_USUARIO, FOTO_USUARIO,
-				PREMIUM_USUARIO, SALUDO_USUARIO, CONTACTOS);
+				PREMIUM_USUARIO, SALUDO_USUARIO, FECHA_NACIMIENTO,CONTACTOS);
 		
 		receptor = new ContactoIndividual(0, NOMBRE_USUARIO, usuario);
 		
@@ -65,7 +68,7 @@ public class MensajeTest {
 	
 	@Test
 	public void testSettersConExito() {
-		Usuario u = new Usuario(20,"","","","","",true,"",null);
+		Usuario u = new Usuario(20,"","","","","",true,"",LocalDate.of(1999, 1, 1),null);
 		LocalDateTime f = LocalDateTime.now().plusMinutes(100);
 		
 		mensaje.setId(1000);

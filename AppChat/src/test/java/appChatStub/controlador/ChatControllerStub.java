@@ -23,7 +23,7 @@ public class ChatControllerStub {
 	public ChatControllerStub () {
 		usuarioActual = null; 
 		
-		Usuario usuario = new Usuario(0,"Pablo","600600600","pablo@gmail.com","1234","",false,"Hola",null);
+		Usuario usuario = new Usuario(0,"Pablo","600600600","pablo@gmail.com","1234","",false,"Hola",LocalDate.of(1999, 1, 1),null);
 		usuario.setContactos(new LinkedList<Contacto>());
 		
 		usuarios = new HashMap<String, Usuario>();
@@ -70,7 +70,7 @@ public class ChatControllerStub {
 			throw new ChatControllerException("El telefono "+telefono+" ya está registrado.");
 		}
 		
-		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,null,new LinkedList<Contacto>());
+		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false,null,LocalDate.of(1999, 1, 1),new LinkedList<Contacto>());
 		return u;
 	}
 	

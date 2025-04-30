@@ -1,24 +1,22 @@
 package dominio.modelo;
 
 /**
- * Class representing a discount with a name and percentage.
+ * Interface representing a discount with common methods.
  */
-public class Descuento {
-    private String nombre;
-    private double porcentaje;
+public interface Descuento {
+    /**
+     * Gets the name of the discount.
+     * 
+     * @return The name of the discount
+     */
+    String getNombre();
     
-    public Descuento(String nombre, double porcentaje) {
-        this.nombre = nombre;
-        this.porcentaje = porcentaje;
-    }
-    
-    public String getNombre() {
-        return nombre;
-    }
-    
-    public double getPorcentaje() {
-        return porcentaje;
-    }
+    /**
+     * Gets the percentage of the discount.
+     * 
+     * @return The percentage of the discount (0.0 to 1.0)
+     */
+    double getPorcentaje();
     
     /**
      * Calculates the discount amount based on the original price.
@@ -26,9 +24,7 @@ public class Descuento {
      * @param precioOriginal The original price
      * @return The discount amount
      */
-    public double calcularDescuento(double precioOriginal) {
-        return precioOriginal * porcentaje;
-    }
+    double calcularDescuento(double precioOriginal);
     
     /**
      * Calculates the final price after applying the discount.
@@ -36,12 +32,19 @@ public class Descuento {
      * @param precioOriginal The original price
      * @return The final price after discount
      */
-    public double calcularPrecioFinal(double precioOriginal) {
-        return precioOriginal - calcularDescuento(precioOriginal);
-    }
+    double calcularPrecioFinal(double precioOriginal);
     
-    @Override
-    public String toString() {
-        return nombre + " (" + (int)(porcentaje * 100) + "%)";
-    }
+    /**
+     * Validates if the discount is applicable.
+     * 
+     * @return true if the discount is applicable, false otherwise
+     */
+    boolean esAplicable();
+    
+    /**
+     * Get a description of the requirements for this discount.
+     * 
+     * @return A human-readable description of the requirements
+     */
+    String getDescripcionRequisitos();
 }

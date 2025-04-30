@@ -29,8 +29,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dominio.modelo.Usuario;
 import dominio.modelo.Descuento;
-import dominio.modelo.DescuentoFactory;
 import utils.ChatControllerStub;
+import utils.DescuentoFactory;
 
 /**
  * Dialog that allows users to upgrade to premium with discount selection.
@@ -58,6 +58,8 @@ public class PremiumDialog extends JDialog {
     private JComboBox<String> comboDescuentos;
     private JLabel lblPrecioFinal;
     private JLabel lblDescuentoAplicado;
+    private JLabel lblMensajeError;
+    private JButton btnAceptar;
     private Descuento descuentoSeleccionado;
     private final DecimalFormat formatoMoneda = new DecimalFormat("0.00 €");
     
@@ -84,7 +86,7 @@ public class PremiumDialog extends JDialog {
      */
     private void initComponents() {
         setResizable(false);
-        setSize(450, 500);
+        setSize(450, 530);
         getContentPane().setBackground(COLOR_FONDO);
         setLayout(new BorderLayout());
         
@@ -222,18 +224,30 @@ public class PremiumDialog extends JDialog {
         gbc.weightx = 0.6;
         panelDescuento.add(lblDescuentoAplicado, gbc);
         
+        // Mensaje de error para descuentos no aplicables
+        lblMensajeError = new JLabel("");
+        lblMensajeError.setFont(new Font("Arial", Font.ITALIC, 12));
+        lblMensajeError.setForeground(Color.RED);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panelDescuento.add(lblMensajeError, gbc);
+        
         // Precio final
         JLabel lblPrecioFinalLabel = new JLabel("Precio final:");
         lblPrecioFinalLabel.setFont(FUENTE_LABEL);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.4;
         panelDescuento.add(lblPrecioFinalLabel, gbc);
         
         lblPrecioFinal = new JLabel(formatoMoneda.format(PRECIO_PREMIUM));
         lblPrecioFinal.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.weightx = 0.6;
         panelDescuento.add(lblPrecioFinal, gbc);
         
@@ -259,7 +273,7 @@ public class PremiumDialog extends JDialog {
         btnCancelar.addActionListener(e -> dispose());
         
         // Botón Aceptar
-        JButton btnAceptar = new JButton("Actualizar a Premium");
+        btnAceptar = new JButton("Actualizar a Premium");
         btnAceptar.setFont(FUENTE_BUTTON);
         btnAceptar.setBackground(COLOR_ORO);
         btnAceptar.setForeground(COLOR_TEXTO);
@@ -286,17 +300,45 @@ public class PremiumDialog extends JDialog {
         String descuentoNombre = (String) comboDescuentos.getSelectedItem();
         descuentoSeleccionado = DescuentoFactory.createDescuento(descuentoNombre);
         
-        double descuentoAplicado = descuentoSeleccionado.calcularDescuento(PRECIO_PREMIUM);
-        double precioFinal = descuentoSeleccionado.calcularPrecioFinal(PRECIO_PREMIUM);
+        // Comprobar si el descuento es válido para la edad del usuario
+        boolean descuentoValido = controlador.validarDescuentoParaUsuario(descuentoSeleccionado);
         
-        lblDescuentoAplicado.setText(formatoMoneda.format(descuentoAplicado));
-        lblPrecioFinal.setText(formatoMoneda.format(precioFinal));
+        if (!descuentoValido) {
+            // No cumple con los requisitos de edad
+            lblDescuentoAplicado.setText(formatoMoneda.format(0.0));
+            lblPrecioFinal.setText(formatoMoneda.format(PRECIO_PREMIUM));
+            lblMensajeError.setText("No cumples los requisitos de edad para este descuento");
+            btnAceptar.setEnabled(true); // Se permite continuar pero sin descuento
+        } else {
+            // Cumple con los requisitos de edad o el descuento no tiene restricción de edad
+            double descuentoAplicado = descuentoSeleccionado.calcularDescuento(PRECIO_PREMIUM);
+            double precioFinal = descuentoSeleccionado.calcularPrecioFinal(PRECIO_PREMIUM);
+            
+            lblDescuentoAplicado.setText(formatoMoneda.format(descuentoAplicado));
+            lblPrecioFinal.setText(formatoMoneda.format(precioFinal));
+            lblMensajeError.setText(""); // Limpiar mensaje de error
+            btnAceptar.setEnabled(true);
+        }
     }
     
     /**
      * Performs the premium upgrade operation and offers to generate a PDF.
      */
     private void realizarActualizacionPremium() {
+        // Si hay un mensaje de error por requisitos de edad, mostrar advertencia
+        if (!lblMensajeError.getText().isEmpty()) {
+            int confirmar = JOptionPane.showConfirmDialog(this,
+                    "No cumples con los requisitos para el descuento seleccionado.\n" +
+                    "¿Deseas continuar con el precio normal de " + formatoMoneda.format(PRECIO_PREMIUM) + "?",
+                    "Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            
+            if (confirmar != JOptionPane.YES_OPTION) {
+                return; // Cancelar la operación
+            }
+        }
+        
         // Aquí se realizaría la lógica de pago real en una implementación completa
         
         // Actualizar al usuario a premium

@@ -1,5 +1,6 @@
 package utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Contacto;
 import dominio.modelo.ContactoIndividual;
+import dominio.modelo.Descuento;
 import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -30,10 +32,10 @@ public class ChatControllerStub {
 		contadorGrupoId = new AtomicInteger(1); // Inicializar contador de IDs para grupos
 		
 		// Inicialización de usuarios
-		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola",new LinkedList<Contacto>());
-		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","/FotosPerfil/Perfil_1.png",false,"Hola",new LinkedList<Contacto>());
-		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","/FotosPerfil/Perfil_3.png",false,"Hola",new LinkedList<Contacto>());
-		Usuario usuario4 = new Usuario(3,"Pepe","4","pepe@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola,soy pepe",new LinkedList<Contacto>());
+		Usuario usuario = new Usuario(1,"Pablo","1","pablo@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola",LocalDate.now(),new LinkedList<Contacto>());
+		Usuario usuario2 = new Usuario(2,"Alvaro","2","alvaro@gmail.com","123","/FotosPerfil/Perfil_1.png",false,"Hola",LocalDate.now(),new LinkedList<Contacto>());
+		Usuario usuario3 = new Usuario(3,"Laura","3","laura@gmail.com","123","/FotosPerfil/Perfil_3.png",false,"Hola",LocalDate.now(),new LinkedList<Contacto>());
+		Usuario usuario4 = new Usuario(3,"Pepe","4","pepe@gmail.com","123","/FotosPerfil/Perfil_2.png",false,"Hola,soy pepe",LocalDate.now(),new LinkedList<Contacto>());
 		
 		usuarios = new HashMap<String, Usuario>();
 		usuarios.put(usuario.getTelefono(),usuario);
@@ -120,14 +122,14 @@ public class ChatControllerStub {
 	}
 	
 	
-	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
+	public void registrarUsuario(String nombre, LocalDate fechaNacimiento, String email, String fotoPerfil,
 			String telefono, String contrasena,String saludo) throws ChatControllerException {
 		
 		if(usuarios.containsKey(telefono)) {
 			throw new ChatControllerException("El telefono "+ telefono +" ya está registrado.");
 		}
 		
-		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false ,saludo);
+		Usuario u = new Usuario(0, nombre, telefono, email,contrasena, fotoPerfil,false ,saludo, fechaNacimiento);
 		
 		usuarios.put(telefono, u);
 	}
@@ -436,5 +438,26 @@ public class ChatControllerStub {
 		
 		// Utilizar el generador de PDF
 		return PDFGenerator.generarInformeContactos(usuarioActual, rutaDestino);
+	}
+	
+	/**
+	 * Verifica si un descuento es válido para el usuario actual.
+	 * 
+	 * @param descuento El descuento a validar
+	 * @return true si el usuario puede usar el descuento, false en caso contrario
+	 */
+	public boolean validarDescuentoParaUsuario(Descuento descuento) {
+		if (usuarioActual == null || descuento == null) {
+			return false;
+		}
+		
+		// Obtener la fecha de nacimiento del usuario
+		LocalDate fechaNacimiento = usuarioActual.getFechaNacimiento();
+		
+		// Configurar el contexto del usuario en el descuento
+		DescuentoFactory.configurarContextoUsuario(descuento, fechaNacimiento);
+		
+		// Validar si el descuento es aplicable
+		return descuento.esAplicable();
 	}
 }

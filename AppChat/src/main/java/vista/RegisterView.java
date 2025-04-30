@@ -15,6 +15,7 @@ import dominio.controlador.ChatControllerException;
 import utils.ChatControllerStub;
 import utils.Utils;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -397,10 +398,10 @@ public class RegisterView extends JFrame {
                 String contrasenaRepetida = new String(passwordField_1.getPassword());
                 String saludo = textSaludoInicial.getText().trim();
                 
-                LocalDateTime fechaNacimiento = null;
+                LocalDate fechaNacimiento = null;
                 if (fechaNacimientoField.getDate() != null) {
                     fechaNacimiento = fechaNacimientoField.getDate().toInstant()
-                        .atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+                        .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
                 }
                 
                 // Validaciones de formato:

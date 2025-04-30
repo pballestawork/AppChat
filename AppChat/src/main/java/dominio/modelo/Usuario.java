@@ -1,10 +1,9 @@
 package dominio.modelo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import persistencia.dao.Identificable;
 
@@ -18,12 +17,13 @@ public class Usuario implements Identificable {
 	private String fotoPerfil;
 	private String saludo;
 	private boolean esPremium;
+	private LocalDate fechaNacimiento;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
 	//TODO Add localdate fechaNacimiento
 	
 		
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
-			boolean esPremium, String saludo, List<Contacto> contactos) {
+			boolean esPremium, String saludo, LocalDate fechaNacimiento, List<Contacto> contactos) {
 		this.id = id;
 		this.nombre = nombre;
 		this.telefono = telefono;
@@ -31,13 +31,14 @@ public class Usuario implements Identificable {
 		this.contrasena = contrasena;
 		this.fotoPerfil = fotoPerfil;
 		this.esPremium = esPremium;
+		this.fechaNacimiento = fechaNacimiento;
 		this.contactos = contactos != null ? contactos : new ArrayList<>();
 		this.saludo = saludo;
 	}
 	
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
-			boolean esPremium, String saludo) {
-		this(id, nombre, telefono, email, contrasena, fotoPerfil, esPremium, saludo, new ArrayList<>());
+			boolean esPremium, String saludo, LocalDate fechaNacimiento) {
+		this(id, nombre, telefono, email, contrasena, fotoPerfil, esPremium, saludo,fechaNacimiento, new ArrayList<>());
 	}
 
 
@@ -127,6 +128,12 @@ public class Usuario implements Identificable {
 	
 	public void deleteContacto(Contacto contactoPedro) {
 		this.contactos.remove(contactoPedro);
+	}
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	

@@ -1,6 +1,8 @@
 package dominio.controlador;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +15,7 @@ import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
+import dominio.modelo.Descuento;
 import dominio.repositorio.EntidadNoEncontrada;
 import dominio.repositorio.IRepositorioUsuarios;
 import dominio.repositorio.RepositorioException;
@@ -24,6 +27,7 @@ import persistencia.dao.IAdaptadorContactoIndividualDAO;
 import persistencia.dao.IAdaptadorGrupoDAO;
 import persistencia.dao.IAdaptadorMensajeDAO;
 import persistencia.dao.IAdaptadorUsuarioDAO;
+import utils.DescuentoFactory;
 
 public class ChatController {
 	private static ChatController unicaInstancia;
@@ -65,10 +69,10 @@ public class ChatController {
 	 * 
 	 * Si el número de teléfono ya está registrado, se muestra un mensaje de error.
 	 */
-	public void registrarUsuario(String nombre, LocalDateTime fechaNacimiento, String email, String fotoPerfil,
+	public void registrarUsuario(String nombre, LocalDate fechaNacimiento, String email, String fotoPerfil,
 			String telefono, String contrasena, String saludo) throws RepositorioException {
 	
-		Usuario u = repositorioUsuarios.add(nombre, telefono, email, contrasena, fotoPerfil, saludo);
+		Usuario u = repositorioUsuarios.add(nombre, telefono, email, contrasena, fotoPerfil, saludo, fechaNacimiento);
 		usuarioDAO.add(u);
 		repositorioUsuarios.add(u);
 	}
@@ -535,5 +539,26 @@ public class ChatController {
 		
 		// Utilizar el generador de PDF
 		return utils.PDFGenerator.generarInformeContactos(usuarioActual, rutaDestino);
+	}
+	
+	/**
+	 * Verifica si un descuento es válido para el usuario actual.
+	 * 
+	 * @param descuento El descuento a validar
+	 * @return true si el usuario puede usar el descuento, false en caso contrario
+	 */
+	public boolean validarDescuentoParaUsuario(Descuento descuento) {
+		if (usuarioActual == null || descuento == null) {
+			return false;
+		}
+		
+		// Obtener la fecha de nacimiento del usuario
+		LocalDate fechaNacimiento = usuarioActual.getFechaNacimiento();
+		
+		// Configurar el contexto del usuario en el descuento
+		DescuentoFactory.configurarContextoUsuario(descuento, fechaNacimiento);
+		
+		// Validar si el descuento es aplicable
+		return descuento.esAplicable();
 	}
 }

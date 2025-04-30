@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class UsuarioTest {
 	private static final String FOTO_USUARIO = "fotoPerfil.png";
 	private static final boolean PREMIUM_USUARIO = false;
 	private static final String SALUDO_USUARIO = "Hola, soy Pablo";
+	private static final LocalDate FECHA_NACIMIENTO = LocalDate.of(1999, 1, 1);
 
 	private Usuario usuario;
 	private List<Contacto> contactos;
@@ -30,7 +32,7 @@ public class UsuarioTest {
 		contactos = new LinkedList<Contacto>();
 		contactos.add(new ContactoIndividual(2, "Pedro", null));
 		usuario = new Usuario(ID_USUARIO, NOMBRE_USUARIO, TELEFONO_USUARIO, EMAIL_USUARIO, CONTRASENA_USUARIO,
-				FOTO_USUARIO, PREMIUM_USUARIO, SALUDO_USUARIO, contactos);
+				FOTO_USUARIO, PREMIUM_USUARIO, SALUDO_USUARIO,FECHA_NACIMIENTO, contactos);
 	}
 
 	@Test
@@ -43,13 +45,14 @@ public class UsuarioTest {
 		assertTrue(u.getContrasena() == null);
 		assertTrue(u.getFotoPerfil() == null);
 		assertTrue(u.getSaludo() == null);
+		assertTrue(u.getFechaNacimiento() == null);
 		assertFalse(u.isEsPremium());
 		assertTrue(u.getContactos().isEmpty());
 	}
 
 	@Test
 	public void testConstructorParametrosConExito() {
-		Usuario u = new Usuario(2, "Ana", "700800900", "ana@gmail.com", "password", "foto.png", true, "Hola!",
+		Usuario u = new Usuario(2, "Ana", "700800900", "ana@gmail.com", "password", "foto.png", true, "Hola!",LocalDate.of(1999, 1, 1),
 				contactos);
 		assertTrue(u.getId() == 2);
 		assertTrue(u.getNombre().equals("Ana"));
@@ -113,6 +116,7 @@ public class UsuarioTest {
 				+ ",\n\tfotoPerfil : " + FOTO_USUARIO 
 				+ ",\n\tsaludo : " + SALUDO_USUARIO
 				+ ",\n\tesPremium : " + PREMIUM_USUARIO
+				+ ",\n\tfechaNacimiento : " + FECHA_NACIMIENTO
 				+ ",\n\tcontactos : "
 				+ "{\n\t\tnombre : Pedro"
 				+ "\n\t}"
@@ -123,7 +127,7 @@ public class UsuarioTest {
 	@Test
 	public void testEqualsConUsuarioDuplicado() {
 		Usuario usuarioDuplicado = new Usuario(ID_USUARIO, "Otro", TELEFONO_USUARIO, "otro@gmail.com", "otraContrasena",
-				"otraFoto.png", false, "Otro saludo", null);
+				"otraFoto.png", false, "Otro saludo", LocalDate.of(1990, 1, 1),null);
 		assertEquals(usuario, usuarioDuplicado);
 	}
 

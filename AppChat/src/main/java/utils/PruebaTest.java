@@ -1,5 +1,6 @@
 package utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class PruebaTest {
 
 		// 1.Registrar nuevo usuario
 		System.out.println("1.Registrar nuevo usuario");
-		controlador.registrarUsuario("a", LocalDateTime.now(), "pablo@gmail.com", null, "6", "123","saludo");
+		controlador.registrarUsuario("a", LocalDate.now(), "pablo@gmail.com", null, "6", "123","saludo");
 
 		// 2.Iniciar sesión
 		System.out.println("2.Iniciar sesión");
