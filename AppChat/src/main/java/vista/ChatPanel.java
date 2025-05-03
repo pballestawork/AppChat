@@ -251,7 +251,7 @@ public class ChatPanel extends JPanel {
         if (contacto == null) return;
         
         for (Mensaje m : contacto.getMensajes()) {
-            int tipo = m.getTipo() ? BubbleText.SENT : BubbleText.RECEIVED;
+            int tipo = m.isEnviado(usuarioActual) ? BubbleText.SENT : BubbleText.RECEIVED;
             String contenido = m.getContenido();
             
             if (contenido.startsWith(EMOJI_PREFIX)) {
