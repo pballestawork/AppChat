@@ -112,7 +112,7 @@ public class ChatControllerStub {
 		usuariosGrupo.add(lauraDePablo);
 		
 		// Ahora usamos el método simplificado que genera un ID único automáticamente
-		usuario.crearGrupo("Grupo", usuariosGrupo, "/FotosPerfil/Perfil_2.png");
+		usuario.addGrupo("Grupo", usuariosGrupo, "/FotosPerfil/Perfil_2.png");
 	}
 	
 	public static ChatControllerStub getUnicaInstancia() {
@@ -209,7 +209,7 @@ public class ChatControllerStub {
 		}
 		
 		 // Utilizar el método de Usuario que ahora genera IDs automáticamente
-		usuarioActual.crearGrupo(nombreGrupo, miembros, imagenGrupo);
+		usuarioActual.addGrupo(nombreGrupo, miembros, imagenGrupo);
 	}
 
 	
@@ -385,9 +385,6 @@ public class ChatControllerStub {
 	}
 
 	
-	public void exportarMensajesPDF(Usuario usuario,List<Mensaje> mensajes) {
-        // Código para exportar mensajes a PDF
-    }
 
 	public void cerrarSesion() {
 		this.usuarioActual = null;

@@ -8,7 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import beans.Entidad;
 import persistencia.dao.Identificable;
+import tds.driver.FactoriaServicioPersistencia;
+import tds.driver.ServicioPersistencia;
 
 public class Utils {
 
@@ -63,6 +66,12 @@ public class Utils {
 				.filter(s -> !s.isEmpty())
 				.map(Integer::parseInt) // Convertir cada elemento a int
 				.collect(Collectors.toList());
+	}
+	
+	public static void borrarBaseDatos() {
+		ServicioPersistencia servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
+		entidades.forEach(e -> servicioPersistencia.borrarEntidad(e));
 	}
 
 }

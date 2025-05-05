@@ -30,10 +30,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Usuario;
-import utils.ChatControllerStub;
+
 import utils.Utils;
 
 /**
@@ -63,7 +64,7 @@ public class GroupView extends JPanel {
     private JButton btnCrearGrupo;
     private JButton btnCancelar;
     private Usuario usuarioActual;
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     
     // Componentes para la selección de imagen
     private JLabel lblImagen;
@@ -74,7 +75,11 @@ public class GroupView extends JPanel {
      * Constructor que crea el panel de creación de grupos.
      */
     public GroupView() {
-        controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         usuarioActual = controlador.getUsuarioActual();
         
         setLayout(new BorderLayout(10, 10));
@@ -436,6 +441,16 @@ public class GroupView extends JPanel {
                     "El grupo debe tener al menos un miembro.",
                     "Sin miembros",
                     JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 	Validar que haya introducido la foto
+        if (rutaImagenGrupo == null || rutaImagenGrupo.isEmpty()) {
+            JOptionPane.showMessageDialog(
+            		this, 
+            		"Por favor, seleccione una foto de perfil de grupo.",
+            		"Error",
+            		JOptionPane.ERROR_MESSAGE);
             return;
         }
         

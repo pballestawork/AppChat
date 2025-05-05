@@ -11,8 +11,10 @@ import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 
 import com.toedter.calendar.JDateChooser;
+
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
-import utils.ChatControllerStub;
+import dominio.repositorio.RepositorioException;
 import utils.Utils;
 import java.io.File;
 import java.time.LocalDate;
@@ -417,7 +419,7 @@ public class RegisterView extends JFrame {
                     JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (fechaNacimiento == null) {
+                if (fechaNacimiento == null || fechaNacimiento.isAfter(LocalDate.now())) {
                     JOptionPane.showMessageDialog(this, "Debe seleccionar una fecha de nacimiento válida.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -431,7 +433,7 @@ public class RegisterView extends JFrame {
                     return;
                 }
                 
-                ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
+                ChatController controlador = ChatController.getUnicaInstancia();
                 controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, saludo);
                 
                 JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
@@ -442,7 +444,9 @@ public class RegisterView extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (ChatControllerException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            } catch (RepositorioException ex) {
+            	JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
         });
         panelInferior.add(btnRegistrar);
         

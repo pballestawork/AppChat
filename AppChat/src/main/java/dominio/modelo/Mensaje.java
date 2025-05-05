@@ -103,10 +103,6 @@ public class Mensaje implements Identificable, Cloneable {
 		this.emisor = emisor;
 	}
 	
-	/**
-	 * Establece el receptor del mensaje
-	 * @param receptor El contacto receptor
-	 */
 	public void setReceptor(Contacto receptor) {
 		this.receptor = receptor;
 	}
@@ -149,5 +145,9 @@ public class Mensaje implements Identificable, Cloneable {
 	public boolean contienePalabra(String texto) {
 		return texto != null && contenido != null && 
 		       contenido.toLowerCase().contains(texto.toLowerCase());
+	}
+
+	public boolean isEnviado(Usuario usuario) {
+		return usuario.equals(emisor);
 	}
 }

@@ -21,8 +21,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
-import utils.ChatControllerStub;
+
 
 /**
  * Diálogo que muestra las opciones disponibles para usuarios Premium.
@@ -43,7 +45,7 @@ public class PremiumOptionsDialog extends JDialog {
     private static final Font FUENTE_BUTTON = new Font("Arial", Font.BOLD, 13);
     
     // Controlador
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     private Usuario usuario;
     
     /**
@@ -54,7 +56,11 @@ public class PremiumOptionsDialog extends JDialog {
      */
     public PremiumOptionsDialog(JFrame parent, Usuario usuario) {
         super(parent, "Opciones Premium", true);
-        this.controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			this.controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         this.usuario = usuario;
         initComponents();
         setLocationRelativeTo(parent);

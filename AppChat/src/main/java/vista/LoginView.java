@@ -4,9 +4,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
-import utils.ChatControllerStub;
+import dominio.repositorio.EntidadNoEncontrada;
+import dominio.repositorio.RepositorioException;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -44,7 +48,7 @@ public class LoginView extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtCorreo;
 	private JPasswordField txtPassword;
-	private ChatControllerStub controlador;
+	private ChatController controlador;
 
 	/**
 	 * Launch the application.
@@ -206,7 +210,11 @@ public class LoginView extends JFrame {
 		setLocationRelativeTo(null);
 		
 		// Instancia del controlador
-		controlador = ChatControllerStub.getUnicaInstancia();
+		try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
 		
 		// Action Listener para botón de login
 		btnLogin.addActionListener(new ActionListener() {
@@ -238,7 +246,7 @@ public class LoginView extends JFrame {
 							"Error de autenticación", 
 							JOptionPane.ERROR_MESSAGE);
 					}
-				} catch(ChatControllerException ex) {
+				} catch(ChatControllerException | RepositorioException | EntidadNoEncontrada ex) {
 					JOptionPane.showMessageDialog(LoginView.this, 
 						ex.getMessage(), 
 						"Error", 

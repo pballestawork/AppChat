@@ -35,7 +35,6 @@ public class ContactoIndividual extends Contacto {
 	}
 
 	
-	
 	/**
 	 * Obtiene el número de teléfono del usuario asociado a este contacto
 	 * @return El número de teléfono del usuario o null si no hay usuario asociado
@@ -43,4 +42,5 @@ public class ContactoIndividual extends Contacto {
 	public String getTelefonoUsuario() {
 		return usuario != null ? usuario.getTelefono() : null;
 	}
+
 }

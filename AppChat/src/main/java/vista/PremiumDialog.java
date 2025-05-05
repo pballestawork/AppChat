@@ -28,8 +28,10 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dominio.modelo.Usuario;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Descuento;
-import utils.ChatControllerStub;
+
 import utils.DescuentoFactory;
 
 /**
@@ -64,7 +66,7 @@ public class PremiumDialog extends JDialog {
     private final DecimalFormat formatoMoneda = new DecimalFormat("0.00 €");
     
     // Controlador
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     private Usuario usuario;
     
     /**
@@ -75,7 +77,11 @@ public class PremiumDialog extends JDialog {
      */
     public PremiumDialog(JFrame parent, Usuario usuario) {
         super(parent, "Actualizar a Premium", true);
-        this.controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			this.controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         this.usuario = usuario;
         initComponents();
         setLocationRelativeTo(parent);
