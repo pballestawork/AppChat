@@ -71,7 +71,6 @@ public class ChatController {
 	
 		Usuario u = repositorioUsuarios.add(nombre, telefono, email, contrasena, fotoPerfil, saludo, fechaNacimiento);
 		usuarioDAO.add(u);
-		repositorioUsuarios.add(u);
 	}
 
 	/**
@@ -79,9 +78,10 @@ public class ChatController {
 	 *
 	 * Se valida que el número de teléfono no está registrado o la contraseña 
 	 * es incorrecta. Si las credenciales son válidas, se retorna el usuario correspondiente. 
+	 * @throws RepositorioException 
 	 */
 	public Usuario iniciarSesion(String telefono, String contrasena)
-			throws ChatControllerException, RepositorioException, EntidadNoEncontrada {
+			throws ChatControllerException, EntidadNoEncontrada, RepositorioException {
 
 		Usuario u = repositorioUsuarios.getById(telefono);
 		

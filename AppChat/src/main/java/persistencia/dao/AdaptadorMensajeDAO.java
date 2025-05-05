@@ -89,7 +89,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {
 			case PROP_CONTENIDO:
-				prop.setValor(elemento.getContenido());//TODO esto puede meter petardazo
+				prop.setValor(elemento.getContenido());
 				break;
 			case PROP_EMISOR:
 				prop.setValor(String.valueOf(elemento.getEmisor().getId()));

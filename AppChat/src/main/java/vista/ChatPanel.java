@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Contacto;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import tds.BubbleText;
-import utils.ChatControllerStub;
+
 
 public class ChatPanel extends JPanel {
     // Constantes
@@ -45,10 +47,14 @@ public class ChatPanel extends JPanel {
     // Datos
     private Contacto contactoActual;
     private Usuario usuarioActual;
-    private final ChatControllerStub controlador;
+    private ChatController controlador;
 
     public ChatPanel() {
-        controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         setLayout(new BorderLayout());
 
         // --- PANEL DE MENSAJES ---

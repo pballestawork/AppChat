@@ -12,11 +12,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import dominio.modelo.ContactoIndividual;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Contacto;
 import dominio.modelo.Usuario;
 import dominio.modelo.Grupo;
 import tds.BubbleText;
-import utils.ChatControllerStub;
+
 
 import java.awt.BorderLayout;
 import javax.swing.JButton;
@@ -67,7 +69,7 @@ public class MainView extends JFrame {
 	private JPanel panelBuscador;
 	private CardLayout cardLayout;
     private JList<Contacto> listaContactos;
-	private static ChatControllerStub controlador;
+	private static ChatController controlador;
 	private Usuario usuarioActual;
 	private Contacto contactoSeleccionado;
 	
@@ -81,7 +83,11 @@ public class MainView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 850, 750);
 		setTitle("AppChat - Mensajería");
-        controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         listaContactos = new JList<Contacto>();
 		contentPane = new JPanel();
 		contentPane.setBackground(COLOR_FONDO);

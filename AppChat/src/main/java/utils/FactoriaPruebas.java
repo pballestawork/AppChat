@@ -1,5 +1,6 @@
 package utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class FactoriaPruebas {
         usuario.setSaludo("Hola, soy " + nombre);
         usuario.setEsPremium(random.nextBoolean());
         usuario.setContactos(new LinkedList<>());
+        usuario.setFechaNacimiento(LocalDate.of(1999, 2, 15));
 
         return usuario;
     }

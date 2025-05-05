@@ -7,7 +7,7 @@ public class ServicioPersistenciaLauncher {
 
     public static void lanzarServicio() {
         try {
-            String jarPath = Paths.get("lib", "driverPersistencia.jar").toString();
+            String jarPath = Paths.get("servidorPersistenciaH2", "ServidorPersistenciaH2.jar").toString();
 
             ProcessBuilder builder = new ProcessBuilder("java", "-jar", jarPath);
             builder.inheritIO(); // Para ver la salida del servicio en consola

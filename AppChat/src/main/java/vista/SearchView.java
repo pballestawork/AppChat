@@ -27,11 +27,13 @@ import javax.swing.border.EmptyBorder;
 
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Contacto;
 import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Grupo;
 import tds.BubbleText;
-import utils.ChatControllerStub;
+
 
 public class SearchView extends JPanel {
     
@@ -54,10 +56,14 @@ public class SearchView extends JPanel {
     private JButton btnLimpiar;
     private JPanel panelResultados;
     private JScrollPane scrollResultados;
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     
     public SearchView() {
-        controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         initComponents();
     }
     

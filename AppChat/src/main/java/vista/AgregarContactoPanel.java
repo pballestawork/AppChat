@@ -20,8 +20,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
-import utils.ChatControllerStub;
+import dominio.repositorio.EntidadNoEncontrada;
+import dominio.repositorio.RepositorioException;
+
 
 public class AgregarContactoPanel extends JPanel {
     // Constantes para la interfaz (coinciden con las de LoginView/RegisterView)
@@ -37,10 +40,14 @@ public class AgregarContactoPanel extends JPanel {
     private JTextField txtTelefono;
     private JButton btnAgregar;
     private JButton btnCancelar;
-    private ChatControllerStub controlador;
+    private ChatController controlador;
 
     public AgregarContactoPanel() {
-        controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
         initComponents();
     }
     
@@ -164,7 +171,7 @@ public class AgregarContactoPanel extends JPanel {
             if (window instanceof JDialog) {
                 ((JDialog) window).dispose();
             }
-        } catch (ChatControllerException ex) {
+        } catch (ChatControllerException | RepositorioException | EntidadNoEncontrada ex) {
             mostrarDialogoEstilizado("Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
