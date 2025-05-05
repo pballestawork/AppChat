@@ -70,6 +70,7 @@ public class MainView extends JFrame {
 	private static ChatControllerStub controlador;
 	private Usuario usuarioActual;
 	private Contacto contactoSeleccionado;
+	private JButton btnFotoPerfil;
 	
 	public MainView(Usuario usuario) {
         this.usuarioActual = usuario;
@@ -102,11 +103,17 @@ public class MainView extends JFrame {
 		panelUsuario.setOpaque(false);
 		
 		// Botón de foto de perfil con bordes redondeados
-		JButton btnFotoPerfil = new JButton("");
+		btnFotoPerfil = new JButton("");
 		btnFotoPerfil.setPreferredSize(new Dimension(50, 50));
 		btnFotoPerfil.setBorder(BorderFactory.createEmptyBorder());
 		btnFotoPerfil.setFocusPainted(false);
 		btnFotoPerfil.setContentAreaFilled(false);
+		btnFotoPerfil.setToolTipText("Perfil de usuario");
+		btnFotoPerfil.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openProfileEditor();
+			}
+		});
 		
 		try {
 		    String rutaFoto = usuarioActual.getFotoPerfil();
@@ -285,6 +292,25 @@ public class MainView extends JFrame {
         listaContactos.setCellRenderer(new ContactoListCellRenderer());
         listaContactos.setBackground(COLOR_FONDO);
         listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        // Agregar MouseListener para detectar doble clic en contactos
+        listaContactos.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) { // Detecta doble clic
+                    int index = listaContactos.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        Contacto contactoSeleccionado = listaContactos.getModel().getElementAt(index);
+                        if (contactoSeleccionado instanceof Grupo) {
+                            Grupo grupo = (Grupo) contactoSeleccionado;
+                            openSimpleGroupEditor(grupo);
+                        }
+                    }
+                }
+            }
+        });
+        
+        // ListSelectionListener para gestionar la selección normal (un solo clic)
         listaContactos.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 Contacto contactoSeleccionado = listaContactos.getSelectedValue();
@@ -410,5 +436,55 @@ public class MainView extends JFrame {
 		DefaultListModel<Contacto> model = new DefaultListModel<>();
 		contactos.forEach(model::addElement);
 		listaContactos.setModel(model);
+	}
+	
+	/**
+	 * Abre el editor de perfil de usuario para modificar foto de perfil y saludo
+	 */
+	private void openProfileEditor() {
+		// Crear y mostrar el editor de perfil
+		ProfileEditorView editor = new ProfileEditorView(this, usuarioActual);
+		editor.setVisible(true);
+		
+		// Recargar la foto de perfil después de editar si se realizaron cambios
+		if (editor.isCambiosRealizados()) {
+			try {
+				// Actualizar usuario actual con posibles cambios
+				usuarioActual = controlador.getUsuarioActual();
+				
+				// Actualizar el icono del botón de perfil en la interfaz
+				actualizarFotoPerfilEnInterfaz();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(this, 
+						"Error al actualizar la interfaz: " + ex.getMessage(), 
+						"Error", 
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	/**
+	 * Actualiza la foto de perfil en la interfaz de usuario
+	 */
+	private void actualizarFotoPerfilEnInterfaz() {
+		try {
+			// Actualizar directamente el icono del botón usando la referencia
+			ImageIcon iconoPerfil = new ImageIcon(getClass().getResource(usuarioActual.getFotoPerfil()));
+			Image imagenPerfil = iconoPerfil.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			btnFotoPerfil.setIcon(new ImageIcon(imagenPerfil));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("Error al actualizar la foto de perfil: " + ex.getMessage());
+		}
+	}
+	
+	/**
+	 * Abre el editor simple de grupo para modificar sus detalles
+	 */
+	private void openSimpleGroupEditor(Grupo grupo) {
+		GroupEditorView editor = new GroupEditorView(this, grupo);
+		editor.setVisible(true);
+		cargarContactos(); // Recargar contactos después de editar
 	}
 }
