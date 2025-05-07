@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 import beans.Entidad;
+import beans.Propiedad;
 import persistencia.dao.Identificable;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
@@ -154,5 +155,19 @@ public class Utils {
 		ServicioPersistencia servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
 		entidades.forEach(e -> servicioPersistencia.borrarEntidad(e));
+	}
+
+	public static void mostrarBaseDatos() {
+		ServicioPersistencia servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
+		
+		for (Entidad e : entidades) {
+			System.out.println("---" + e.getNombre());
+			List<Propiedad> propiedades = e.getPropiedades();
+			for (Propiedad p : propiedades) {
+				System.out.println(p.getNombre() + ": " + p.getValor());
+			}
+		}
+		
 	}
 }

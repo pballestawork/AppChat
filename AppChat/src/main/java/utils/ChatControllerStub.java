@@ -67,11 +67,11 @@ public class ChatControllerStub {
 		usuario3.addContacto(alvaroDeLaura);
 	
 		// Añadir mensajes iniciales con sus respectivos receptores
-		Mensaje m1 = new Mensaje(1, usuario, alvaroDePablo, "Hola", LocalDateTime.now(), true);
-		Mensaje m2 = new Mensaje(2, usuario, alvaroDePablo, "Como estas Alvaro?", LocalDateTime.now(), true);
-		Mensaje m3 = new Mensaje(3, usuario2, pabloDeAlvaro, "Hola", LocalDateTime.now(), false);
-		Mensaje m4 = new Mensaje(4, usuario2, pabloDeAlvaro, "Bien y tu?", LocalDateTime.now(), false);
-		Mensaje m5 = new Mensaje(5, usuario, alvaroDePablo, "Bien gracias", LocalDateTime.now(), true);
+		Mensaje m1 = new Mensaje(1, usuario, alvaroDePablo, "Hola", LocalDateTime.now());
+		Mensaje m2 = new Mensaje(2, usuario, alvaroDePablo, "Como estas Alvaro?", LocalDateTime.now());
+		Mensaje m3 = new Mensaje(3, usuario2, pabloDeAlvaro, "Hola", LocalDateTime.now());
+		Mensaje m4 = new Mensaje(4, usuario2, pabloDeAlvaro, "Bien y tu?", LocalDateTime.now());
+		Mensaje m5 = new Mensaje(5, usuario, alvaroDePablo, "Bien gracias", LocalDateTime.now());
 		
 		alvaroDePablo.addMensaje(m1);
 		alvaroDePablo.addMensaje(m2);
@@ -80,11 +80,11 @@ public class ChatControllerStub {
 		alvaroDePablo.addMensaje(m5);
 		
 		// Mensajes para Alvaro (enviados por Pablo, recibidos por Alvaro)
-		Mensaje m6 = new Mensaje(1, usuario, pabloDeAlvaro, "Hola", LocalDateTime.now(), false);
-		Mensaje m7 = new Mensaje(2, usuario, pabloDeAlvaro, "Como estas Alvaro?", LocalDateTime.now(), false);
-		Mensaje m8 = new Mensaje(3, usuario2, alvaroDePablo, "Hola", LocalDateTime.now(), true);
-		Mensaje m9 = new Mensaje(4, usuario2, alvaroDePablo, "Bien y tu?", LocalDateTime.now(), true);
-		Mensaje m10 = new Mensaje(5, usuario, pabloDeAlvaro, "Bien gracias", LocalDateTime.now(), false);
+		Mensaje m6 = new Mensaje(1, usuario, pabloDeAlvaro, "Hola", LocalDateTime.now());
+		Mensaje m7 = new Mensaje(2, usuario, pabloDeAlvaro, "Como estas Alvaro?", LocalDateTime.now());
+		Mensaje m8 = new Mensaje(3, usuario2, alvaroDePablo, "Hola", LocalDateTime.now());
+		Mensaje m9 = new Mensaje(4, usuario2, alvaroDePablo, "Bien y tu?", LocalDateTime.now());
+		Mensaje m10 = new Mensaje(5, usuario, pabloDeAlvaro, "Bien gracias", LocalDateTime.now());
 		
 		pabloDeAlvaro.addMensaje(m6);
 		pabloDeAlvaro.addMensaje(m7);
@@ -93,15 +93,15 @@ public class ChatControllerStub {
 		pabloDeAlvaro.addMensaje(m10);
 		
 		// Mensajes de Pablo a Laura
-		Mensaje m11 = new Mensaje(3, usuario, lauraDePablo, "Hola", LocalDateTime.now(), true);
-		Mensaje m12 = new Mensaje(4, usuario, lauraDePablo, "Como estas Laura?", LocalDateTime.now(), true);
+		Mensaje m11 = new Mensaje(3, usuario, lauraDePablo, "Hola", LocalDateTime.now());
+		Mensaje m12 = new Mensaje(4, usuario, lauraDePablo, "Como estas Laura?", LocalDateTime.now());
 		
 		lauraDePablo.addMensaje(m11);
 		lauraDePablo.addMensaje(m12);
 		
 		// Mensajes para Laura (recibidos de Pablo)
-		Mensaje m13 = new Mensaje(3, usuario, pabloDeLaura, "Hola", LocalDateTime.now(), false);
-		Mensaje m14 = new Mensaje(4, usuario, pabloDeLaura, "Como estas Laura?", LocalDateTime.now(), false);
+		Mensaje m13 = new Mensaje(3, usuario, pabloDeLaura, "Hola", LocalDateTime.now());
+		Mensaje m14 = new Mensaje(4, usuario, pabloDeLaura, "Como estas Laura?", LocalDateTime.now());
 		
 		pabloDeLaura.addMensaje(m13);
 		pabloDeLaura.addMensaje(m14);
@@ -302,7 +302,7 @@ public class ChatControllerStub {
 	    }
 
 	    // Crear mensaje con el receptor explícito
-	    Mensaje mensaje = new Mensaje(0, usuarioActual, contactoRecuperado, contenido, LocalDateTime.now(), true);
+	    Mensaje mensaje = new Mensaje(0, usuarioActual, contactoRecuperado, contenido, LocalDateTime.now());
 	    
 	    if (contactoRecuperado instanceof ContactoIndividual) {
 	        // Enviar mensaje a contacto individual
@@ -327,7 +327,6 @@ public class ChatControllerStub {
 	        // Si el destinatario tiene al emisor como contacto, añadir el mensaje como recibido
 	        if (miContactoEnDestinatario != null) {
 	            Mensaje mensajeRecibido = mensaje.clone();
-	            mensajeRecibido.setTipo(false); // false = mensaje recibido
 	            miContactoEnDestinatario.addMensaje(mensajeRecibido);
 	        }
 	    } else if (contactoRecuperado instanceof Grupo) {
@@ -346,7 +345,7 @@ public class ChatControllerStub {
 	            for (ContactoIndividual contactoInd : grupo.getMiembros()) {
 	                // Crear una copia del mensaje con el receptor correcto
 	                // Importante: El tipo debe seguir siendo true ya que el usuario actual es el emisor
-	                Mensaje mensajeEmoji = new Mensaje(0, usuarioActual, contactoInd, contenido, LocalDateTime.now(), true);
+	                Mensaje mensajeEmoji = new Mensaje(0, usuarioActual, contactoInd, contenido, LocalDateTime.now());
 	                contactoInd.addMensaje(mensajeEmoji);
 	            }
 	        } else {
@@ -356,7 +355,7 @@ public class ChatControllerStub {
 	            for (ContactoIndividual contactoInd : grupo.getMiembros()) {
 	                // Crear una copia del mensaje con el receptor correcto
 	                // Importante: El tipo debe seguir siendo true ya que el usuario actual es el emisor
-	                Mensaje mensajeNormal = new Mensaje(0, usuarioActual, contactoInd, contenido, LocalDateTime.now(), true);
+	                Mensaje mensajeNormal = new Mensaje(0, usuarioActual, contactoInd, contenido, LocalDateTime.now());
 	                contactoInd.addMensaje(mensajeNormal);
 	            }
 	        }

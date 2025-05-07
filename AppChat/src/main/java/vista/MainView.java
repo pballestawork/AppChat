@@ -18,7 +18,7 @@ import dominio.modelo.Contacto;
 import dominio.modelo.Usuario;
 import dominio.modelo.Grupo;
 import tds.BubbleText;
-
+import utils.EstiloApp;
 
 import java.awt.BorderLayout;
 import javax.swing.JButton;
@@ -51,17 +51,6 @@ public class MainView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
-	// Constantes para la interfaz (coinciden con las de LoginView)
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 24);
-    private static final Font FUENTE_SUBTITULO = new Font("Arial", Font.BOLD, 18);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_BUTTON = new Font("Arial", Font.BOLD, 13);
-	
 	private JPanel contentPane;
 	private JPanel panelContatos;
 	private JPanel panelCentral;
@@ -91,7 +80,7 @@ public class MainView extends JFrame {
 		}
         listaContactos = new JList<Contacto>();
 		contentPane = new JPanel();
-		contentPane.setBackground(COLOR_FONDO);
+		contentPane.setBackground(EstiloApp.COLOR_FONDO);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		setContentPane(contentPane);
@@ -99,7 +88,7 @@ public class MainView extends JFrame {
 		
 		// Panel superior con cabecera y botones
 		JPanel panelSuperior = new JPanel();
-		panelSuperior.setBackground(COLOR_PRIMARIO);
+		panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
 		panelSuperior.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		contentPane.add(panelSuperior, BorderLayout.NORTH);
 		panelSuperior.setLayout(new BorderLayout(10, 0));
@@ -138,7 +127,7 @@ public class MainView extends JFrame {
 		
 		// Etiqueta con nombre de usuario
 		JLabel lblNombreUsuario = new JLabel(usuarioActual.getNombre());
-		lblNombreUsuario.setFont(FUENTE_SUBTITULO);
+		lblNombreUsuario.setFont(EstiloApp.FUENTE_SUBTITULO);
 		lblNombreUsuario.setForeground(Color.WHITE);
 		
 		// Centrar verticalmente los elementos del panel usuario
@@ -162,8 +151,8 @@ public class MainView extends JFrame {
         contenedorBotones.add(panelBotones, BorderLayout.CENTER);
 		
 		// Estilo común para botones
-		Color colorBotonPrimario = COLOR_SECUNDARIO;
-		Color colorTextoBoton = COLOR_PRIMARIO;
+		Color colorBotonPrimario = EstiloApp.COLOR_SECUNDARIO;
+		Color colorTextoBoton = EstiloApp.COLOR_PRIMARIO;
 		
 		// Botón Agregar Contacto
 		JButton btnAgregarContacto = crearBoton("+C", "Agregar Contacto", colorBotonPrimario, colorTextoBoton);
@@ -216,7 +205,7 @@ public class MainView extends JFrame {
 		});
 		
 		// Botón Premium
-		JButton btnPremium = crearBoton("Premium", null, new Color(255, 215, 0), COLOR_TEXTO);
+		JButton btnPremium = crearBoton("Premium", null, EstiloApp.COLOR_ORO, EstiloApp.COLOR_TEXTO);
 		btnPremium.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        if (usuarioActual != null) {
@@ -253,7 +242,7 @@ public class MainView extends JFrame {
         });
 		
 		// Botón Logout
-		JButton btnLogout = crearBoton("Logout", null, new Color(255, 235, 235), new Color(220, 50, 50));
+		JButton btnLogout = crearBoton("Logout", null, new Color(255, 235, 235), EstiloApp.COLOR_ERROR);
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controlador.cerrarSesion();
@@ -275,7 +264,7 @@ public class MainView extends JFrame {
 		
 		// Panel de contactos (lateral izquierdo)
 		panelContatos = new JPanel(new BorderLayout());
-		panelContatos.setBackground(COLOR_FONDO);
+		panelContatos.setBackground(EstiloApp.COLOR_FONDO);
 		panelContatos.setBorder(BorderFactory.createCompoundBorder(
 		        BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(200, 200, 200)),
 		        BorderFactory.createEmptyBorder(5, 5, 5, 5)
@@ -288,15 +277,15 @@ public class MainView extends JFrame {
 		panelTituloContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
 		
 		JLabel lblTituloContactos = new JLabel("Mis Contactos");
-		lblTituloContactos.setFont(FUENTE_LABEL);
-		lblTituloContactos.setForeground(COLOR_PRIMARIO);
+		lblTituloContactos.setFont(EstiloApp.FUENTE_LABEL);
+		lblTituloContactos.setForeground(EstiloApp.COLOR_PRIMARIO);
 		
 		panelTituloContactos.add(lblTituloContactos, BorderLayout.CENTER);
 		panelContatos.add(panelTituloContactos, BorderLayout.NORTH);
 		
 		// JList para mostrar los contactos con estilo mejorado
         listaContactos.setCellRenderer(new ContactoListCellRenderer());
-        listaContactos.setBackground(COLOR_FONDO);
+        listaContactos.setBackground(EstiloApp.COLOR_FONDO);
         listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
         // Agregar MouseListener para detectar doble clic en contactos
@@ -387,7 +376,7 @@ public class MainView extends JFrame {
         // Panel central con CardLayout para cambiar entre vistas
         cardLayout = new CardLayout();
         panelCentral = new JPanel(cardLayout);
-        panelCentral.setBackground(COLOR_FONDO);
+        panelCentral.setBackground(EstiloApp.COLOR_FONDO);
         contentPane.add(panelCentral, BorderLayout.CENTER);
 		
         // PANEL CHAT
@@ -397,9 +386,9 @@ public class MainView extends JFrame {
         
         // PANEL BUSCADOR
         panelBuscador = new JPanel();
-        panelBuscador.setBackground(COLOR_FONDO);
+        panelBuscador.setBackground(EstiloApp.COLOR_FONDO);
         JLabel lblBuscador = new JLabel("Aquí puedes buscar mensajes");
-        lblBuscador.setFont(FUENTE_NORMAL);
+        lblBuscador.setFont(EstiloApp.FUENTE_NORMAL);
         panelBuscador.add(lblBuscador);
         panelCentral.add(panelBuscador, "panelBuscador");
 
@@ -413,7 +402,7 @@ public class MainView extends JFrame {
 	// Método auxiliar para crear botones con estilo consistente
 	private JButton crearBoton(String texto, String tooltip, Color colorFondo, Color colorTexto) {
 	    JButton boton = new JButton(texto);
-	    boton.setFont(FUENTE_BUTTON);
+	    boton.setFont(EstiloApp.FUENTE_BUTTON);
 	    boton.setBackground(colorFondo);
 	    boton.setForeground(colorTexto);
 	    boton.setFocusPainted(false);

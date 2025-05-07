@@ -28,7 +28,6 @@ public class MensajeTest {
 	private String contenido;
 	private LocalDateTime fechaAhora;
 	private Usuario usuario;
-	private boolean tipo;
 	private Contacto receptor;
 
 	@Before
@@ -40,9 +39,8 @@ public class MensajeTest {
 		
 		contenido = "Mensaje beforeEach";
 		fechaAhora = LocalDateTime.now().withNano(0);
-		tipo = true;
 		idMensaje = 1;
-		mensaje = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora, tipo);
+		mensaje = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora);
 	}
 
 	@Test
@@ -52,18 +50,16 @@ public class MensajeTest {
 		assertTrue(m.getEmisor() == null);
 		assertTrue(m.getContenido() == null);
 		assertTrue(m.getFechaEnvio() == null);
-		assertTrue(m.getTipo() == null);
 	}
 
 	@Test
 	public void testConstructorParametrosConExito() {
 		String contenidoMensaje = "Mensaje constructor";
-		Mensaje m = new Mensaje(200, usuario, receptor, contenidoMensaje, fechaAhora, true);
+		Mensaje m = new Mensaje(200, usuario, receptor, contenidoMensaje, fechaAhora);
 		assertTrue(m.getId() == 200);
 		assertTrue(m.getEmisor().equals(usuario));
 		assertTrue(m.getContenido().equals(contenidoMensaje));
 		assertTrue(m.getFechaEnvio().isEqual(fechaAhora));
-		assertTrue(m.getTipo() == true);
 	}
 	
 	@Test
@@ -75,13 +71,11 @@ public class MensajeTest {
 		mensaje.setEmisor(u);
 		mensaje.setContenido("contenido");
 		mensaje.setFechaEnvio(f);
-		mensaje.setTipo(false);
 		
 		assertTrue(mensaje.getId() == 1000);
 		assertTrue(mensaje.getEmisor().equals(u));
 		assertTrue(mensaje.getContenido().equals("contenido"));
 		assertTrue(mensaje.getFechaEnvio().isEqual(f));
-		assertTrue(mensaje.getTipo() == false);
 	}
 	
 	@Test
@@ -95,7 +89,7 @@ public class MensajeTest {
 	
 	@Test
 	public void testEqualsConMensajeDuplicado() {
-		Mensaje mensajeDuplicado = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora, tipo);
+		Mensaje mensajeDuplicado = new Mensaje(idMensaje, usuario, receptor, contenido, fechaAhora);
 		assertEquals(mensaje, mensajeDuplicado);	
 	}
 	

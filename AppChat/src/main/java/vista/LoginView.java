@@ -237,8 +237,7 @@ public class LoginView extends JFrame {
 							"Error de autenticación", 
 							JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				} catch(ChatControllerException | RepositorioException | EntidadNoEncontrada ex) {
 					JOptionPane.showMessageDialog(LoginView.this, 
 						"Error: " + ex.getMessage(), 
 						"Error", 
@@ -256,12 +255,10 @@ public class LoginView extends JFrame {
 				//setVisible(false);
 			}
 			
-			@Override
 			public void mouseEntered(java.awt.event.MouseEvent evt) {
 				lblRegistro.setText("<html><u>¿No tienes cuenta? Regístrate</u></html>");
 			}
 			
-			@Override
 			public void mouseExited(java.awt.event.MouseEvent evt) {
 				lblRegistro.setText("¿No tienes cuenta? Regístrate");
 			}

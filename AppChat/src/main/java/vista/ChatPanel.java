@@ -260,17 +260,32 @@ public class ChatPanel extends JPanel {
             int tipo = m.isEnviado(usuarioActual) ? BubbleText.SENT : BubbleText.RECEIVED;
             String contenido = m.getContenido();
             
-            if (contenido.startsWith(EMOJI_PREFIX)) {
-                try {
-                    int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
-                    agregarBurbujaEmoji(emojiId, m.getEmisor().getNombre(), tipo);
-                } catch (NumberFormatException e) {
-                    // Si ocurre error, se muestra el contenido como texto normal
-                    agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
-                }
-            } else {
-                agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
-            }
+            if(m.isEnviado(usuarioActual)) {
+            	if (contenido.startsWith(EMOJI_PREFIX)) {
+            		try {
+            			int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
+            			agregarBurbujaEmoji(emojiId, m.getEmisor().getNombre(), tipo);
+            		} catch (NumberFormatException e) {
+            			// Si ocurre error, se muestra el contenido como texto normal
+            			agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
+            		}
+            	} else {
+            		agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
+            	}
+			} else {
+				if (contenido.startsWith(EMOJI_PREFIX)) {
+					try {
+						int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
+						agregarBurbujaEmoji(emojiId, m.getReceptor().getNombre(), tipo);
+					} catch (NumberFormatException e) {
+						// Si ocurre error, se muestra el contenido como texto normal
+						agregarBurbujaMensaje(contenido, m.getReceptor().getNombre(), tipo);
+					}
+				} else {
+					agregarBurbujaMensaje(contenido, m.getReceptor().getNombre(), tipo);
+				}
+			}
+            
         }
         actualizarVistaMensajes();
     }

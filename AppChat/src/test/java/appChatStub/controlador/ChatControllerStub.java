@@ -368,7 +368,7 @@ public class ChatControllerStub {
 	        throw new ChatControllerException("El contacto no está en la lista del usuario actual.");
 	    }
 
-	    Mensaje mensaje = new Mensaje(0, usuarioActual, contacto, contenido, LocalDateTime.now(), true);
+	    Mensaje mensaje = new Mensaje(0, usuarioActual, contacto, contenido, LocalDateTime.now());
 
 	    // Agregar el mensaje a la lista de mensajes del contacto
 	    contacto.addMensaje(mensaje);

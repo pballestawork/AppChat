@@ -80,7 +80,7 @@ public class Contacto implements Identificable {
 	}
 	
 	public Mensaje addMensaje(Usuario emisor, String contenido) {
-		Mensaje m = new Mensaje(0,emisor,this,contenido, LocalDateTime.now(),true);
+		Mensaje m = new Mensaje(0,emisor,this,contenido, LocalDateTime.now());
 		this.addMensaje(m);
 		return m;
 	}

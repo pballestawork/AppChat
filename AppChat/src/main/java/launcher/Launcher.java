@@ -8,6 +8,7 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		ServicioPersistenciaLauncher.lanzarServicio();
+		Utils.mostrarBaseDatos();
 		//Utils.borrarBaseDatos();
 		LoginView.main(null);
 	}

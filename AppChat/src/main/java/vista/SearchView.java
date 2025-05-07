@@ -350,7 +350,7 @@ public class SearchView extends JPanel {
             // Añadir cada mensaje como una burbuja
             for (Mensaje m : mensajes) {
                 // Determinar si es un mensaje enviado o recibido
-                int tipo = m.getTipo() ? BubbleText.SENT : BubbleText.RECEIVED;
+                int tipo = m.isEnviado(usuarioActual) ? BubbleText.SENT : BubbleText.RECEIVED;
                 Color color = tipo == BubbleText.SENT ? 
                         new Color(220, 248, 198) : // Verde claro para enviados
                         new Color(240, 240, 240);  // Gris claro para recibidos
@@ -394,7 +394,7 @@ public class SearchView extends JPanel {
                     }
                 } else {
                     // Si no tiene receptor definido (compatibilidad), usar la lógica antigua
-                    if (m.getTipo()) {
+                    if (m.isEnviado(usuarioActual)) {
                         etiquetaReceptor = "Para: " + determinarReceptor(m, usuarioActual);
                     } else {
                         etiquetaReceptor = "Para: " + usuarioActual.getNombre() + " (tú)";
@@ -477,7 +477,7 @@ public class SearchView extends JPanel {
         // Si el tipo de mensaje es true, el mensaje ha sido enviado por el usuario actual
         // Si el tipo de mensaje es false, el mensaje ha sido recibido por el usuario actual
         
-        if (mensaje.getTipo()) {
+        if (mensaje.isEnviado(usuarioActual)) {
             // Si el mensaje es enviado por el usuario actual
             // Tenemos que buscar el destinatario del mensaje en los contactos
             

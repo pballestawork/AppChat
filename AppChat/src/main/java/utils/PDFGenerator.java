@@ -153,7 +153,7 @@ public class PDFGenerator {
                         for (Mensaje mensaje : mensajes) {
                             // Dirección del mensaje
                             PdfPCell celdaDireccion = new PdfPCell();
-                            if (mensaje.getTipo()) {
+                            if (mensaje.isEnviado(usuario)) {
                                 // Mensaje enviado
                                 Paragraph direccion = new Paragraph("Enviado a", MENSAJE_EMISOR_FONT);
                                 celdaDireccion.addElement(direccion);

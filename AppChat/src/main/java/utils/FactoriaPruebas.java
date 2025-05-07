@@ -79,7 +79,6 @@ public class FactoriaPruebas {
         mensaje.setEmisor(emisor);
         mensaje.setContenido(contenido);
         mensaje.setFechaEnvio(LocalDateTime.now());
-        mensaje.setTipo(true);
         return mensaje;
     }
     

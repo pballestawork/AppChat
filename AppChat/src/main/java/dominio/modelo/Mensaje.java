@@ -12,15 +12,13 @@ public class Mensaje implements Identificable, Cloneable {
 	private Contacto receptor; // Puede ser ContactoIndividual o Grupo
 	private String contenido;
 	private LocalDateTime fechaEnvio;
-	private Boolean tipo; // true = mensaje enviado, false = mensaje recibido
 	
 	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-	public Mensaje(int id, Usuario emisor, Contacto receptor, String contenido, LocalDateTime fechaEnvio, Boolean tipo) {
+	public Mensaje(int id, Usuario emisor, Contacto receptor, String contenido, LocalDateTime fechaEnvio) {
 		this.id = id;
 		this.emisor = emisor;
 		this.receptor = receptor;
-		this.tipo = tipo;
 		this.contenido = contenido;
 		// Ajustar la fecha al formato sin nanosegundos para consistencia
 		this.fechaEnvio = fechaEnvio == null ? LocalDateTime.now().withNano(0) : fechaEnvio.withNano(0);
@@ -52,7 +50,6 @@ public class Mensaje implements Identificable, Cloneable {
 	    clon.receptor = this.receptor;
 	    clon.contenido = this.contenido;
 	    clon.fechaEnvio = this.fechaEnvio;
-	    clon.tipo = this.tipo;
 	    return clon;
 	}
 	
@@ -83,10 +80,6 @@ public class Mensaje implements Identificable, Cloneable {
 		return receptor;
 	}
 
-	public Boolean getTipo() {
-		return tipo;
-	}
-
 	public String getContenido() {
 		return contenido;
 	}
@@ -113,28 +106,6 @@ public class Mensaje implements Identificable, Cloneable {
 
 	public void setFechaEnvio(LocalDateTime fechaEnvio) {
 		this.fechaEnvio = fechaEnvio;
-	}
-
-	public void setTipo(Boolean tipo) {
-		this.tipo = tipo;
-	}
-	
-	/**
-	 * Verifica si este mensaje fue enviado por un usuario específico
-	 * @param usuario El usuario a verificar
-	 * @return true si el usuario es el emisor del mensaje, false en caso contrario
-	 */
-	public boolean esEnviadoPor(Usuario usuario) {
-		return usuario != null && emisor != null && emisor.equals(usuario);
-	}
-	
-	/**
-	 * Verifica si este mensaje está dirigido a un contacto específico
-	 * @param contacto El contacto a verificar
-	 * @return true si el contacto es el receptor del mensaje, false en caso contrario
-	 */
-	public boolean esDirigidoA(Contacto contacto) {
-		return contacto != null && receptor != null && receptor.equals(contacto);
 	}
 	
 	/**

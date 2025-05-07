@@ -79,7 +79,7 @@ public class Usuario implements Identificable {
 	 * @return El contacto individual creado
 	 */
 	public ContactoIndividual addContactoIndividual(String nombre, Usuario usuarioContacto) {
-		ContactoIndividual contacto = new ContactoIndividual(usuarioContacto.getId(), nombre, usuarioContacto);
+		ContactoIndividual contacto = new ContactoIndividual(0, nombre, usuarioContacto);
 		this.addContacto(contacto);
 		return contacto;
 	}
