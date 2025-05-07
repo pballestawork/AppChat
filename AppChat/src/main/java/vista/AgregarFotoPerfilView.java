@@ -204,16 +204,27 @@ public class AgregarFotoPerfilView extends JDialog {
                 File archivoSeleccionado = fileChooser.getSelectedFile();
                 archivosSubidos.clear(); // Limpia la lista actual
                 archivosSubidos.add(archivoSeleccionado); // Agrega el archivo seleccionado a la lista
-
-                // Carga la imagen en el JLabel para previsualizarla
-                ImageIcon icon = new ImageIcon(archivoSeleccionado.getAbsolutePath());
-                Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                imagenLabel.setIcon(new ImageIcon(img));
-                imagenLabel.setText("");
                 
-                // Muestra la ruta del archivo en el label (invisible)
-                lblArchivoSubido.setText(archivoSeleccionado.getAbsolutePath());
-                lblArchivoSubido.setVisible(true);
+                try {
+                    // Convertir la ruta absoluta a ruta relativa usando Utils
+                    String rutaRelativa = utils.Utils.getRutaResourceFromFile(archivoSeleccionado);
+                    
+                    // Cargar la imagen usando la ruta relativa para probar que funciona
+                    ImageIcon icon = new ImageIcon(getClass().getResource(rutaRelativa));
+                    Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    imagenLabel.setIcon(new ImageIcon(img));
+                    imagenLabel.setText("");
+                    
+                    // Guardar la ruta relativa (pero mantener el archivo original para compatibilidad)
+                    lblArchivoSubido.setText(archivoSeleccionado.getAbsolutePath());
+                    lblArchivoSubido.setVisible(true);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al cargar la imagen: " + ex.getMessage(), 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
                 
                 // Limpiar URL si existía alguna
                 imagenUrl = null;
@@ -269,8 +280,11 @@ public class AgregarFotoPerfilView extends JDialog {
                     // Guardar la URL para usarla después (si fuera necesario)
                     imagenUrl = url;
                     
-                    // Cargar y mostrar la imagen en la interfaz
-                    ImageIcon icon = new ImageIcon(archivoImagenLocal.getAbsolutePath());
+                    // Convertir a ruta relativa para resources
+                    String rutaRelativa = utils.Utils.getRutaResourceFromFile(archivoImagenLocal);
+                    
+                    // Cargar y mostrar la imagen en la interfaz usando la ruta relativa
+                    ImageIcon icon = new ImageIcon(getClass().getResource(rutaRelativa));
                     Image imgEscalada = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
                     imagenLabel.setIcon(new ImageIcon(imgEscalada));
                     imagenLabel.setText("");
