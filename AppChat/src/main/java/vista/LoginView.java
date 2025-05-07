@@ -30,20 +30,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import utils.EstiloApp;
 
 public class LoginView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	
-	// Constantes para la interfaz
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 36);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_LINK = new Font("Arial", Font.PLAIN, 12);
 	
 	private JPanel contentPane;
 	private JTextField txtCorreo;
@@ -75,27 +66,27 @@ public class LoginView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 600);
 		contentPane = new JPanel();
-		contentPane.setBackground(COLOR_FONDO);
+		contentPane.setBackground(EstiloApp.COLOR_FONDO);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		// Panel superior con título y logo
 		JPanel panelSuperior = new JPanel();
-		panelSuperior.setBackground(COLOR_PRIMARIO);
+		panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
 		panelSuperior.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		contentPane.add(panelSuperior, BorderLayout.NORTH);
 		panelSuperior.setLayout(new BorderLayout(0, 0));
 		
 		JLabel lblTitulo = new JLabel("AppChat");
 		lblTitulo.setForeground(Color.WHITE);
-		lblTitulo.setFont(FUENTE_TITULO);
+		lblTitulo.setFont(EstiloApp.FUENTE_TITULO);
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		panelSuperior.add(lblTitulo, BorderLayout.CENTER);
 		
 		// Panel central con formulario
 		JPanel panelCentral = new JPanel();
-		panelCentral.setBackground(COLOR_FONDO);
+		panelCentral.setBackground(EstiloApp.COLOR_FONDO);
 		panelCentral.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 		contentPane.add(panelCentral, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
@@ -107,8 +98,8 @@ public class LoginView extends JFrame {
 		
 		// Mensaje de bienvenida
 		JLabel lblBienvenida = new JLabel("Bienvenido/a a AppChat");
-		lblBienvenida.setFont(new Font("Arial", Font.BOLD, 20));
-		lblBienvenida.setForeground(COLOR_TEXTO);
+		lblBienvenida.setFont(EstiloApp.FUENTE_TITULO_PEQUENO);
+		lblBienvenida.setForeground(EstiloApp.COLOR_TEXTO);
 		lblBienvenida.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_lblBienvenida = new GridBagConstraints();
 		gbc_lblBienvenida.insets = new Insets(0, 0, 20, 0);
@@ -118,8 +109,8 @@ public class LoginView extends JFrame {
 		
 		// Etiqueta Correo
 		JLabel lblCorreo = new JLabel("Número de teléfono");
-		lblCorreo.setFont(FUENTE_LABEL);
-		lblCorreo.setForeground(COLOR_TEXTO);
+		lblCorreo.setFont(EstiloApp.FUENTE_LABEL);
+		lblCorreo.setForeground(EstiloApp.COLOR_TEXTO);
 		GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
 		gbc_lblCorreo.anchor = GridBagConstraints.WEST;
 		gbc_lblCorreo.insets = new Insets(0, 0, 5, 0);
@@ -129,7 +120,7 @@ public class LoginView extends JFrame {
 		
 		// Campo de texto para correo
 		txtCorreo = new JTextField();
-		txtCorreo.setFont(FUENTE_NORMAL);
+		txtCorreo.setFont(EstiloApp.FUENTE_NORMAL);
 		txtCorreo.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.LIGHT_GRAY),
 				BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -144,8 +135,8 @@ public class LoginView extends JFrame {
 		
 		// Etiqueta Contraseña
 		JLabel lblContrasea = new JLabel("Contraseña");
-		lblContrasea.setFont(FUENTE_LABEL);
-		lblContrasea.setForeground(COLOR_TEXTO);
+		lblContrasea.setFont(EstiloApp.FUENTE_LABEL);
+		lblContrasea.setForeground(EstiloApp.COLOR_TEXTO);
 		GridBagConstraints gbc_lblContrasea = new GridBagConstraints();
 		gbc_lblContrasea.anchor = GridBagConstraints.WEST;
 		gbc_lblContrasea.insets = new Insets(0, 0, 5, 0);
@@ -155,7 +146,7 @@ public class LoginView extends JFrame {
 		
 		// Campo de contraseña
 		txtPassword = new JPasswordField();
-		txtPassword.setFont(FUENTE_NORMAL);
+		txtPassword.setFont(EstiloApp.FUENTE_NORMAL);
 		txtPassword.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.LIGHT_GRAY),
 				BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -169,8 +160,8 @@ public class LoginView extends JFrame {
 		
 		// Botón de inicio de sesión
 		JButton btnLogin = new JButton("Iniciar Sesión");
-		btnLogin.setFont(FUENTE_NORMAL);
-		btnLogin.setBackground(COLOR_PRIMARIO);
+		btnLogin.setFont(EstiloApp.FUENTE_NORMAL);
+		btnLogin.setBackground(EstiloApp.COLOR_PRIMARIO);
 		btnLogin.setForeground(Color.WHITE);
 		btnLogin.setFocusPainted(false);
 		btnLogin.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
@@ -183,8 +174,8 @@ public class LoginView extends JFrame {
 		
 		// Etiqueta para registrarse
 		JLabel lblRegistro = new JLabel("¿No tienes cuenta? Regístrate");
-		lblRegistro.setFont(FUENTE_LINK);
-		lblRegistro.setForeground(COLOR_PRIMARIO);
+		lblRegistro.setFont(EstiloApp.FUENTE_LINK);
+		lblRegistro.setForeground(EstiloApp.COLOR_PRIMARIO);
 		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRegistro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_lblRegistro = new GridBagConstraints();
@@ -194,7 +185,7 @@ public class LoginView extends JFrame {
 		
 		// Panel inferior para información adicional
 		JPanel panelInferior = new JPanel();
-		panelInferior.setBackground(COLOR_FONDO);
+		panelInferior.setBackground(EstiloApp.COLOR_FONDO);
 		panelInferior.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 		contentPane.add(panelInferior, BorderLayout.SOUTH);
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
@@ -227,50 +218,51 @@ public class LoginView extends JFrame {
 					if(correo.isEmpty() || password.isEmpty()) {
 						JOptionPane.showMessageDialog(LoginView.this, 
 							"Por favor, complete todos los campos", 
-							"Campos incompletos", 
+							"Campos vacíos", 
 							JOptionPane.WARNING_MESSAGE);
 						return;
 					}
 					
+					// Validar login
 					Usuario usuario = controlador.iniciarSesion(correo, password);
-					
-					if(usuario != null) {
-						// Login exitoso
+					if (usuario != null) {
+						// Login exitoso, abrir la ventana principal
 						MainView mainView = new MainView(usuario);
 						mainView.setVisible(true);
-						dispose();
+						dispose(); // Cerrar ventana de login
 					} else {
 						// Login fallido
 						JOptionPane.showMessageDialog(LoginView.this, 
-							"Credenciales incorrectas", 
+							"Número de teléfono o contraseña incorrectos", 
 							"Error de autenticación", 
 							JOptionPane.ERROR_MESSAGE);
 					}
-				} catch(ChatControllerException | RepositorioException | EntidadNoEncontrada ex) {
+				} catch (Exception ex) {
+					ex.printStackTrace();
 					JOptionPane.showMessageDialog(LoginView.this, 
-						ex.getMessage(), 
+						"Error: " + ex.getMessage(), 
 						"Error", 
 						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
 		
-		// Action Listener para etiqueta de registro
+		// Mouse Listener para etiqueta de registro
 		lblRegistro.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				RegisterView registerView = new RegisterView(LoginView.this);
 				registerView.setVisible(true);
-				setVisible(false);
+				//setVisible(false);
 			}
 			
-			// Efectos visuales para el enlace
+			@Override
 			public void mouseEntered(java.awt.event.MouseEvent evt) {
-				lblRegistro.setForeground(new Color(0, 90, 180)); // Azul más oscuro al pasar el cursor
 				lblRegistro.setText("<html><u>¿No tienes cuenta? Regístrate</u></html>");
 			}
 			
+			@Override
 			public void mouseExited(java.awt.event.MouseEvent evt) {
-				lblRegistro.setForeground(COLOR_PRIMARIO);
 				lblRegistro.setText("¿No tienes cuenta? Regístrate");
 			}
 		});

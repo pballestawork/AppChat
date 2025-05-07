@@ -15,6 +15,7 @@ import com.toedter.calendar.JDateChooser;
 import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.repositorio.RepositorioException;
+import utils.EstiloApp;
 import utils.Utils;
 import java.io.File;
 import java.time.LocalDate;
@@ -37,17 +38,6 @@ public class RegisterView extends JFrame {
     
     private static final long serialVersionUID = 1L;
     
-    // Constantes para la interfaz (igual a LoginView)
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 36);
-    private static final Font FUENTE_SUBTITULO = new Font("Arial", Font.BOLD, 20);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_LINK = new Font("Arial", Font.PLAIN, 12);
-    
     private JFrame parent;
     private JTextField nameField;
     private JTextField correoField;
@@ -67,25 +57,25 @@ public class RegisterView extends JFrame {
         setTitle("AppChat - Registro");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 700, 770); // Reducimos un poco la altura vertical
-        getContentPane().setBackground(COLOR_FONDO);
+        getContentPane().setBackground(EstiloApp.COLOR_FONDO);
         getContentPane().setLayout(new BorderLayout(0, 0));
         
         // Panel superior con título y logo - Reducimos el padding vertical
         JPanel panelSuperior = new JPanel();
-        panelSuperior.setBackground(COLOR_PRIMARIO);
+        panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
         panelSuperior.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30)); // Menos espacio vertical
         getContentPane().add(panelSuperior, BorderLayout.NORTH);
         panelSuperior.setLayout(new BorderLayout(0, 0));
         
         JLabel lblTitulo = new JLabel("AppChat");
         lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setFont(FUENTE_TITULO);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panelSuperior.add(lblTitulo, BorderLayout.CENTER);
         
         // Panel central con formulario - Reducimos el padding vertical
         JPanel panelCentral = new JPanel();
-        panelCentral.setBackground(COLOR_FONDO);
+        panelCentral.setBackground(EstiloApp.COLOR_FONDO);
         panelCentral.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
         getContentPane().add(panelCentral, BorderLayout.CENTER);
         
@@ -98,8 +88,8 @@ public class RegisterView extends JFrame {
         
         // Mensaje de registro - Reducimos el espacio inferior
         JLabel lblRegistro = new JLabel("Crear nueva cuenta");
-        lblRegistro.setFont(FUENTE_SUBTITULO);
-        lblRegistro.setForeground(COLOR_TEXTO);
+        lblRegistro.setFont(EstiloApp.FUENTE_SUBTITULO);
+        lblRegistro.setForeground(EstiloApp.COLOR_TEXTO);
         lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints gbc_lblRegistro = new GridBagConstraints();
         gbc_lblRegistro.gridwidth = 4;
@@ -110,8 +100,8 @@ public class RegisterView extends JFrame {
         
         // Nombre
         JLabel lblName = new JLabel("Nombre:");
-        lblName.setFont(FUENTE_LABEL);
-        lblName.setForeground(COLOR_TEXTO);
+        lblName.setFont(EstiloApp.FUENTE_LABEL);
+        lblName.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblName = new GridBagConstraints();
         gbc_lblName.anchor = GridBagConstraints.WEST;
         gbc_lblName.insets = new Insets(0, 0, 10, 10);
@@ -120,7 +110,7 @@ public class RegisterView extends JFrame {
         panelCentral.add(lblName, gbc_lblName);
         
         nameField = new JTextField();
-        nameField.setFont(FUENTE_NORMAL);
+        nameField.setFont(EstiloApp.FUENTE_NORMAL);
         nameField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -135,8 +125,8 @@ public class RegisterView extends JFrame {
         
         // Correo electrónico
         JLabel lblCorreo = new JLabel("Correo Electrónico:");
-        lblCorreo.setFont(FUENTE_LABEL);
-        lblCorreo.setForeground(COLOR_TEXTO);
+        lblCorreo.setFont(EstiloApp.FUENTE_LABEL);
+        lblCorreo.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
         gbc_lblCorreo.anchor = GridBagConstraints.WEST;
         gbc_lblCorreo.insets = new Insets(0, 0, 10, 10);
@@ -145,7 +135,7 @@ public class RegisterView extends JFrame {
         panelCentral.add(lblCorreo, gbc_lblCorreo);
         
         correoField = new JTextField();
-        correoField.setFont(FUENTE_NORMAL);
+        correoField.setFont(EstiloApp.FUENTE_NORMAL);
         correoField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -160,8 +150,8 @@ public class RegisterView extends JFrame {
         
         // Teléfono
         JLabel lblTelefono = new JLabel("Teléfono:");
-        lblTelefono.setFont(FUENTE_LABEL);
-        lblTelefono.setForeground(COLOR_TEXTO);
+        lblTelefono.setFont(EstiloApp.FUENTE_LABEL);
+        lblTelefono.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblTelefono = new GridBagConstraints();
         gbc_lblTelefono.anchor = GridBagConstraints.WEST;
         gbc_lblTelefono.insets = new Insets(0, 0, 10, 10);
@@ -170,7 +160,7 @@ public class RegisterView extends JFrame {
         panelCentral.add(lblTelefono, gbc_lblTelefono);
         
         telefonoField = new JTextField();
-        telefonoField.setFont(FUENTE_NORMAL);
+        telefonoField.setFont(EstiloApp.FUENTE_NORMAL);
         telefonoField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -185,8 +175,8 @@ public class RegisterView extends JFrame {
         
         // Contraseña - Primera columna
         JLabel lblContrasena = new JLabel("Contraseña:");
-        lblContrasena.setFont(FUENTE_LABEL);
-        lblContrasena.setForeground(COLOR_TEXTO);
+        lblContrasena.setFont(EstiloApp.FUENTE_LABEL);
+        lblContrasena.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblContrasena = new GridBagConstraints();
         gbc_lblContrasena.anchor = GridBagConstraints.WEST;
         gbc_lblContrasena.insets = new Insets(0, 0, 10, 10);
@@ -195,7 +185,7 @@ public class RegisterView extends JFrame {
         panelCentral.add(lblContrasena, gbc_lblContrasena);
         
         passwordField = new JPasswordField();
-        passwordField.setFont(FUENTE_NORMAL);
+        passwordField.setFont(EstiloApp.FUENTE_NORMAL);
         passwordField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -209,8 +199,8 @@ public class RegisterView extends JFrame {
         
         // Repetir contraseña - Segunda columna
         JLabel lblContrasena_1 = new JLabel("Repetir:");
-        lblContrasena_1.setFont(FUENTE_LABEL);
-        lblContrasena_1.setForeground(COLOR_TEXTO);
+        lblContrasena_1.setFont(EstiloApp.FUENTE_LABEL);
+        lblContrasena_1.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblContrasena_1 = new GridBagConstraints();
         gbc_lblContrasena_1.anchor = GridBagConstraints.WEST;
         gbc_lblContrasena_1.insets = new Insets(0, 0, 10, 10);
@@ -219,7 +209,7 @@ public class RegisterView extends JFrame {
         panelCentral.add(lblContrasena_1, gbc_lblContrasena_1);
         
         passwordField_1 = new JPasswordField();
-        passwordField_1.setFont(FUENTE_NORMAL);
+        passwordField_1.setFont(EstiloApp.FUENTE_NORMAL);
         passwordField_1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -233,8 +223,8 @@ public class RegisterView extends JFrame {
         
         // Fecha de nacimiento
         JLabel lblFechaDeNacimiento = new JLabel("Fecha de nacimiento:");
-        lblFechaDeNacimiento.setFont(FUENTE_LABEL);
-        lblFechaDeNacimiento.setForeground(COLOR_TEXTO);
+        lblFechaDeNacimiento.setFont(EstiloApp.FUENTE_LABEL);
+        lblFechaDeNacimiento.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblFechaDeNacimiento = new GridBagConstraints();
         gbc_lblFechaDeNacimiento.anchor = GridBagConstraints.WEST;
         gbc_lblFechaDeNacimiento.insets = new Insets(0, 0, 10, 10);
@@ -244,7 +234,7 @@ public class RegisterView extends JFrame {
         
         fechaNacimientoField = new JDateChooser();
         fechaNacimientoField.setDateFormatString("dd/MM/yyyy");
-        fechaNacimientoField.setFont(FUENTE_NORMAL);
+        fechaNacimientoField.setFont(EstiloApp.FUENTE_NORMAL);
         fechaNacimientoField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -259,8 +249,8 @@ public class RegisterView extends JFrame {
         
         // Saludo inicial
         JLabel lblSaludoInicial = new JLabel("Saludo inicial:");
-        lblSaludoInicial.setFont(FUENTE_LABEL);
-        lblSaludoInicial.setForeground(COLOR_TEXTO);
+        lblSaludoInicial.setFont(EstiloApp.FUENTE_LABEL);
+        lblSaludoInicial.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblSaludoInicial = new GridBagConstraints();
         gbc_lblSaludoInicial.anchor = GridBagConstraints.WEST;
         gbc_lblSaludoInicial.insets = new Insets(0, 0, 10, 10);
@@ -270,7 +260,7 @@ public class RegisterView extends JFrame {
         
         // Campo de saludo inicial - Una línea sin scroll
         textSaludoInicial = new JEditorPane();
-        textSaludoInicial.setFont(FUENTE_NORMAL);
+        textSaludoInicial.setFont(EstiloApp.FUENTE_NORMAL);
         textSaludoInicial.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
@@ -289,8 +279,8 @@ public class RegisterView extends JFrame {
         
         // Foto de perfil
         JLabel lblFotoPerfil = new JLabel("Foto de perfil:");
-        lblFotoPerfil.setFont(FUENTE_LABEL);
-        lblFotoPerfil.setForeground(COLOR_TEXTO);
+        lblFotoPerfil.setFont(EstiloApp.FUENTE_LABEL);
+        lblFotoPerfil.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
         gbc_lblFotoPerfil.anchor = GridBagConstraints.NORTHWEST;
         gbc_lblFotoPerfil.insets = new Insets(0, 0, 0, 10);
@@ -300,7 +290,7 @@ public class RegisterView extends JFrame {
         
         // Panel para la imagen y el botón con un layout más adecuado
         JPanel panelImagen = new JPanel(new BorderLayout(0, 15)); // Aumentamos el espacio vertical entre componentes
-        panelImagen.setBackground(COLOR_FONDO);
+        panelImagen.setBackground(EstiloApp.COLOR_FONDO);
         
         GridBagConstraints gbc_panelImagen = new GridBagConstraints();
         gbc_panelImagen.fill = GridBagConstraints.BOTH;
@@ -311,12 +301,12 @@ public class RegisterView extends JFrame {
         
         // Panel para la imagen (arriba)
         JPanel panelImagenSuperior = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelImagenSuperior.setBackground(COLOR_FONDO);
+        panelImagenSuperior.setBackground(EstiloApp.COLOR_FONDO);
         panelImagen.add(panelImagenSuperior, BorderLayout.CENTER);
         
         // La imagen seleccionada
         lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
-        lblImagen.setFont(FUENTE_NORMAL);
+        lblImagen.setFont(EstiloApp.FUENTE_NORMAL);
         lblImagen.setForeground(Color.GRAY);
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
         lblImagen.setPreferredSize(new Dimension(200, 170));
@@ -324,17 +314,17 @@ public class RegisterView extends JFrame {
         
         // Panel para el botón (abajo) con padding adicional
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0)); // Añadimos 5px de padding vertical
-        panelBoton.setBackground(COLOR_FONDO);
+        panelBoton.setBackground(EstiloApp.COLOR_FONDO);
         panelImagen.add(panelBoton, BorderLayout.SOUTH);
         
         // Botón para seleccionar imagen
         JButton btnSeleccionarImagen = new JButton("Seleccionar Imagen");
-        btnSeleccionarImagen.setFont(FUENTE_NORMAL);
-        btnSeleccionarImagen.setBackground(COLOR_SECUNDARIO);
-        btnSeleccionarImagen.setForeground(COLOR_PRIMARIO);
+        btnSeleccionarImagen.setFont(EstiloApp.FUENTE_NORMAL);
+        btnSeleccionarImagen.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnSeleccionarImagen.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnSeleccionarImagen.setFocusPainted(false);
         btnSeleccionarImagen.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnSeleccionarImagen.setPreferredSize(new Dimension(200, 40));
@@ -363,16 +353,16 @@ public class RegisterView extends JFrame {
         
         // Panel inferior para botones de acción - Reducimos padding
         JPanel panelInferior = new JPanel();
-        panelInferior.setBackground(COLOR_FONDO);
+        panelInferior.setBackground(EstiloApp.COLOR_FONDO);
         panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
         getContentPane().add(panelInferior, BorderLayout.SOUTH);
         panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         
         // Botón cancelar
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.setFont(FUENTE_NORMAL);
+        btnCancelar.setFont(EstiloApp.FUENTE_NORMAL);
         btnCancelar.setBackground(Color.WHITE);
-        btnCancelar.setForeground(COLOR_TEXTO);
+        btnCancelar.setForeground(EstiloApp.COLOR_TEXTO);
         btnCancelar.setFocusPainted(false);
         btnCancelar.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
@@ -386,8 +376,8 @@ public class RegisterView extends JFrame {
         
         // Botón registrar
         JButton btnRegistrar = new JButton("Registrar");
-        btnRegistrar.setFont(FUENTE_NORMAL);
-        btnRegistrar.setBackground(COLOR_PRIMARIO);
+        btnRegistrar.setFont(EstiloApp.FUENTE_NORMAL);
+        btnRegistrar.setBackground(EstiloApp.COLOR_PRIMARIO);
         btnRegistrar.setForeground(Color.WHITE);
         btnRegistrar.setFocusPainted(false);
         btnRegistrar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
