@@ -24,8 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
-import utils.ChatControllerStub;
 import utils.Utils;
 
 /**
@@ -50,7 +51,7 @@ public class ProfileEditorView extends JDialog {
     private File archivoImagen;
     private String rutaFotoPerfil;
     private Usuario usuario;
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     private boolean cambiosRealizados = false;
     
     /**
@@ -60,7 +61,12 @@ public class ProfileEditorView extends JDialog {
         super(parent, "Editar Perfil", true);
         this.usuario = usuario;
         this.rutaFotoPerfil = usuario.getFotoPerfil();
-        this.controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			this.controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -252,17 +258,17 @@ public class ProfileEditorView extends JDialog {
             // Actualizar la foto de perfil si ha cambiado
             String nuevoSaludo = txtSaludo.getText().trim();
             if (!rutaFotoPerfil.equals(usuario.getFotoPerfil())) {
-            	controlador.actualizarPerfil(nuevoSaludo, rutaFotoPerfil);
                 fotoActualizada = true;
-                if (!nuevoSaludo.equals(usuario.getSaludo())) {
-                    saludoActualizado = true;
-                }
+            }
+            if (!nuevoSaludo.equals(usuario.getSaludo())) {
+            	saludoActualizado = true;
             }
 
             // Marcar que se realizaron cambios si se actualizó algún campo
             cambiosRealizados = fotoActualizada || saludoActualizado;
             
             if (cambiosRealizados) {
+            	controlador.actualizarPerfil(nuevoSaludo, rutaFotoPerfil);
                 JOptionPane.showMessageDialog(this, 
                         "Perfil actualizado correctamente", 
                         "Éxito", 

@@ -11,9 +11,18 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -25,6 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class AgregarFotoPerfilView extends JDialog {
@@ -43,6 +53,8 @@ public class AgregarFotoPerfilView extends JDialog {
     private JButton btnAceptar;
     private JButton btnCancelar;
     private JLabel imagenLabel;
+    private JTextField txtUrl;
+    private String imagenUrl;
 
     /**
      * Constructor para usar con JFrame
@@ -65,7 +77,7 @@ public class AgregarFotoPerfilView extends JDialog {
      */
     private void initComponents() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 500, 550); // Aumentando la altura de 450 a 550 píxeles
+        setBounds(100, 100, 500, 600); // Aumentando la altura para acomodar el nuevo campo
         getContentPane().setLayout(new BorderLayout());
         getContentPane().setBackground(COLOR_FONDO);
         
@@ -85,7 +97,7 @@ public class AgregarFotoPerfilView extends JDialog {
         contentPane.add(lblTitulo);
         
         // Instrucciones
-        JLabel lblInstrucciones = new JLabel("Puedes arrastrar una imagen aquí o seleccionarla desde tu ordenador");
+        JLabel lblInstrucciones = new JLabel("Puedes arrastrar una imagen aquí, seleccionarla desde tu ordenador o cargarla desde URL");
         lblInstrucciones.setFont(FUENTE_NORMAL);
         lblInstrucciones.setAlignmentX(CENTER_ALIGNMENT);
         lblInstrucciones.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
@@ -137,6 +149,9 @@ public class AgregarFotoPerfilView extends JDialog {
                             lblArchivoSubido.setText(file.getAbsolutePath());
                             lblArchivoSubido.setVisible(true);
                         }
+                        
+                        // Limpiar URL si existía alguna
+                        imagenUrl = null;
                     }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(
@@ -155,11 +170,12 @@ public class AgregarFotoPerfilView extends JDialog {
         lblArchivoSubido.setVisible(false);
         contentPane.add(lblArchivoSubido);
         
-        // Panel para el botón de selección
-        JPanel panelBotonSeleccionar = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBotonSeleccionar.setBackground(COLOR_FONDO);
-        panelBotonSeleccionar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        // Panel para el botón de selección y URL
+        JPanel panelSeleccion = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelSeleccion.setBackground(COLOR_FONDO);
+        panelSeleccion.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         
+        // Botón para seleccionar imagen del ordenador
         JButton botonElegir = new JButton("Seleccionar de tu ordenador");
         botonElegir.setFont(FUENTE_BUTTON);
         botonElegir.setBackground(COLOR_SECUNDARIO);
@@ -198,11 +214,89 @@ public class AgregarFotoPerfilView extends JDialog {
                 // Muestra la ruta del archivo en el label (invisible)
                 lblArchivoSubido.setText(archivoSeleccionado.getAbsolutePath());
                 lblArchivoSubido.setVisible(true);
+                
+                // Limpiar URL si existía alguna
+                imagenUrl = null;
+                txtUrl.setText("");
             }
         });
         
-        panelBotonSeleccionar.add(botonElegir);
-        contentPane.add(panelBotonSeleccionar);
+        panelSeleccion.add(botonElegir);
+        
+        // Panel para la URL
+        JPanel panelUrl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelUrl.setBackground(COLOR_FONDO);
+        panelUrl.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+        
+        // Campo de texto para la URL
+        txtUrl = new JTextField(20);
+        txtUrl.setFont(FUENTE_NORMAL);
+        txtUrl.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        txtUrl.setToolTipText("Introduce la URL de una imagen");
+        
+        // Botón para cargar desde URL
+        JButton btnCargarUrl = new JButton("Cargar URL");
+        btnCargarUrl.setFont(FUENTE_BUTTON);
+        btnCargarUrl.setBackground(COLOR_SECUNDARIO);
+        btnCargarUrl.setForeground(COLOR_PRIMARIO);
+        btnCargarUrl.setFocusPainted(false);
+        btnCargarUrl.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        
+        btnCargarUrl.addActionListener(e -> {
+            String url = txtUrl.getText().trim();
+            if (url.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, introduce una URL válida", "URL vacía", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            try {
+                // Limpiar archivos subidos si había alguno
+                archivosSubidos.clear();
+                
+                // Cargar imagen desde URL y guardarla como archivo local
+                File archivoImagenLocal = descargarImagenDesdeURL(url);
+                
+                if (archivoImagenLocal != null && archivoImagenLocal.exists()) {
+                    // Añadir el archivo descargado a la lista
+                    archivosSubidos.add(archivoImagenLocal);
+                    
+                    // Guardar la URL para usarla después (si fuera necesario)
+                    imagenUrl = url;
+                    
+                    // Cargar y mostrar la imagen en la interfaz
+                    ImageIcon icon = new ImageIcon(archivoImagenLocal.getAbsolutePath());
+                    Image imgEscalada = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    imagenLabel.setIcon(new ImageIcon(imgEscalada));
+                    imagenLabel.setText("");
+                    
+                    // Mostrar la ruta del archivo en el label (invisible)
+                    lblArchivoSubido.setText(archivoImagenLocal.getAbsolutePath());
+                    lblArchivoSubido.setVisible(true);
+                    
+                    JOptionPane.showMessageDialog(this, 
+                            "Imagen descargada correctamente", 
+                            "Éxito", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo cargar la imagen desde la URL proporcionada", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al cargar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        
+        panelUrl.add(txtUrl);
+        panelUrl.add(btnCargarUrl);
+        
+        contentPane.add(panelSeleccion);
+        contentPane.add(panelUrl);
 
         // Panel para los botones Aceptar y Cancelar
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
@@ -237,6 +331,7 @@ public class AgregarFotoPerfilView extends JDialog {
         // Acción del botón Cancelar - limpia la lista y cierra el diálogo
         btnCancelar.addActionListener(e -> {
             archivosSubidos.clear(); // Limpia la lista si se cancela
+            imagenUrl = null; // Limpia la URL si se cancela
             dispose();
         });
 
@@ -248,6 +343,64 @@ public class AgregarFotoPerfilView extends JDialog {
         // Centrar el diálogo respecto a su propietario
         setLocationRelativeTo(getOwner());
     }
+    
+    /**
+     * Descarga una imagen desde una URL y la guarda como un archivo local en la carpeta
+     * src/main/resources/FotosPerfil
+     * 
+     * @param urlStr URL de la imagen a descargar
+     * @return El archivo donde se guardó la imagen o null si hubo un error
+     * @throws IOException Si ocurre un error al descargar o guardar la imagen
+     */
+    private File descargarImagenDesdeURL(String urlStr) throws IOException {
+        // Crear directorio FotosPerfil si no existe
+        Path directorioFotos = Paths.get("src/main/resources/FotosPerfil");
+        if (!Files.exists(directorioFotos)) {
+            Files.createDirectories(directorioFotos);
+        }
+        
+        // Generar un nombre único para el archivo
+        String nombreArchivo = "perfil_url_" + UUID.randomUUID().toString().substring(0, 8);
+        
+        // Determinar extensión del archivo basada en la URL
+        String extension = ".jpg"; // Extensión por defecto
+        if (urlStr.toLowerCase().endsWith(".png")) {
+            extension = ".png";
+        } else if (urlStr.toLowerCase().endsWith(".gif")) {
+            extension = ".gif";
+        } else if (urlStr.toLowerCase().endsWith(".jpeg") || urlStr.toLowerCase().endsWith(".jpg")) {
+            extension = ".jpg";
+        }
+        
+        // Crear ruta del archivo local
+        File archivoLocal = new File(directorioFotos.toFile(), nombreArchivo + extension);
+        
+        // Descargar la imagen
+        URL url = new URL(urlStr);
+        try (InputStream in = url.openStream(); 
+             FileOutputStream out = new FileOutputStream(archivoLocal)) {
+            
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        }
+        
+        // Verificar que el archivo es una imagen válida
+        try {
+            if (ImageIO.read(archivoLocal) == null) {
+                archivoLocal.delete();
+                throw new IOException("El archivo descargado no es una imagen válida");
+            }
+        } catch (Exception e) {
+            archivoLocal.delete();
+            throw new IOException("Error al verificar el archivo de imagen: " + e.getMessage());
+        }
+        
+        return archivoLocal;
+    }
 
     /**
      * Muestra el diálogo y devuelve la lista de archivos seleccionados
@@ -256,5 +409,13 @@ public class AgregarFotoPerfilView extends JDialog {
     public List<File> showDialog() {
         this.setVisible(true);
         return archivosSubidos;
+    }
+    
+    /**
+     * Devuelve la URL de la imagen seleccionada (si se eligió una URL)
+     * @return URL de la imagen o null si no se seleccionó por URL
+     */
+    public String getImagenUrl() {
+        return imagenUrl;
     }
 }

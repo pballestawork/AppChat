@@ -24,9 +24,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Grupo;
-import utils.ChatControllerStub;
 import utils.Utils;
 
 /**
@@ -51,7 +51,7 @@ public class GroupEditorView extends JDialog {
     private File archivoImagen;
     private String rutaImagen;
     private Grupo grupo;
-    private ChatControllerStub controlador;
+    private ChatController controlador;
     private boolean cambiosRealizados = false;
     
     /**
@@ -61,7 +61,12 @@ public class GroupEditorView extends JDialog {
         super(parent, "Editar Grupo", true);
         this.grupo = grupo;
         this.rutaImagen = grupo.getImagen();
-        this.controlador = ChatControllerStub.getUnicaInstancia();
+        try {
+			this.controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
