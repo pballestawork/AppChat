@@ -1,16 +1,13 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -24,18 +21,11 @@ import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.repositorio.EntidadNoEncontrada;
 import dominio.repositorio.RepositorioException;
+import utils.EstiloApp;
 
 
 public class AgregarContactoPanel extends JPanel {
-    // Constantes para la interfaz (coinciden con las de LoginView/RegisterView)
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 18);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    
+   
     private JTextField txtNombre;
     private JTextField txtTelefono;
     private JButton btnAgregar;
@@ -53,54 +43,54 @@ public class AgregarContactoPanel extends JPanel {
     
     private void initComponents() {
         setLayout(new BorderLayout(0, 15));
-        setBackground(COLOR_FONDO);
+        setBackground(EstiloApp.COLOR_FONDO);
         setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
         
         // Panel de título
         JPanel panelTitulo = new JPanel(new BorderLayout());
-        panelTitulo.setBackground(COLOR_FONDO);
+        panelTitulo.setBackground(EstiloApp.COLOR_FONDO);
         panelTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         
         JLabel lblTitulo = new JLabel("Agregar Nuevo Contacto");
-        lblTitulo.setFont(FUENTE_TITULO);
-        lblTitulo.setForeground(COLOR_PRIMARIO);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO_MEDIO);
+        lblTitulo.setForeground(EstiloApp.COLOR_PRIMARIO);
         panelTitulo.add(lblTitulo, BorderLayout.CENTER);
         
         add(panelTitulo, BorderLayout.NORTH);
         
         // Panel para los campos de entrada
         JPanel panelCampos = new JPanel(new GridLayout(2, 2, 10, 15));
-        panelCampos.setBackground(COLOR_FONDO);
+        panelCampos.setBackground(EstiloApp.COLOR_FONDO);
         
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setFont(FUENTE_LABEL);
-        lblNombre.setForeground(COLOR_TEXTO);
+        lblNombre.setFont(EstiloApp.FUENTE_LABEL);
+        lblNombre.setForeground(EstiloApp.COLOR_TEXTO);
         panelCampos.add(lblNombre);
         
         txtNombre = new JTextField();
-        txtNombre.setFont(FUENTE_NORMAL);
+        txtNombre.setFont(EstiloApp.FUENTE_NORMAL);
         txtNombre.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO.darker()),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
         panelCampos.add(txtNombre);
         
         JLabel lblTelefono = new JLabel("Teléfono:");
-        lblTelefono.setFont(FUENTE_LABEL);
-        lblTelefono.setForeground(COLOR_TEXTO);
+        lblTelefono.setFont(EstiloApp.FUENTE_LABEL);
+        lblTelefono.setForeground(EstiloApp.COLOR_TEXTO);
         panelCampos.add(lblTelefono);
         
         txtTelefono = new JTextField();
-        txtTelefono.setFont(FUENTE_NORMAL);
+        txtTelefono.setFont(EstiloApp.FUENTE_NORMAL);
         txtTelefono.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO.darker()),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
         panelCampos.add(txtTelefono);
         
         // Añadir panel de campos con márgenes
         JPanel contenedorCampos = new JPanel(new BorderLayout());
-        contenedorCampos.setBackground(COLOR_FONDO);
+        contenedorCampos.setBackground(EstiloApp.COLOR_FONDO);
         contenedorCampos.add(panelCampos, BorderLayout.CENTER);
         contenedorCampos.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         
@@ -108,24 +98,27 @@ public class AgregarContactoPanel extends JPanel {
         
         // Panel para los botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        panelBotones.setBackground(COLOR_FONDO);
+        panelBotones.setBackground(EstiloApp.COLOR_FONDO);
         
         btnCancelar = new JButton("Cancelar");
-        btnCancelar.setFont(FUENTE_NORMAL);
-        btnCancelar.setBackground(Color.WHITE);
-        btnCancelar.setForeground(COLOR_TEXTO);
+        btnCancelar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCancelar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCancelar.setForeground(EstiloApp.COLOR_TEXTO);
         btnCancelar.setFocusPainted(false);
         btnCancelar.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_TEXTO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         
         btnAgregar = new JButton("Agregar Contacto");
-        btnAgregar.setFont(FUENTE_NORMAL);
-        btnAgregar.setBackground(COLOR_PRIMARIO);
-        btnAgregar.setForeground(Color.WHITE);
+        btnAgregar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnAgregar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnAgregar.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnAgregar.setFocusPainted(false);
-        btnAgregar.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        btnAgregar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
         
         panelBotones.add(btnCancelar);
         panelBotones.add(btnAgregar);
@@ -184,14 +177,14 @@ public class AgregarContactoPanel extends JPanel {
     // Método para mostrar diálogos con estilo mejorado
     private void mostrarDialogoEstilizado(String mensaje, String titulo, int tipo) {
         // Personalizar los diálogos
-        UIManager.put("OptionPane.background", COLOR_FONDO);
-        UIManager.put("Panel.background", COLOR_FONDO);
-        UIManager.put("OptionPane.messageForeground", COLOR_TEXTO);
-        UIManager.put("OptionPane.messageFont", FUENTE_NORMAL);
-        UIManager.put("OptionPane.buttonFont", FUENTE_NORMAL);
-        UIManager.put("Button.background", COLOR_SECUNDARIO);
-        UIManager.put("Button.foreground", COLOR_PRIMARIO);
-        UIManager.put("Button.focus", COLOR_SECUNDARIO);
+        UIManager.put("OptionPane.background", EstiloApp.COLOR_FONDO);
+        UIManager.put("Panel.background", EstiloApp.COLOR_FONDO);
+        UIManager.put("OptionPane.messageForeground", EstiloApp.COLOR_TEXTO);
+        UIManager.put("OptionPane.messageFont", EstiloApp.FUENTE_NORMAL);
+        UIManager.put("OptionPane.buttonFont", EstiloApp.FUENTE_BUTTON);
+        UIManager.put("Button.background", EstiloApp.COLOR_SECUNDARIO);
+        UIManager.put("Button.foreground", EstiloApp.COLOR_PRIMARIO);
+        UIManager.put("Button.focus", EstiloApp.COLOR_SECUNDARIO);
         
         JOptionPane.showMessageDialog(this, mensaje, titulo, tipo);
     }

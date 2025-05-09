@@ -21,7 +21,6 @@ import tds.BubbleText;
 
 
 public class ChatPanel extends JPanel {
-    // Constantes
     private static final int INITIAL_TEXT_AREA_ROWS = 1;
     private static final int TEXT_AREA_COLUMNS = 30;
     private static final int EMOJI_BUTTON_SIZE = 20;
@@ -33,18 +32,15 @@ public class ChatPanel extends JPanel {
     private static final String EMOJI_PREFIX = "EMOJI:";
     private static final String EMOJI_ICON_PATH = "/icons/emoji.png";
     
-    // Colores
-    private static final Color COLOR_SENT = new Color(220, 248, 198); // Verde claro más agradable
-    private static final Color COLOR_RECEIVED = new Color(240, 240, 240); // Gris claro
+    private static final Color COLOR_SENT = new Color(220, 248, 198);
+    private static final Color COLOR_RECEIVED = new Color(240, 240, 240);
 
-    // Componentes UI
     private final JPanel chatContainer;
     private final JScrollPane scrollChat;
     private final JTextArea areaTexto;
     private final JButton btnEnviar;
     private final JButton btnEmoji;
     
-    // Datos
     private Contacto contactoActual;
     private Usuario usuarioActual;
     private ChatController controlador;
@@ -57,7 +53,6 @@ public class ChatPanel extends JPanel {
 		}
         setLayout(new BorderLayout());
 
-        // --- PANEL DE MENSAJES ---
         chatContainer = new JPanel();
         chatContainer.setLayout(new BoxLayout(chatContainer, BoxLayout.Y_AXIS));
         chatContainer.setBackground(Color.WHITE);
@@ -67,18 +62,15 @@ public class ChatPanel extends JPanel {
         wrapperPanel.add(chatContainer, BorderLayout.CENTER);
         wrapperPanel.add(Box.createHorizontalStrut(18), BorderLayout.EAST);
 
-        // Asignamos el wrapperPanel al JScrollPane
         scrollChat = new JScrollPane(wrapperPanel);
         scrollChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChat.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add(scrollChat, BorderLayout.CENTER);
 
-        // --- PANEL INFERIOR (ÁREA DE ENTRADA) ---
         JPanel panelInferior = new JPanel(new BorderLayout(5, 5));
         panelInferior.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
-        // Área de texto
         areaTexto = new JTextArea(INITIAL_TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
         areaTexto.setLineWrap(true);
         areaTexto.setWrapStyleWord(true);
@@ -87,7 +79,6 @@ public class ChatPanel extends JPanel {
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         
-        // Permite que el área de texto crezca dinámicamente (máximo 5 líneas)
         areaTexto.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { ajustarTamañoAreaTexto(); }
@@ -97,7 +88,6 @@ public class ChatPanel extends JPanel {
             public void changedUpdate(DocumentEvent e) { ajustarTamañoAreaTexto(); }
         });
         
-        // Enviar mensaje al presionar Enter (Shift+Enter para nueva línea)
         areaTexto.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enviar");
         areaTexto.getActionMap().put("enviar", new AbstractAction() {
             @Override
@@ -113,25 +103,21 @@ public class ChatPanel extends JPanel {
             }
         });
 
-        // Botón de enviar
         btnEnviar = new JButton("Enviar");
         btnEnviar.setBackground(new Color(0, 132, 255));
         btnEnviar.setForeground(Color.WHITE);
         btnEnviar.setFocusPainted(false);
         btnEnviar.addActionListener(e -> enviarMensaje());
 
-        // Botón de emoji
         btnEmoji = new JButton();
         btnEmoji.setFocusPainted(false);
         cargarIconoEmoji();
         configurarBotonEmoji();
 
-        // Se agrega el área de texto a un JScrollPane (para preservar su scroll si necesario)
         JScrollPane scrollTexto = new JScrollPane(areaTexto);
         scrollTexto.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollTexto.setBorder(BorderFactory.createEmptyBorder());
         
-        // Se agregan los componentes al panel inferior
         panelInferior.add(btnEmoji, BorderLayout.WEST);
         panelInferior.add(scrollTexto, BorderLayout.CENTER);
         panelInferior.add(btnEnviar, BorderLayout.EAST);
@@ -139,7 +125,6 @@ public class ChatPanel extends JPanel {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-    // Método para cargar el icono de emoji con manejo de errores
     private void cargarIconoEmoji() {
         try {
             Image imagenOriginal = ImageIO.read(Objects.requireNonNull(getClass().getResource(EMOJI_ICON_PATH)));
@@ -151,7 +136,6 @@ public class ChatPanel extends JPanel {
         }
     }
 
-    // Configuración del botón de emoji y su popup
     private void configurarBotonEmoji() {
         btnEmoji.addActionListener(e -> {
             JPopupMenu popup = new JPopupMenu();
@@ -170,7 +154,6 @@ public class ChatPanel extends JPanel {
         });
     }
     
-    // Método para crear botones de emoji con efecto hover
     private JButton crearBotonEmoji(ImageIcon icon, int emojiId, JPopupMenu popup) {
         JButton btn = new JButton(icon);
         btn.setPreferredSize(new Dimension(EMOJI_BUTTON_DIMENSION, EMOJI_BUTTON_DIMENSION));
@@ -197,7 +180,6 @@ public class ChatPanel extends JPanel {
         return btn;
     }
     
-    // Método para enviar emoji (se forma el mensaje con el prefijo)
     private void enviarEmoji(int emojiId) {
         if (contactoActual == null || usuarioActual == null) return;
         
@@ -210,7 +192,6 @@ public class ChatPanel extends JPanel {
         }
     }
     
-    // Método para agregar una burbuja de emoji al chat
     private void agregarBurbujaEmoji(int emojiId, String nombre, int tipo) {
         Color color = (tipo == BubbleText.SENT) ? COLOR_SENT : COLOR_RECEIVED;
         BubbleText burbuja = new BubbleText(chatContainer, emojiId, color, nombre, tipo, EMOJI_SIZE);
@@ -218,7 +199,6 @@ public class ChatPanel extends JPanel {
         actualizarVistaMensajes();
     }
 
-    // Ajusta el tamaño del área de texto (hasta 5 líneas)
     private void ajustarTamañoAreaTexto() {
         int lineas = Math.min(5, areaTexto.getLineCount());
         int altura = LINE_HEIGHT * lineas;
@@ -226,7 +206,6 @@ public class ChatPanel extends JPanel {
         areaTexto.revalidate();
     }
 
-    // Método para agregar un mensaje de texto al chat
     public void agregarMensaje(String texto, String usuario, int tipoMensaje) {
         Color color = (tipoMensaje == BubbleText.SENT) ? COLOR_SENT : COLOR_RECEIVED;
         BubbleText burbuja = new BubbleText(chatContainer, texto, color, usuario, tipoMensaje);
@@ -234,14 +213,12 @@ public class ChatPanel extends JPanel {
         actualizarVistaMensajes();
     }
 
-    // Actualiza la vista: en esta solución basta con revalidar y repintar el contenedor
     private void actualizarVistaMensajes() {
         chatContainer.revalidate();
         chatContainer.repaint();
         desplazarAlFinal();
     }
     
-    // Desplaza el scroll al final del chat
     private void desplazarAlFinal() {
         SwingUtilities.invokeLater(() -> 
             scrollChat.getVerticalScrollBar().setValue(
@@ -249,7 +226,6 @@ public class ChatPanel extends JPanel {
         );
     }
 
-    // Carga el historial de mensajes para el contacto
     public void cargarMensajesDe(Contacto contacto) {
         this.contactoActual = contacto;
         chatContainer.removeAll();
@@ -266,7 +242,6 @@ public class ChatPanel extends JPanel {
             			int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
             			agregarBurbujaEmoji(emojiId, m.getEmisor().getNombre(), tipo);
             		} catch (NumberFormatException e) {
-            			// Si ocurre error, se muestra el contenido como texto normal
             			agregarBurbujaMensaje(contenido, m.getEmisor().getNombre(), tipo);
             		}
             	} else {
@@ -278,7 +253,6 @@ public class ChatPanel extends JPanel {
 						int emojiId = Integer.parseInt(contenido.substring(EMOJI_PREFIX.length()));
 						agregarBurbujaEmoji(emojiId, m.getReceptor().getNombre(), tipo);
 					} catch (NumberFormatException e) {
-						// Si ocurre error, se muestra el contenido como texto normal
 						agregarBurbujaMensaje(contenido, m.getReceptor().getNombre(), tipo);
 					}
 				} else {
@@ -290,14 +264,12 @@ public class ChatPanel extends JPanel {
         actualizarVistaMensajes();
     }
     
-    // Agrega una burbuja de mensaje de texto
     private void agregarBurbujaMensaje(String contenido, String emisor, int tipo) {
         Color color = (tipo == BubbleText.SENT) ? COLOR_SENT : COLOR_RECEIVED;
         BubbleText burbuja = new BubbleText(chatContainer, contenido, color, emisor, tipo);
         chatContainer.add(burbuja);
     }
     
-    // Envía el mensaje de texto
     private void enviarMensaje() {
         String mensaje = areaTexto.getText().trim();
         if (mensaje.isEmpty() || usuarioActual == null || contactoActual == null) {
@@ -313,7 +285,6 @@ public class ChatPanel extends JPanel {
         }
     }
     
-    // Muestra errores en caso de fallo en el envío
     private void mostrarErrorEnvio(Exception ex, String tipo) {
         ex.printStackTrace();
         JOptionPane.showMessageDialog(
@@ -324,7 +295,6 @@ public class ChatPanel extends JPanel {
         );
     }
     
-    // Establece el usuario actual
     public void setUsuarioActual(Usuario usuario) {
         this.usuarioActual = usuario;
     }

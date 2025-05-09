@@ -186,7 +186,7 @@ public class SearchView extends JPanel {
         btnBuscar = new JButton("Buscar");
         btnBuscar.setFont(FUENTE_NORMAL);
         btnBuscar.setBackground(COLOR_PRIMARIO);
-        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setForeground(COLOR_PRIMARIO);
         btnBuscar.setFocusPainted(false);
         btnBuscar.addActionListener(e -> buscarMensajes());
         

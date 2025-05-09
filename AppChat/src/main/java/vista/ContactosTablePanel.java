@@ -3,8 +3,13 @@ package vista;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import dominio.modelo.ContactoIndividual;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
 
 public class ContactosTablePanel extends JPanel {
 
@@ -17,11 +22,35 @@ public class ContactosTablePanel extends JPanel {
     private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
     private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
     private static final Color COLOR_SELECCION = new Color(184, 207, 229);
+    private static final Color COLOR_ERROR = new Color(220, 53, 69);
 
     private JTable table;
     private ContactosTable tableModel;
+    private ChatController controlador;
+    private List<ContactoIndividual> listaContactos;
+    private MainView parentView;
 
     public ContactosTablePanel(List<ContactoIndividual> contactos) {
+        try {
+            controlador = ChatController.getUnicaInstancia();
+        } catch (ChatControllerException e) {
+            e.printStackTrace();
+        }
+        
+        // Crear una copia mutable de la lista
+        this.listaContactos = new ArrayList<>(contactos);
+        
+        // Intentar obtener la vista principal parent
+        SwingUtilities.invokeLater(() -> {
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window instanceof JDialog) {
+                JDialog dialog = (JDialog) window;
+                if (dialog.getOwner() instanceof MainView) {
+                    parentView = (MainView) dialog.getOwner();
+                }
+            }
+        });
+        
         setLayout(new BorderLayout(0, 10));
         setBackground(COLOR_FONDO);
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -40,7 +69,7 @@ public class ContactosTablePanel extends JPanel {
         add(panelTitulo, BorderLayout.NORTH);
         
         // Crear el modelo de tabla a partir de la lista de contactos
-        tableModel = new ContactosTable(contactos);
+        tableModel = new ContactosTable(listaContactos);
         table = new JTable(tableModel);
         
         // Configurar la tabla para mejorar la estética
@@ -97,10 +126,69 @@ public class ContactosTablePanel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
         
-        // Panel de botones (opcional)
+        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setBackground(COLOR_FONDO);
         
+        // Botón de eliminar contacto
+        JButton btnEliminar = new JButton("Eliminar Contacto");
+        btnEliminar.setFont(FUENTE_NORMAL);
+        btnEliminar.setBackground(new Color(255, 235, 235));
+        btnEliminar.setForeground(COLOR_ERROR);
+        btnEliminar.setFocusPainted(false);
+        btnEliminar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_ERROR, 1),
+                BorderFactory.createEmptyBorder(7, 15, 7, 15)
+        ));
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int filaSeleccionada = table.getSelectedRow();
+                if (filaSeleccionada >= 0) {
+                    ContactoIndividual contacto = tableModel.getContactoAt(filaSeleccionada);
+                    if (contacto != null) {
+                        int respuesta = JOptionPane.showConfirmDialog(
+                                SwingUtilities.getWindowAncestor(ContactosTablePanel.this),
+                                "¿Está seguro que desea eliminar al contacto " + contacto.getNombre() + "?",
+                                "Confirmar eliminación",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                        
+                        if (respuesta == JOptionPane.YES_OPTION) {
+                            try {
+                                controlador.eliminarContacto(contacto);
+                                JOptionPane.showMessageDialog(
+                                        SwingUtilities.getWindowAncestor(ContactosTablePanel.this),
+                                        "Contacto eliminado exitosamente",
+                                        "Contacto eliminado",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                
+                                // Eliminar de la lista local y actualizar la tabla
+                                listaContactos.remove(contacto);
+                                tableModel.setContactos(new ArrayList<>(listaContactos));
+                                
+                                // Actualizar vista padre si es posible
+                                actualizarVistaPrincipal();
+                            } catch (ChatControllerException ex) {
+                                JOptionPane.showMessageDialog(
+                                        SwingUtilities.getWindowAncestor(ContactosTablePanel.this),
+                                        "Error al eliminar el contacto: " + ex.getMessage(),
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                            SwingUtilities.getWindowAncestor(ContactosTablePanel.this),
+                            "Por favor, seleccione un contacto para eliminar",
+                            "Selección requerida",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+        
+        // Botón cerrar
         JButton btnCerrar = new JButton("Cerrar");
         btnCerrar.setFont(FUENTE_NORMAL);
         btnCerrar.setBackground(COLOR_SECUNDARIO);
@@ -111,13 +199,15 @@ public class ContactosTablePanel extends JPanel {
                 BorderFactory.createEmptyBorder(7, 15, 7, 15)
         ));
         btnCerrar.addActionListener(e -> {
-            // Cerrar el diálogo padre
+            // Cerrar el diálogo padre y actualizar la vista principal
             Window window = SwingUtilities.getWindowAncestor(this);
             if (window instanceof JDialog) {
+                actualizarVistaPrincipal();
                 ((JDialog) window).dispose();
             }
         });
         
+        panelBotones.add(btnEliminar);
         panelBotones.add(btnCerrar);
         add(panelBotones, BorderLayout.SOUTH);
     }
@@ -128,6 +218,28 @@ public class ContactosTablePanel extends JPanel {
     
     // Método para actualizar los contactos
     public void actualizarContactos(List<ContactoIndividual> nuevosContactos) {
-        tableModel.setContactos(nuevosContactos);
+        this.listaContactos = new ArrayList<>(nuevosContactos);
+        tableModel.setContactos(this.listaContactos);
+    }
+    
+    // Método para actualizar la vista principal si es accesible
+    private void actualizarVistaPrincipal() {
+        // Buscar la MainView si aún no la tenemos
+        if (parentView == null) {
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window instanceof JDialog) {
+                JDialog dialog = (JDialog) window;
+                if (dialog.getOwner() instanceof MainView) {
+                    parentView = (MainView) dialog.getOwner();
+                }
+            }
+        }
+        
+        // Si encontramos la MainView, actualizamos sus contactos
+        if (parentView != null) {
+            SwingUtilities.invokeLater(() -> {
+                parentView.cargarContactos();
+            });
+        }
     }
 }

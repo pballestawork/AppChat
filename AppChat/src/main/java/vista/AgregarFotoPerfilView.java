@@ -196,10 +196,6 @@ public class AgregarFotoPerfilView extends JDialog {
             }
         });
         
-        // Etiqueta invisible para la ruta del archivo
-        lblArchivoSubido = new JLabel();
-        lblArchivoSubido.setVisible(false);
-        contentPane.add(lblArchivoSubido);
         
         // Panel para el botón de selección y URL
         JPanel panelSeleccion = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -277,9 +273,7 @@ public class AgregarFotoPerfilView extends JDialog {
                             JOptionPane.WARNING_MESSAGE);
                     }
 
-                    // Mostrar la ruta del archivo en el label (invisible)
-                    lblArchivoSubido.setText(archivoSeleccionado.getAbsolutePath());
-                    lblArchivoSubido.setVisible(true);
+                    
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, 
                         "Error al cargar la imagen: " + ex.getMessage(), 
@@ -390,7 +384,7 @@ public class AgregarFotoPerfilView extends JDialog {
         btnAceptar = new JButton("Aceptar");
         btnAceptar.setFont(EstiloApp.FUENTE_BUTTON);
         btnAceptar.setBackground(EstiloApp.COLOR_PRIMARIO);
-        btnAceptar.setForeground(Color.WHITE);
+        btnAceptar.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnAceptar.setFocusPainted(false);
         btnAceptar.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),

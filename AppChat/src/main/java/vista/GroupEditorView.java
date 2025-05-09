@@ -8,25 +8,33 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
+import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Grupo;
+import utils.EstiloApp;
 import utils.Utils;
 
 /**
@@ -35,15 +43,6 @@ import utils.Utils;
 public class GroupEditorView extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 24);
-    private static final Font FUENTE_SUBTITULO = new Font("Arial", Font.BOLD, 18);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_BUTTON = new Font("Arial", Font.BOLD, 13);
 
     private JPanel contentPane;
     private JLabel lblImagen;
@@ -87,38 +86,38 @@ public class GroupEditorView extends JDialog {
         setResizable(true);
         setBounds(100, 100, width, height);
         setMinimumSize(new Dimension(450, 550));
-        getContentPane().setBackground(COLOR_FONDO);
+        getContentPane().setBackground(EstiloApp.COLOR_FONDO);
         getContentPane().setLayout(new BorderLayout());
         
         // Panel principal sin scroll
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(COLOR_FONDO);
+        mainPanel.setBackground(EstiloApp.COLOR_FONDO);
         getContentPane().add(mainPanel, BorderLayout.CENTER);
         
         // Panel de contenido
         contentPane = new JPanel();
-        contentPane.setBackground(COLOR_FONDO);
+        contentPane.setBackground(EstiloApp.COLOR_FONDO);
         contentPane.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         mainPanel.add(contentPane, BorderLayout.CENTER);
         
         // Título
         JLabel lblTitulo = new JLabel("Editar Grupo");
-        lblTitulo.setFont(FUENTE_TITULO);
-        lblTitulo.setForeground(COLOR_PRIMARIO);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO_MEDIO);
+        lblTitulo.setForeground(EstiloApp.COLOR_PRIMARIO);
         lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         contentPane.add(lblTitulo);
         
         // Panel para la imagen con tamaño ajustable
         JPanel panelImagen = new JPanel(new BorderLayout());
-        panelImagen.setBackground(COLOR_FONDO);
+        panelImagen.setBackground(EstiloApp.COLOR_FONDO);
         panelImagen.setMaximumSize(new Dimension(width, 350));
         panelImagen.setPreferredSize(new Dimension(width - 100, 300));
         
         // Contenedor para centrar la imagen
         JPanel contenedorImagen = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        contenedorImagen.setBackground(COLOR_FONDO);
+        contenedorImagen.setBackground(EstiloApp.COLOR_FONDO);
         
         // Label para mostrar la imagen
         lblImagen = new JLabel();
@@ -128,7 +127,7 @@ public class GroupEditorView extends JDialog {
         
         // Borde para la imagen que sea visible pero sutil
         lblImagen.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(COLOR_PRIMARIO.getRed(), COLOR_PRIMARIO.getGreen(), COLOR_PRIMARIO.getBlue(), 150), 1),
+                BorderFactory.createLineBorder(new Color(EstiloApp.COLOR_PRIMARIO.getRed(), EstiloApp.COLOR_PRIMARIO.getGreen(), EstiloApp.COLOR_PRIMARIO.getBlue(), 150), 1),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         
@@ -144,17 +143,17 @@ public class GroupEditorView extends JDialog {
         
         // Botón para cambiar la imagen
         JPanel panelBotonImagen = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBotonImagen.setBackground(COLOR_FONDO);
+        panelBotonImagen.setBackground(EstiloApp.COLOR_FONDO);
         
         JButton btnCambiarImagen = new JButton("Cambiar Imagen");
-        btnCambiarImagen.setFont(FUENTE_BUTTON);
-        btnCambiarImagen.setBackground(COLOR_SECUNDARIO);
-        btnCambiarImagen.setForeground(COLOR_PRIMARIO);
+        btnCambiarImagen.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCambiarImagen.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCambiarImagen.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnCambiarImagen.setFocusPainted(false);
         btnCambiarImagen.setContentAreaFilled(true);
         btnCambiarImagen.setBorderPainted(true);
         btnCambiarImagen.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnCambiarImagen.addActionListener(e -> {
@@ -181,15 +180,15 @@ public class GroupEditorView extends JDialog {
         
         // Panel para el nombre
         JPanel panelNombre = new JPanel(new BorderLayout(0, 10));
-        panelNombre.setBackground(COLOR_FONDO);
+        panelNombre.setBackground(EstiloApp.COLOR_FONDO);
         panelNombre.setMaximumSize(new Dimension(width - 80, 80));
         
         JLabel lblNombreTitulo = new JLabel("Nombre del grupo:");
-        lblNombreTitulo.setFont(FUENTE_LABEL);
+        lblNombreTitulo.setFont(EstiloApp.FUENTE_LABEL);
         panelNombre.add(lblNombreTitulo, BorderLayout.NORTH);
         
         txtNombre = new JTextField();
-        txtNombre.setFont(FUENTE_NORMAL);
+        txtNombre.setFont(EstiloApp.FUENTE_NORMAL);
         txtNombre.setText(grupo.getNombre());
         txtNombre.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 180)),
@@ -201,64 +200,73 @@ public class GroupEditorView extends JDialog {
         contentPane.add(panelNombre);
         contentPane.add(Box.createRigidArea(new Dimension(0, 20)));
         
-        // Panel para ver miembros del grupo
+        // Panel para ver/editar miembros del grupo
         JPanel panelVerMiembros = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelVerMiembros.setBackground(COLOR_FONDO);
+        panelVerMiembros.setBackground(EstiloApp.COLOR_FONDO);
         
-        JButton btnVerMiembros = new JButton("Ver Miembros del Grupo");
-        btnVerMiembros.setFont(FUENTE_BUTTON);
-        btnVerMiembros.setBackground(COLOR_SECUNDARIO);
-        btnVerMiembros.setForeground(COLOR_PRIMARIO);
-        btnVerMiembros.setFocusPainted(false);
-        btnVerMiembros.setContentAreaFilled(true);
-        btnVerMiembros.setBorderPainted(true);
-        btnVerMiembros.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+        JButton btnGestionarMiembros = new JButton("Gestionar Miembros del Grupo");
+        btnGestionarMiembros.setFont(EstiloApp.FUENTE_BUTTON);
+        btnGestionarMiembros.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnGestionarMiembros.setForeground(EstiloApp.COLOR_PRIMARIO);
+        btnGestionarMiembros.setFocusPainted(false);
+        btnGestionarMiembros.setContentAreaFilled(true);
+        btnGestionarMiembros.setBorderPainted(true);
+        btnGestionarMiembros.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
-        btnVerMiembros.addActionListener(e -> {
-            // Mostrar los miembros del grupo en un diálogo
-            String miembros = "Miembros del grupo " + grupo.getNombre() + ":\n\n";
-            for (int i = 0; i < grupo.getMiembros().size(); i++) {
-                miembros += (i+1) + ". " + grupo.getMiembros().get(i).getNombre() + "\n";
-            }
-            JOptionPane.showMessageDialog(this, miembros, "Miembros del Grupo", JOptionPane.INFORMATION_MESSAGE);
+        btnGestionarMiembros.addActionListener(e -> {
+            abrirGestorMiembrosGrupo();
         });
         
-        panelVerMiembros.add(btnVerMiembros);
+        panelVerMiembros.add(btnGestionarMiembros);
         contentPane.add(panelVerMiembros);
         contentPane.add(Box.createRigidArea(new Dimension(0, 20)));
         
         // Panel de botones (Guardar y Cancelar)
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        panelBotones.setBackground(COLOR_FONDO);
+        panelBotones.setBackground(EstiloApp.COLOR_FONDO);
+        
+        JButton btnEliminarGrupo = new JButton("Eliminar Grupo");
+        btnEliminarGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnEliminarGrupo.setBackground(EstiloApp.COLOR_ERROR);
+        btnEliminarGrupo.setForeground(EstiloApp.COLOR_ERROR);
+        btnEliminarGrupo.setFocusPainted(false);
+        btnEliminarGrupo.setContentAreaFilled(true);
+        btnEliminarGrupo.setBorderPainted(true);
+        btnEliminarGrupo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloApp.COLOR_ERROR.darker()),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        btnEliminarGrupo.addActionListener(e -> eliminarGrupo());
         
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.setFont(FUENTE_BUTTON);
-        btnCancelar.setBackground(COLOR_SECUNDARIO);
-        btnCancelar.setForeground(COLOR_TEXTO);
+        btnCancelar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCancelar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCancelar.setForeground(EstiloApp.COLOR_TEXTO);
         btnCancelar.setFocusPainted(false);
         btnCancelar.setContentAreaFilled(true);
         btnCancelar.setBorderPainted(true);
         btnCancelar.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_TEXTO),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_TEXTO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnCancelar.addActionListener(e -> dispose());
         
         JButton btnGuardar = new JButton("Guardar Cambios");
-        btnGuardar.setFont(FUENTE_BUTTON);
-        btnGuardar.setBackground(COLOR_SECUNDARIO);
-        btnGuardar.setForeground(COLOR_PRIMARIO);
+        btnGuardar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnGuardar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnGuardar.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnGuardar.setFocusPainted(false);
         btnGuardar.setContentAreaFilled(true);
         btnGuardar.setBorderPainted(true);
         btnGuardar.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO.darker()),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO.darker()),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnGuardar.addActionListener(e -> guardarCambios());
         
+        panelBotones.add(btnEliminarGrupo);
         panelBotones.add(btnCancelar);
         panelBotones.add(btnGuardar);
         contentPane.add(panelBotones);
@@ -266,6 +274,192 @@ public class GroupEditorView extends JDialog {
         
         // Centrar diálogo en la pantalla
         setLocationRelativeTo(getOwner());
+    }
+    
+    /**
+     * Abre un diálogo para gestionar los miembros del grupo
+     */
+    private void abrirGestorMiembrosGrupo() {
+        JDialog dialog = new JDialog(this, "Gestionar Miembros - " + grupo.getNombre(), true);
+        dialog.setLayout(new BorderLayout());
+        dialog.setSize(650, 500);
+        dialog.setLocationRelativeTo(this);
+        
+        // Panel principal
+        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panelPrincipal.setBackground(EstiloApp.COLOR_FONDO);
+        
+        // Título
+        JPanel panelTitulo = new JPanel(new BorderLayout());
+        panelTitulo.setOpaque(false);
+        panelTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+        
+        JLabel lblTitulo = new JLabel("Gestionar miembros del grupo");
+        lblTitulo.setFont(EstiloApp.FUENTE_SUBTITULO);
+        lblTitulo.setForeground(EstiloApp.COLOR_PRIMARIO);
+        panelTitulo.add(lblTitulo, BorderLayout.CENTER);
+        
+        panelPrincipal.add(panelTitulo, BorderLayout.NORTH);
+        
+        // Panel central con listas de contactos
+        JPanel panelCentral = new JPanel(new BorderLayout(10, 0));
+        panelCentral.setOpaque(false);
+        
+        // Panel izquierdo - Contactos disponibles
+        JPanel panelIzquierdo = new JPanel(new BorderLayout(0, 10));
+        panelIzquierdo.setOpaque(false);
+        panelIzquierdo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO, 1),
+                        "Contactos disponibles"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        
+        DefaultListModel<ContactoIndividual> modeloContactosDisponibles = new DefaultListModel<>();
+        JList<ContactoIndividual> listaContactosDisponibles = new JList<>(modeloContactosDisponibles);
+        listaContactosDisponibles.setCellRenderer(new ContactoListCellRenderer());
+        listaContactosDisponibles.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        listaContactosDisponibles.setBackground(EstiloApp.COLOR_FONDO);
+        
+        // Cargar contactos disponibles (aquellos que no están ya en el grupo)
+        List<ContactoIndividual> contactosUsuario = controlador.getUsuarioActual().getContactos()
+                .stream()
+                .filter(c -> c instanceof ContactoIndividual)
+                .map(c -> (ContactoIndividual) c)
+                .toList();
+        
+        List<ContactoIndividual> miembrosGrupo = grupo.getMiembros();
+        
+        // Panel derecho - Miembros actuales del grupo
+        JPanel panelDerecho = new JPanel(new BorderLayout(0, 10));
+        panelDerecho.setOpaque(false);
+        panelDerecho.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO, 1),
+                        "Miembros del grupo"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        
+        DefaultListModel<ContactoIndividual> modeloContactosMiembros = new DefaultListModel<>();
+        JList<ContactoIndividual> listaContactosMiembros = new JList<>(modeloContactosMiembros);
+        listaContactosMiembros.setCellRenderer(new ContactoListCellRenderer());
+        listaContactosMiembros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listaContactosMiembros.setBackground(EstiloApp.COLOR_FONDO);
+        
+        // Cargar miembros actuales del grupo
+        for (ContactoIndividual miembro : miembrosGrupo) {
+            modeloContactosMiembros.addElement(miembro);
+        }
+        
+        // Ahora cargar los contactos disponibles después de haber declarado listaContactosMiembros
+        for (ContactoIndividual contacto : contactosUsuario) {
+            // Solo añadir si no está ya en el grupo
+            boolean yaEsMiembro = false;
+            for (ContactoIndividual miembro : miembrosGrupo) {
+                if (contacto.getUsuario().getTelefono().equals(miembro.getUsuario().getTelefono())) {
+                    yaEsMiembro = true;
+                    break;
+                }
+            }
+            if (!yaEsMiembro) {
+                modeloContactosDisponibles.addElement(contacto);
+            }
+        }
+        
+        JScrollPane scrollContactosDisponibles = new JScrollPane(listaContactosDisponibles);
+        scrollContactosDisponibles.setPreferredSize(new Dimension(200, 300));
+        panelIzquierdo.add(scrollContactosDisponibles, BorderLayout.CENTER);
+        
+        // Botón para añadir contactos al grupo
+        JButton btnAgregarAlGrupo = new JButton("Agregar al grupo ►");
+        btnAgregarAlGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnAgregarAlGrupo.setBackground(EstiloApp.COLOR_PRIMARIO);
+        btnAgregarAlGrupo.setForeground(EstiloApp.COLOR_PRIMARIO);
+        btnAgregarAlGrupo.setFocusPainted(false);
+        btnAgregarAlGrupo.addActionListener(e -> {
+            List<ContactoIndividual> seleccionados = listaContactosDisponibles.getSelectedValuesList();
+            if (!seleccionados.isEmpty()) {
+                for (ContactoIndividual contacto : seleccionados) {
+                    try {
+                        controlador.agregarContactoAGrupo(grupo, contacto);
+                        modeloContactosDisponibles.removeElement(contacto);
+                        ((DefaultListModel<ContactoIndividual>)listaContactosMiembros.getModel()).addElement(contacto);
+                        cambiosRealizados = true;
+                    } catch (ChatControllerException ex) {
+                        JOptionPane.showMessageDialog(dialog,
+                                "Error al añadir contacto: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(dialog,
+                        "Seleccione al menos un contacto para añadir",
+                        "Información",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        panelIzquierdo.add(btnAgregarAlGrupo, BorderLayout.SOUTH);
+        
+        JScrollPane scrollContactosMiembros = new JScrollPane(listaContactosMiembros);
+        scrollContactosMiembros.setPreferredSize(new Dimension(200, 300));
+        panelDerecho.add(scrollContactosMiembros, BorderLayout.CENTER);
+        
+        // Botón para quitar contactos del grupo
+        JButton btnQuitarDelGrupo = new JButton("◄ Quitar del grupo");
+        btnQuitarDelGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnQuitarDelGrupo.setBackground(EstiloApp.COLOR_ERROR);
+        btnQuitarDelGrupo.setForeground(EstiloApp.COLOR_ERROR);
+        btnQuitarDelGrupo.setFocusPainted(false);
+        btnQuitarDelGrupo.addActionListener(e -> {
+            ContactoIndividual seleccionado = listaContactosMiembros.getSelectedValue();
+            if (seleccionado != null) {
+                try {
+                    controlador.eliminarContactoDeGrupo(grupo, seleccionado);
+                    ((DefaultListModel<ContactoIndividual>)listaContactosMiembros.getModel()).removeElement(seleccionado);
+                    modeloContactosDisponibles.addElement(seleccionado);
+                    cambiosRealizados = true;
+                } catch (ChatControllerException ex) {
+                    JOptionPane.showMessageDialog(dialog,
+                            "Error al eliminar contacto: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(dialog,
+                        "Seleccione un contacto para quitar del grupo",
+                        "Información",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        panelDerecho.add(btnQuitarDelGrupo, BorderLayout.SOUTH);
+        
+        // Añadir paneles al panel central
+        panelCentral.add(panelIzquierdo, BorderLayout.WEST);
+        panelCentral.add(panelDerecho, BorderLayout.EAST);
+        panelPrincipal.add(panelCentral, BorderLayout.CENTER);
+        
+        // Panel inferior con botón de cerrar
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelInferior.setOpaque(false);
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCerrar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCerrar.setForeground(EstiloApp.COLOR_PRIMARIO);
+        btnCerrar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        btnCerrar.addActionListener(e -> dialog.dispose());
+        
+        panelInferior.add(btnCerrar);
+        panelPrincipal.add(panelInferior, BorderLayout.SOUTH);
+        
+        dialog.add(panelPrincipal);
+        dialog.setVisible(true);
     }
     
     /**
@@ -303,10 +497,15 @@ public class GroupEditorView extends JDialog {
                         "Grupo actualizado correctamente", 
                         "Éxito", 
                         JOptionPane.INFORMATION_MESSAGE);
-            } else {
+            } else if (!cambiosRealizados) {
                 JOptionPane.showMessageDialog(this, 
                         "No se detectaron cambios en el grupo", 
                         "Información", 
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                        "Grupo actualizado correctamente", 
+                        "Éxito", 
                         JOptionPane.INFORMATION_MESSAGE);
             }
             
@@ -372,5 +571,37 @@ public class GroupEditorView extends JDialog {
      */
     public boolean isCambiosRealizados() {
         return cambiosRealizados;
+    }
+    
+    /**
+     * Elimina el grupo actual de la lista de contactos del usuario
+     */
+    private void eliminarGrupo() {
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro que desea eliminar el grupo '" + grupo.getNombre() + "'?\nEsta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                // Usar el método eliminarContacto que funciona tanto para contactos individuales como para grupos
+                controlador.eliminarContacto(grupo);
+                
+                JOptionPane.showMessageDialog(this,
+                        "El grupo ha sido eliminado correctamente.",
+                        "Grupo eliminado",
+                        JOptionPane.INFORMATION_MESSAGE);
+                
+                cambiosRealizados = true;
+                dispose();
+            } catch (ChatControllerException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error al eliminar el grupo: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
     }
 }

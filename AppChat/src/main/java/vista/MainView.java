@@ -86,18 +86,15 @@ public class MainView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		// Panel superior con cabecera y botones
 		JPanel panelSuperior = new JPanel();
 		panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
 		panelSuperior.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		contentPane.add(panelSuperior, BorderLayout.NORTH);
 		panelSuperior.setLayout(new BorderLayout(10, 0));
 		
-		// Panel para foto perfil y nombre usuario
 		JPanel panelUsuario = new JPanel(new BorderLayout(10, 0));
 		panelUsuario.setOpaque(false);
 		
-		// Botón de foto de perfil con bordes redondeados
 		btnFotoPerfil = new JButton("");
 		btnFotoPerfil.setPreferredSize(new Dimension(50, 50));
 		btnFotoPerfil.setBorder(BorderFactory.createEmptyBorder());
@@ -125,12 +122,10 @@ public class MainView extends JFrame {
 		    ex.printStackTrace();
 		}
 		
-		// Etiqueta con nombre de usuario
 		JLabel lblNombreUsuario = new JLabel(usuarioActual.getNombre());
 		lblNombreUsuario.setFont(EstiloApp.FUENTE_SUBTITULO);
 		lblNombreUsuario.setForeground(Color.WHITE);
 		
-		// Centrar verticalmente los elementos del panel usuario
 		JPanel centroUsuario = new JPanel(new BorderLayout());
         centroUsuario.setOpaque(false);
         centroUsuario.add(lblNombreUsuario, BorderLayout.CENTER);
@@ -140,21 +135,17 @@ public class MainView extends JFrame {
 		
 		panelSuperior.add(panelUsuario, BorderLayout.WEST);
 		
-		// Panel de botones de acción centrado verticalmente
 		JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelBotones.setOpaque(false);
         
-        // Envolver panelBotones en un panel de BorderLayout para centrarlo verticalmente
         JPanel contenedorBotones = new JPanel(new BorderLayout());
         contenedorBotones.setOpaque(false);
         contenedorBotones.add(panelBotones, BorderLayout.CENTER);
 		
-		// Estilo común para botones
 		Color colorBotonPrimario = EstiloApp.COLOR_SECUNDARIO;
 		Color colorTextoBoton = EstiloApp.COLOR_PRIMARIO;
 		
-		// Botón Agregar Contacto
 		JButton btnAgregarContacto = crearBoton("+C", "Agregar Contacto", colorBotonPrimario, colorTextoBoton);
 		btnAgregarContacto.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -167,7 +158,6 @@ public class MainView extends JFrame {
 		    }
 		});
 		
-		// Botón Agregar Grupo
 		JButton btnAgregarGrupo = crearBoton("+G", "Agregar Grupo", colorBotonPrimario, colorTextoBoton);
 		btnAgregarGrupo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -176,11 +166,10 @@ public class MainView extends JFrame {
 		        dialog.pack();
 		        dialog.setLocationRelativeTo(MainView.this);
 		        dialog.setVisible(true);
-		        cargarContactos(); // Recargar contactos para mostrar el nuevo grupo
+		        cargarContactos(); 
 			}
 		});
 		
-		// Botón Contactos
 		JButton btnContactos = crearBoton("Contactos", null, colorBotonPrimario, colorTextoBoton);
 		btnContactos.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -204,20 +193,16 @@ public class MainView extends JFrame {
 		    }
 		});
 		
-		// Botón Premium
 		JButton btnPremium = crearBoton("Premium", null, EstiloApp.COLOR_ORO, EstiloApp.COLOR_TEXTO);
 		btnPremium.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        if (usuarioActual != null) {
 		            if (usuarioActual.isEsPremium()) {
-		                // Si ya es premium, mostrar el diálogo de opciones premium
 		                PremiumOptionsDialog dialogoOpciones = new PremiumOptionsDialog(MainView.this, usuarioActual);
 		                dialogoOpciones.setVisible(true);
 		            } else {
-		                // Si no es premium, mostrar el diálogo de actualización
 		                PremiumDialog dialogoPremium = new PremiumDialog(MainView.this, usuarioActual);
 		                dialogoPremium.setVisible(true);
-		                // Refrescar información de contactos por si cambió el estado premium
 		                cargarContactos();
 		            }
 		        } else {
@@ -229,7 +214,6 @@ public class MainView extends JFrame {
 		    }
 		});
 		
-		// Botón Buscar Mensajes
 		JButton btnBuscarMensajes = crearBoton("Buscar Mensajes", null, colorBotonPrimario, colorTextoBoton);
 		btnBuscarMensajes.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -241,7 +225,6 @@ public class MainView extends JFrame {
             }
         });
 		
-		// Botón Logout
 		JButton btnLogout = crearBoton("Logout", null, new Color(255, 235, 235), EstiloApp.COLOR_ERROR);
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -252,7 +235,6 @@ public class MainView extends JFrame {
             }
 		});
 		
-		// Añadir todos los botones al panel
 		panelBotones.add(btnAgregarContacto);
 		panelBotones.add(btnAgregarGrupo);
 		panelBotones.add(btnContactos);
@@ -262,7 +244,6 @@ public class MainView extends JFrame {
 		
 		panelSuperior.add(contenedorBotones, BorderLayout.EAST);
 		
-		// Panel de contactos (lateral izquierdo)
 		panelContatos = new JPanel(new BorderLayout());
 		panelContatos.setBackground(EstiloApp.COLOR_FONDO);
 		panelContatos.setBorder(BorderFactory.createCompoundBorder(
@@ -271,7 +252,6 @@ public class MainView extends JFrame {
 		));
 		contentPane.add(panelContatos, BorderLayout.WEST);
 		
-		// Panel título para la lista de contactos
 		JPanel panelTituloContactos = new JPanel(new BorderLayout());
 		panelTituloContactos.setOpaque(false);
 		panelTituloContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
@@ -283,16 +263,14 @@ public class MainView extends JFrame {
 		panelTituloContactos.add(lblTituloContactos, BorderLayout.CENTER);
 		panelContatos.add(panelTituloContactos, BorderLayout.NORTH);
 		
-		// JList para mostrar los contactos con estilo mejorado
-        listaContactos.setCellRenderer(new ContactoListCellRenderer());
+		listaContactos.setCellRenderer(new ContactoListCellRenderer());
         listaContactos.setBackground(EstiloApp.COLOR_FONDO);
         listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
-        // Agregar MouseListener para detectar doble clic en contactos
         listaContactos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) { // Detecta doble clic
+                if (e.getClickCount() == 2) {
                     int index = listaContactos.locationToIndex(e.getPoint());
                     if (index >= 0) {
                         Contacto contactoSeleccionado = listaContactos.getModel().getElementAt(index);
@@ -305,19 +283,16 @@ public class MainView extends JFrame {
             }
         });
         
-        // ListSelectionListener para gestionar la selección normal (un solo clic)
         listaContactos.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 Contacto contactoSeleccionado = listaContactos.getSelectedValue();
                 if (contactoSeleccionado != null) {
-                    // Información de depuración
                     System.out.println("Contacto seleccionado en MainView: " + contactoSeleccionado.getNombre());
                     System.out.println("ID del contacto: " + contactoSeleccionado.getId());
                     
                     if (contactoSeleccionado instanceof ContactoIndividual) {
                         ContactoIndividual contactoInd = (ContactoIndividual) contactoSeleccionado;
                         
-                        // Si el contacto no tiene nombre, pedimos al usuario que le asigne uno
                         if (!contactoInd.tieneNombre()) {
                             String nuevoNombre = utils.DialogoUtils.mostrarDialogoEntrada(
                                     MainView.this, 
@@ -327,7 +302,6 @@ public class MainView extends JFrame {
                             if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
                                 contactoInd.setNombre(nuevoNombre.trim());
                                 cargarContactos();
-                                // Volvemos a seleccionar el contacto tras recargar la lista
                                 DefaultListModel<Contacto> model = (DefaultListModel<Contacto>) listaContactos.getModel();
                                 for (int i = 0; i < model.getSize(); i++) {
                                     if (model.getElementAt(i).equals(contactoInd)) {
@@ -336,55 +310,45 @@ public class MainView extends JFrame {
                                     }
                                 }
                             } else {
-                                // Si el usuario cancela, no hacemos nada
                                 System.out.println("Asignación de nombre cancelada");
                                 return;
                             }
                         }
                         
-                        // Guardamos la referencia explícitamente
                         MainView.this.contactoSeleccionado = contactoInd;
                         System.out.println("Contacto individual seleccionado en MainView: " + contactoInd.getNombre());
                         
-                        // Cargamos los mensajes del contacto individual en el panel de chat
                         ((ChatPanel) panelChat).cargarMensajesDe(contactoInd);
                     } else if (contactoSeleccionado instanceof Grupo) {
-                        // Si es un grupo, actualizamos la referencia y cargamos sus mensajes
                         Grupo grupo = (Grupo) contactoSeleccionado;
                         
-                        // Guardamos la referencia explícitamente
                         MainView.this.contactoSeleccionado = grupo;
                         System.out.println("Grupo seleccionado en MainView: " + grupo.getNombre());
                         System.out.println("ID del grupo: " + grupo.getId());
                         System.out.println("Número de miembros: " + grupo.getMiembros().size());
                         
-                        // Cargamos los mensajes del grupo en el panel de chat
                         ((ChatPanel) panelChat).cargarMensajesDe(grupo);
                     }
                 }
             }
         });
 
-        // Agregar la lista con scroll al panel
         JScrollPane scrollLista = new JScrollPane(listaContactos);
         scrollLista.setPreferredSize(new Dimension(220, 600));
         scrollLista.setBorder(BorderFactory.createEmptyBorder());
         scrollLista.getVerticalScrollBar().setUnitIncrement(16);
-        scrollLista.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Desactivar scroll horizontal
+        scrollLista.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panelContatos.add(scrollLista, BorderLayout.CENTER);
 		
-        // Panel central con CardLayout para cambiar entre vistas
         cardLayout = new CardLayout();
         panelCentral = new JPanel(cardLayout);
         panelCentral.setBackground(EstiloApp.COLOR_FONDO);
         contentPane.add(panelCentral, BorderLayout.CENTER);
 		
-        // PANEL CHAT
         panelChat = new ChatPanel();
         ((ChatPanel) panelChat).setUsuarioActual(usuarioActual);
         panelCentral.add(panelChat, "panelChat");
         
-        // PANEL BUSCADOR
         panelBuscador = new JPanel();
         panelBuscador.setBackground(EstiloApp.COLOR_FONDO);
         JLabel lblBuscador = new JLabel("Aquí puedes buscar mensajes");
@@ -392,14 +356,11 @@ public class MainView extends JFrame {
         panelBuscador.add(lblBuscador);
         panelCentral.add(panelBuscador, "panelBuscador");
 
-        // Inicia mostrando el panel de chat
         cardLayout.show(panelCentral, "panelChat");
         
-        // Centrar la ventana en la pantalla
         setLocationRelativeTo(null);
 	}
 	
-	// Método auxiliar para crear botones con estilo consistente
 	private JButton crearBoton(String texto, String tooltip, Color colorFondo, Color colorTexto) {
 	    JButton boton = new JButton(texto);
 	    boton.setFont(EstiloApp.FUENTE_BUTTON);
@@ -416,8 +377,8 @@ public class MainView extends JFrame {
 	    return boton;
 	}
 
-	private void cargarContactos() {
-		usuarioActual = controlador.getUsuarioActual(); // Obtiene el usuario autenticado
+	public void cargarContactos() {
+		usuarioActual = controlador.getUsuarioActual();
 		if (usuarioActual == null) {
 			System.err.println("No hay usuario autenticado.");
 			return;
@@ -425,7 +386,6 @@ public class MainView extends JFrame {
 			System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
 		}
 
-		// Obtener todos los contactos (individuales y grupos)
 		List<Contacto> contactos = usuarioActual.getContactos();
 
 		DefaultListModel<Contacto> model = new DefaultListModel<>();
@@ -433,21 +393,14 @@ public class MainView extends JFrame {
 		listaContactos.setModel(model);
 	}
 	
-	/**
-	 * Abre el editor de perfil de usuario para modificar foto de perfil y saludo
-	 */
 	private void openProfileEditor() {
-		// Crear y mostrar el editor de perfil
 		ProfileEditorView editor = new ProfileEditorView(this, usuarioActual);
 		editor.setVisible(true);
 		
-		// Recargar la foto de perfil después de editar si se realizaron cambios
 		if (editor.isCambiosRealizados()) {
 			try {
-				// Actualizar usuario actual con posibles cambios
 				usuarioActual = controlador.getUsuarioActual();
 				
-				// Actualizar el icono del botón de perfil en la interfaz
 				actualizarFotoPerfilEnInterfaz();
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -459,12 +412,8 @@ public class MainView extends JFrame {
 		}
 	}
 	
-	/**
-	 * Actualiza la foto de perfil en la interfaz de usuario
-	 */
 	private void actualizarFotoPerfilEnInterfaz() {
 		try {
-			// Actualizar directamente el icono del botón usando la referencia
 			ImageIcon iconoPerfil = new ImageIcon(getClass().getResource(usuarioActual.getFotoPerfil()));
 			Image imagenPerfil = iconoPerfil.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 			btnFotoPerfil.setIcon(new ImageIcon(imagenPerfil));
@@ -474,12 +423,9 @@ public class MainView extends JFrame {
 		}
 	}
 	
-	/**
-	 * Abre el editor simple de grupo para modificar sus detalles
-	 */
 	private void openSimpleGroupEditor(Grupo grupo) {
 		GroupEditorView editor = new GroupEditorView(this, grupo);
 		editor.setVisible(true);
-		cargarContactos(); // Recargar contactos después de editar
+		cargarContactos();
 	}
 }

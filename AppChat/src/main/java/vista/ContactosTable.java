@@ -49,6 +49,14 @@ public class ContactosTable extends AbstractTableModel {
         return false;
     }
     
+    // Método para obtener el contacto en una fila específica
+    public ContactoIndividual getContactoAt(int rowIndex) {
+        if (rowIndex >= 0 && rowIndex < contactos.size()) {
+            return contactos.get(rowIndex);
+        }
+        return null;
+    }
+    
     // (Opcional) Puedes agregar métodos para actualizar la lista de contactos
     public void setContactos(List<ContactoIndividual> contactos) {
         this.contactos = contactos;

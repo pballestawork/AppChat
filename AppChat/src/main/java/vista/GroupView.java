@@ -34,7 +34,7 @@ import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Usuario;
-
+import utils.EstiloApp;
 import utils.Utils;
 
 /**
@@ -44,17 +44,6 @@ import utils.Utils;
 public class GroupView extends JPanel {
     
     private static final long serialVersionUID = 1L;
-    
-    // Constantes para la interfaz (coinciden con las de MainView)
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 24);
-    private static final Font FUENTE_SUBTITULO = new Font("Arial", Font.BOLD, 18);
-    private static final Font FUENTE_LABEL = new Font("Arial", Font.BOLD, 14);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_BUTTON = new Font("Arial", Font.BOLD, 13);
     
     private JList<ContactoIndividual> listaTodosContactos;
     private JList<ContactoIndividual> listaContactosSeleccionados;
@@ -84,7 +73,7 @@ public class GroupView extends JPanel {
         
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(20, 20, 20, 20));
-        setBackground(COLOR_FONDO);
+        setBackground(EstiloApp.COLOR_FONDO);
         
         // Panel título
         JPanel panelTitulo = new JPanel(new BorderLayout());
@@ -92,8 +81,8 @@ public class GroupView extends JPanel {
         panelTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         
         JLabel lblTitulo = new JLabel("Crear nuevo grupo");
-        lblTitulo.setFont(FUENTE_TITULO);
-        lblTitulo.setForeground(COLOR_PRIMARIO);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO_MEDIO);
+        lblTitulo.setForeground(EstiloApp.COLOR_PRIMARIO);
         panelTitulo.add(lblTitulo, BorderLayout.CENTER);
         
         add(panelTitulo, BorderLayout.NORTH);
@@ -111,7 +100,7 @@ public class GroupView extends JPanel {
         panelIzquierdo.setOpaque(false);
         panelIzquierdo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                        BorderFactory.createLineBorder(COLOR_PRIMARIO, 1),
+                        BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO, 1),
                         "Contactos disponibles"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
@@ -120,16 +109,16 @@ public class GroupView extends JPanel {
         listaTodosContactos = new JList<>(modeloTodosContactos);
         listaTodosContactos.setCellRenderer(new ContactoListCellRenderer());
         listaTodosContactos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        listaTodosContactos.setBackground(COLOR_FONDO);
+        listaTodosContactos.setBackground(EstiloApp.COLOR_FONDO);
         
         JScrollPane scrollTodosContactos = new JScrollPane(listaTodosContactos);
         scrollTodosContactos.setPreferredSize(new Dimension(200, 300));
         panelIzquierdo.add(scrollTodosContactos, BorderLayout.CENTER);
         
         JButton btnAgregarAlGrupo = new JButton("Agregar al grupo ►");
-        btnAgregarAlGrupo.setFont(FUENTE_BUTTON);
-        btnAgregarAlGrupo.setBackground(COLOR_PRIMARIO);
-        btnAgregarAlGrupo.setForeground(Color.WHITE);
+        btnAgregarAlGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnAgregarAlGrupo.setBackground(EstiloApp.COLOR_PRIMARIO);
+        btnAgregarAlGrupo.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnAgregarAlGrupo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -143,7 +132,7 @@ public class GroupView extends JPanel {
         panelDerecho.setOpaque(false);
         panelDerecho.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                        BorderFactory.createLineBorder(COLOR_PRIMARIO, 1),
+                        BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO, 1),
                         "Miembros del grupo"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
@@ -152,16 +141,16 @@ public class GroupView extends JPanel {
         listaContactosSeleccionados = new JList<>(modeloContactosSeleccionados);
         listaContactosSeleccionados.setCellRenderer(new ContactoListCellRenderer());
         listaContactosSeleccionados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listaContactosSeleccionados.setBackground(COLOR_FONDO);
+        listaContactosSeleccionados.setBackground(EstiloApp.COLOR_FONDO);
         
         JScrollPane scrollContactosSeleccionados = new JScrollPane(listaContactosSeleccionados);
         scrollContactosSeleccionados.setPreferredSize(new Dimension(200, 300));
         panelDerecho.add(scrollContactosSeleccionados, BorderLayout.CENTER);
         
         JButton btnQuitarDelGrupo = new JButton("◄ Quitar del grupo");
-        btnQuitarDelGrupo.setFont(FUENTE_BUTTON);
-        btnQuitarDelGrupo.setBackground(new Color(220, 50, 50));
-        btnQuitarDelGrupo.setForeground(Color.WHITE);
+        btnQuitarDelGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnQuitarDelGrupo.setBackground(EstiloApp.COLOR_ERROR);
+        btnQuitarDelGrupo.setForeground(EstiloApp.COLOR_ERROR);
         btnQuitarDelGrupo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -193,7 +182,7 @@ public class GroupView extends JPanel {
         
         // Campo nombre del grupo
         JLabel lblNombreGrupo = new JLabel("Nombre del grupo:");
-        lblNombreGrupo.setFont(FUENTE_LABEL);
+        lblNombreGrupo.setFont(EstiloApp.FUENTE_LABEL);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -201,7 +190,7 @@ public class GroupView extends JPanel {
         panelInferior.add(lblNombreGrupo, gbc);
         
         txtNombreGrupo = new JTextField(20);
-        txtNombreGrupo.setFont(FUENTE_NORMAL);
+        txtNombreGrupo.setFont(EstiloApp.FUENTE_NORMAL);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -210,7 +199,7 @@ public class GroupView extends JPanel {
         
         // Panel para la imagen
         JLabel lblFotoGrupo = new JLabel("Imagen del grupo:");
-        lblFotoGrupo.setFont(FUENTE_LABEL);
+        lblFotoGrupo.setFont(EstiloApp.FUENTE_LABEL);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -228,7 +217,7 @@ public class GroupView extends JPanel {
         
         // La imagen seleccionada
         lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
-        lblImagen.setFont(FUENTE_NORMAL);
+        lblImagen.setFont(EstiloApp.FUENTE_NORMAL);
         lblImagen.setForeground(Color.GRAY);
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
         lblImagen.setPreferredSize(new Dimension(150, 150));
@@ -240,12 +229,12 @@ public class GroupView extends JPanel {
         
         // Botón para seleccionar imagen
         JButton btnSeleccionarImagen = new JButton("Seleccionar Imagen");
-        btnSeleccionarImagen.setFont(FUENTE_NORMAL);
-        btnSeleccionarImagen.setBackground(COLOR_SECUNDARIO);
-        btnSeleccionarImagen.setForeground(COLOR_PRIMARIO);
+        btnSeleccionarImagen.setFont(EstiloApp.FUENTE_NORMAL);
+        btnSeleccionarImagen.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnSeleccionarImagen.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnSeleccionarImagen.setFocusPainted(false);
         btnSeleccionarImagen.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnSeleccionarImagen.addActionListener(e -> {
@@ -291,9 +280,9 @@ public class GroupView extends JPanel {
         panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         
         btnCrearGrupo = new JButton("Crear Grupo");
-        btnCrearGrupo.setFont(FUENTE_BUTTON);
-        btnCrearGrupo.setBackground(COLOR_PRIMARIO);
-        btnCrearGrupo.setForeground(Color.WHITE);
+        btnCrearGrupo.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCrearGrupo.setBackground(EstiloApp.COLOR_PRIMARIO);
+        btnCrearGrupo.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnCrearGrupo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -302,9 +291,9 @@ public class GroupView extends JPanel {
         });
         
         btnCancelar = new JButton("Cancelar");
-        btnCancelar.setFont(FUENTE_BUTTON);
-        btnCancelar.setBackground(COLOR_SECUNDARIO);
-        btnCancelar.setForeground(COLOR_PRIMARIO);
+        btnCancelar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCancelar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCancelar.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
