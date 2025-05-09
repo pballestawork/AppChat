@@ -24,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
+import utils.EstiloApp;
 
 
 /**
@@ -32,17 +33,6 @@ import dominio.modelo.Usuario;
 public class PremiumOptionsDialog extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    
-    // Constantes para la interfaz (coinciden con las de MainView)
-    private static final Color COLOR_PRIMARIO = new Color(25, 118, 210);
-    private static final Color COLOR_SECUNDARIO = new Color(239, 246, 255);
-    private static final Color COLOR_TEXTO = new Color(33, 33, 33);
-    private static final Color COLOR_FONDO = new Color(250, 250, 250);
-    private static final Color COLOR_ORO = new Color(255, 215, 0);
-    private static final Font FUENTE_TITULO = new Font("Arial", Font.BOLD, 20);
-    private static final Font FUENTE_SUBTITULO = new Font("Arial", Font.BOLD, 16);
-    private static final Font FUENTE_NORMAL = new Font("Arial", Font.PLAIN, 14);
-    private static final Font FUENTE_BUTTON = new Font("Arial", Font.BOLD, 13);
     
     // Controlador
     private ChatController controlador;
@@ -71,26 +61,26 @@ public class PremiumOptionsDialog extends JDialog {
      */
     private void initComponents() {
         setResizable(false);
-        setSize(450, 380);
-        getContentPane().setBackground(COLOR_FONDO);
+        setSize(500, 420);
+        getContentPane().setBackground(EstiloApp.COLOR_FONDO);
         setLayout(new BorderLayout());
         
         // Panel superior con título
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
-        panelSuperior.setBackground(COLOR_ORO);
+        panelSuperior.setBackground(EstiloApp.COLOR_ORO);
         panelSuperior.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
         // Título
         JLabel lblTitulo = new JLabel("Acceso Premium");
-        lblTitulo.setFont(FUENTE_TITULO);
-        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO);
+        lblTitulo.setForeground(EstiloApp.COLOR_TEXTO);
         lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
         
         // Subtítulo
         JLabel lblSubtitulo = new JLabel("¡Gracias por ser usuario Premium!");
-        lblSubtitulo.setFont(FUENTE_SUBTITULO);
-        lblSubtitulo.setForeground(COLOR_TEXTO);
+        lblSubtitulo.setFont(EstiloApp.FUENTE_SUBTITULO);
+        lblSubtitulo.setForeground(EstiloApp.COLOR_TEXTO);
         lblSubtitulo.setAlignmentX(CENTER_ALIGNMENT);
         
         panelSuperior.add(lblTitulo);
@@ -102,43 +92,43 @@ public class PremiumOptionsDialog extends JDialog {
         // Panel central con opciones
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-        panelCentral.setBackground(COLOR_FONDO);
+        panelCentral.setBackground(EstiloApp.COLOR_FONDO);
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
         // Opción de generar PDF
         JPanel panelOpcionPDF = new JPanel(new BorderLayout(10, 0));
-        panelOpcionPDF.setBackground(COLOR_FONDO);
+        panelOpcionPDF.setBackground(EstiloApp.COLOR_FONDO);
         panelOpcionPDF.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO, 1),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO, 1),
                 BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
-        panelOpcionPDF.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        panelOpcionPDF.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         
         JPanel panelDescripcionPDF = new JPanel();
         panelDescripcionPDF.setLayout(new BoxLayout(panelDescripcionPDF, BoxLayout.Y_AXIS));
-        panelDescripcionPDF.setBackground(COLOR_FONDO);
+        panelDescripcionPDF.setBackground(EstiloApp.COLOR_FONDO);
         
         JLabel lblTituloPDF = new JLabel("Generar PDF de contactos y mensajes");
-        lblTituloPDF.setFont(FUENTE_SUBTITULO);
-        lblTituloPDF.setForeground(COLOR_PRIMARIO);
+        lblTituloPDF.setFont(EstiloApp.FUENTE_NORMAL);
+        lblTituloPDF.setForeground(EstiloApp.COLOR_PRIMARIO);
         
         JLabel lblDescripcionPDF = new JLabel(
                 "<html>Genera un documento PDF con todos tus contactos,<br>" +
                 "grupos y mensajes organizados en un formato elegante.<br>" +
                 "Ideal para tener un respaldo de tus conversaciones.</html>");
-        lblDescripcionPDF.setFont(FUENTE_NORMAL);
+        lblDescripcionPDF.setFont(EstiloApp.FUENTE_NORMAL);
         
         panelDescripcionPDF.add(lblTituloPDF);
         panelDescripcionPDF.add(Box.createRigidArea(new Dimension(0, 5)));
         panelDescripcionPDF.add(lblDescripcionPDF);
         
         JButton btnGenerarPDF = new JButton("Generar PDF");
-        btnGenerarPDF.setFont(FUENTE_BUTTON);
-        btnGenerarPDF.setBackground(COLOR_PRIMARIO);
-        btnGenerarPDF.setForeground(Color.WHITE);
+        btnGenerarPDF.setFont(EstiloApp.FUENTE_BUTTON);
+        btnGenerarPDF.setBackground(EstiloApp.COLOR_PRIMARIO);
+        btnGenerarPDF.setForeground(EstiloApp.COLOR_PRIMARIO);
         btnGenerarPDF.setFocusPainted(false);
         btnGenerarPDF.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_PRIMARIO),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         btnGenerarPDF.setPreferredSize(new Dimension(120, 40));
@@ -156,16 +146,16 @@ public class PremiumOptionsDialog extends JDialog {
         
         // Panel inferior con botón de cerrar
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelInferior.setBackground(COLOR_FONDO);
+        panelInferior.setBackground(EstiloApp.COLOR_FONDO);
         panelInferior.setBorder(BorderFactory.createEmptyBorder(0, 30, 20, 30));
         
         JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.setFont(FUENTE_BUTTON);
-        btnCerrar.setBackground(COLOR_SECUNDARIO);
-        btnCerrar.setForeground(COLOR_TEXTO);
+        btnCerrar.setFont(EstiloApp.FUENTE_BUTTON);
+        btnCerrar.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnCerrar.setForeground(EstiloApp.COLOR_TEXTO);
         btnCerrar.setFocusPainted(false);
         btnCerrar.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_TEXTO, 1),
+                BorderFactory.createLineBorder(EstiloApp.COLOR_TEXTO, 1),
                 BorderFactory.createEmptyBorder(7, 15, 7, 15)
         ));
         btnCerrar.addActionListener(e -> dispose());
