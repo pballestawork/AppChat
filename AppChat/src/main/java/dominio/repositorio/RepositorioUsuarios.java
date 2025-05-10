@@ -47,7 +47,6 @@ public class RepositorioUsuarios implements IRepositorioUsuarios{
 			throw new RepositorioException(u.getTelefono() + " ya existe en el repositorio");
 		
 		this.entidades.put(u.getTelefono(), u);
-		System.out.println("Entidad " + u + " registrada");
 		return u;
 	}
 	

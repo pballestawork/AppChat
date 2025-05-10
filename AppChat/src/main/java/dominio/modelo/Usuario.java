@@ -19,7 +19,6 @@ public class Usuario implements Identificable {
 	private boolean esPremium;
 	private LocalDate fechaNacimiento;
 	private List<Contacto> contactos = new LinkedList<Contacto>();
-	//TODO Add localdate fechaNacimiento
 	
 		
 	public Usuario(int id, String nombre, String telefono, String email, String contrasena, String fotoPerfil,
@@ -51,22 +50,18 @@ public class Usuario implements Identificable {
 
 	/**
 	 * Busca un contacto individual por el número de teléfono del usuario asociado.
-	 * @param telefono El número de teléfono a buscar
-	 * @return El ContactoIndividual si se encuentra, null en caso contrario
 	 */
 	public ContactoIndividual buscarContactoPorTelefono(String telefono) {
 		return contactos.stream()
 				.filter(contacto -> contacto instanceof ContactoIndividual)
 				.map(contacto -> (ContactoIndividual) contacto)
-				.filter(c -> c.getUsuario().getTelefono().equals(telefono))
+				.filter(c -> c.perteneceaUsuarioConTelefono(telefono))
 				.findFirst()
 				.orElse(null);
 	}
 	
 	/**
 	 * Verifica si existe un contacto con el número de teléfono especificado.
-	 * @param telefono El número de teléfono a verificar
-	 * @return true si existe un contacto con ese teléfono, false en caso contrario
 	 */
 	public boolean tieneContactoConTelefono(String telefono) {
 		return buscarContactoPorTelefono(telefono) != null;
@@ -74,9 +69,6 @@ public class Usuario implements Identificable {
 	
 	/**
 	 * Crea un nuevo contacto individual asociado a un usuario externo y lo añade a la lista de contactos.
-	 * @param nombre Nombre que se le asignará al contacto
-	 * @param usuarioContacto Usuario al que hace referencia el contacto
-	 * @return El contacto individual creado
 	 */
 	public ContactoIndividual addContactoIndividual(String nombre, Usuario usuarioContacto) {
 		ContactoIndividual contacto = new ContactoIndividual(0, nombre, usuarioContacto);
@@ -87,10 +79,6 @@ public class Usuario implements Identificable {
 	/**
 	 * Crea un nuevo grupo con los miembros especificados y lo añade a la lista de contactos.
 	 * El grupo recibirá automáticamente un ID único.
-	 * @param nombreGrupo Nombre que se le asignará al grupo
-	 * @param miembros Lista de contactos individuales que serán miembros del grupo
-	 * @param imagenGrupo Imagen asociada al grupo (puede ser null)
-	 * @return El grupo creado
 	 */
 	public Grupo addGrupo(String nombreGrupo, List<ContactoIndividual> miembros, String imagenGrupo) {
 		Grupo grupo = new Grupo(0, nombreGrupo, miembros, imagenGrupo);

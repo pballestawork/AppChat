@@ -233,25 +233,27 @@ public class ChatController {
 	}
 
 	private void enviarMensajeContactoIndividual(ContactoIndividual contacto, String contenido) {
-		// que pasa si el otro no me tiene agregado como contacto??
-		Usuario usuarioReceptor = contacto.getUsuario();
-		ContactoIndividual miContactoEnElReceptor = usuarioReceptor.buscarContactoPorTelefono(usuarioActual.getTelefono());
-		
-		if(miContactoEnElReceptor == null) {
-			//DONE Crear mi contacto con el nombre vacio
-			miContactoEnElReceptor = usuarioReceptor.addContactoIndividual("", usuarioActual);
-			contactoIndividualDAO.add(miContactoEnElReceptor);
-			usuarioDAO.update(usuarioReceptor);
-		}
-			
-		Mensaje mensaje = miContactoEnElReceptor.addMensaje(usuarioActual, contenido);
-		
-		mensajeDAO.add(mensaje);
-		contactoIndividualDAO.update(miContactoEnElReceptor);
-	
 		//añadirlo a mi contacto/chat
-		contacto.addMensaje(mensaje);
+		Mensaje mensajeEmisor = contacto.addMensaje(usuarioActual, contenido);
+		mensajeDAO.add(mensajeEmisor);
 		contactoIndividualDAO.update(contacto);
+		
+		// que pasa si el otro soy yo??
+		if(!contacto.perteneceaUsuarioConTelefono(usuarioActual.getTelefono())) {
+			ContactoIndividual miContactoEnElReceptor = contacto.contactoEnElReceptor(usuarioActual.getTelefono());
+
+			// que pasa si el otro no me tiene agregado como contacto??
+			if(miContactoEnElReceptor == null ) {
+				miContactoEnElReceptor = contacto.crearContactoEnElReceptor(usuarioActual);
+				contactoIndividualDAO.add(miContactoEnElReceptor);
+				usuarioDAO.update(miContactoEnElReceptor.getUsuario());
+			}
+			
+			Mensaje mensajeReceptor = miContactoEnElReceptor.addMensaje(usuarioActual, contenido);	
+			mensajeDAO.add(mensajeReceptor);
+			contactoIndividualDAO.update(miContactoEnElReceptor);			
+		}
+		
 	}
 
 	private void enviarMensajeGrupo(Grupo grupo, String contenido) {

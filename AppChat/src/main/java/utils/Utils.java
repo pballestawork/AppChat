@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,9 @@ import javax.imageio.ImageIO;
 
 import beans.Entidad;
 import beans.Propiedad;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
+import dominio.repositorio.RepositorioException;
 import persistencia.dao.Identificable;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
@@ -133,7 +137,6 @@ public class Utils {
 	public static String concatenarIds(List<? extends Identificable> objetosIdentificables) {
 		return objetosIdentificables.stream().map(obj -> String.valueOf(obj.getId())).collect(Collectors.joining(","));
 	}
-
 	/**
 	 * Metodo que crea una lista de los ids dentro de una cadena separados por ','.
 	 * 
@@ -160,14 +163,22 @@ public class Utils {
 	public static void mostrarBaseDatos() {
 		ServicioPersistencia servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		List<Entidad> entidades = servicioPersistencia.recuperarEntidades();
-		
 		for (Entidad e : entidades) {
-			System.out.println("---" + e.getNombre());
+			System.out.println("---" + e.getNombre() + ": " + e.getId());
 			List<Propiedad> propiedades = e.getPropiedades();
 			for (Propiedad p : propiedades) {
-				System.out.println(p.getNombre() + ": " + p.getValor());
+				System.out.println("\t"+p.getNombre() + ": " + p.getValor());
 			}
 		}
-		
+	}
+	
+	public static void datosPrueba() {
+		try {
+			ChatController controlador = ChatController.getUnicaInstancia();
+			controlador.registrarUsuario("Pablo", LocalDate.now().minusDays(50), "pablo@um.es", "/icons/emoji.png", "1","1","Saludo uno");
+			controlador.registrarUsuario("Dos", LocalDate.now().minusDays(50), "dos@um.es", "/icons/emoji.png", "2","2","Saludo dos");
+		} catch (ChatControllerException | RepositorioException e) {
+			e.printStackTrace();
+		}
 	}
 }
