@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import beans.Entidad;
 import dominio.modelo.Contacto;
+import dominio.modelo.ContactoIndividual;
 import dominio.modelo.Grupo;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
@@ -22,6 +23,7 @@ public class AdaptadorMensajeDAOTest {
 
 	private static ServicioPersistencia servicioPersistencia;
 	private static IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
+	private static IAdaptadorContactoIndividualDAO adaptadorContactoIndividualDAO;
 	private static IAdaptadorMensajeDAO adaptadorMensajeDAO;
 
 	private Usuario emisor;
@@ -38,6 +40,7 @@ public class AdaptadorMensajeDAOTest {
 		try {
 			FactoriaDAO factoriaDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
 			adaptadorUsuarioDAO = factoriaDAO.getUsuarioDAO();
+			adaptadorContactoIndividualDAO = factoriaDAO.getContactoIndividualDAO();
 			adaptadorMensajeDAO = factoriaDAO.getMensajeDAO();
 		} catch (DAOException e) {
 			fail(e.getMessage());
@@ -52,6 +55,7 @@ public class AdaptadorMensajeDAOTest {
 		emisor = FactoriaPruebas.crearUsuario();
 		receptor = FactoriaPruebas.crearContactoIndividual(emisor);
 		adaptadorUsuarioDAO.add(emisor);
+		adaptadorContactoIndividualDAO.add((ContactoIndividual) receptor);
 
 		mensaje = new Mensaje(0, emisor, receptor, "Hola Mundo", LocalDateTime.now().withNano(0));
 	}

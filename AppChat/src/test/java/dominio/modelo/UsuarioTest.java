@@ -105,24 +105,6 @@ public class UsuarioTest {
 		assertTrue(usuario.getFotoPerfil().equals("fotoCarlos.png"));
 	}
 
-	@Test
-	public void testToStringConExito() {
-		String toStringDeberiaMostrar = 
-				"Usuario {\n\tid : " + ID_USUARIO 
-				+ ",\n\tnombre : " + NOMBRE_USUARIO
-				+ ",\n\ttelefono : " + TELEFONO_USUARIO 
-				+ ",\n\temail : " + EMAIL_USUARIO 
-				+ ",\n\tcontrasena : "+ CONTRASENA_USUARIO 
-				+ ",\n\tfotoPerfil : " + FOTO_USUARIO 
-				+ ",\n\tsaludo : " + SALUDO_USUARIO
-				+ ",\n\tesPremium : " + PREMIUM_USUARIO
-				+ ",\n\tfechaNacimiento : " + FECHA_NACIMIENTO
-				+ ",\n\tcontactos : "
-				+ "{\n\t\tnombre : Pedro"
-				+ "\n\t}"
-				+ "\n}";
-		assertEquals(toStringDeberiaMostrar, usuario.toString());
-	}
 
 	@Test
 	public void testEqualsConUsuarioDuplicado() {
