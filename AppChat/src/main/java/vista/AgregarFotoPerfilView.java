@@ -84,6 +84,9 @@ public class AgregarFotoPerfilView extends JDialog {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         getContentPane().add(contentPane, BorderLayout.CENTER);
         
+        lblArchivoSubido = new JLabel();
+        lblArchivoSubido.setVisible(false);
+        
         // Título
         JLabel lblTitulo = new JLabel("Seleccionar imagen");
         lblTitulo.setFont(EstiloApp.FUENTE_TITULO_MEDIO);
