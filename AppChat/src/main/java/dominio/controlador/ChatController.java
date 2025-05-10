@@ -145,6 +145,20 @@ public class ChatController {
 		}
 		usuarioDAO.update(usuarioActual);
 	}
+	
+	/**
+	 * Actualiza el saludo y/o la imagen de perfil del usuario.
+	 */
+	public void actualizarContacto(Contacto contacto, String nombre){
+		
+		contacto.setNombre(nombre);
+		
+		if (contacto instanceof ContactoIndividual) {
+			contactoIndividualDAO.update((ContactoIndividual) contacto);
+		} else {
+			grupoDAO.update((Grupo) contacto);
+		}
+	}
 
 	/**
 	 * Crea un nuevo grupo de contactos.

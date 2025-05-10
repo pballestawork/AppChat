@@ -300,7 +300,7 @@ public class MainView extends JFrame {
                                     "Asignar nombre");
                                     
                             if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-                                contactoInd.setNombre(nuevoNombre.trim());
+                                controlador.actualizarContacto(contactoInd, nuevoNombre.trim());
                                 cargarContactos();
                                 DefaultListModel<Contacto> model = (DefaultListModel<Contacto>) listaContactos.getModel();
                                 for (int i = 0; i < model.getSize(); i++) {
