@@ -139,7 +139,20 @@ public class ChatController {
 		usuarioActual.deleteContacto(contacto);
 		
 		if (contacto instanceof ContactoIndividual) {
-			contactoIndividualDAO.delete((ContactoIndividual) contacto);
+			ContactoIndividual contactoIndividual = (ContactoIndividual) contacto;
+			
+			//Eliminamos el contacto individual de todos los grupos en los que es miembro
+			for (Contacto c : usuarioActual.getContactos()) {
+				if (c instanceof Grupo) {
+					Grupo grupo = (Grupo) c;
+					if (grupo.esMiembro(contactoIndividual)) {
+						grupo.deleteMiembro(contactoIndividual);
+						grupoDAO.update(grupo);
+					}
+				}
+			}
+			
+			contactoIndividualDAO.delete(contactoIndividual);
 		} else {
 			grupoDAO.delete((Grupo) contacto);
 		}
@@ -246,7 +259,7 @@ public class ChatController {
 			if(miContactoEnElReceptor == null ) {
 				miContactoEnElReceptor = contacto.crearContactoEnElReceptor(usuarioActual);
 				contactoIndividualDAO.add(miContactoEnElReceptor);
-				usuarioDAO.update(miContactoEnElReceptor.getUsuario());
+				usuarioDAO.update(contacto.getUsuario());
 			}
 			
 			Mensaje mensajeReceptor = miContactoEnElReceptor.addMensaje(usuarioActual, contenido);	
