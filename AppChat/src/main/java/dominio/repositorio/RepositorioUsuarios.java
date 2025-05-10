@@ -1,8 +1,10 @@
 package dominio.repositorio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dominio.controlador.ChatControllerException;
 import dominio.modelo.Usuario;
@@ -10,10 +12,10 @@ import persistencia.dao.DAOException;
 import persistencia.dao.FactoriaDAO;
 import persistencia.dao.IAdaptadorUsuarioDAO;
 
-public class RepositorioUsuarios implements RepositorioString<Usuario>{
+public class RepositorioUsuarios implements IRepositorioUsuarios{
 	
 	private static RepositorioUsuarios unicaInstancia = null;
-	private HashMap<String, Usuario> entidades = new HashMap<>();
+	private Map<String, Usuario> entidades = new HashMap<>();
 	
 	private RepositorioUsuarios() throws ChatControllerException {
 		FactoriaDAO dao;
@@ -36,13 +38,22 @@ public class RepositorioUsuarios implements RepositorioString<Usuario>{
 	}
 	
 	@Override
-	public String add(Usuario entity) throws RepositorioException {
-		if (this.entidades.containsKey(entity.getTelefono()))
-			throw new RepositorioException(entity.getTelefono() + " ya existe en el repositorio");
+	public Usuario add(String nombre, String telefono, String email, String contrasena, String fotoPerfil,
+			String saludo, LocalDate fechaNacimiento) throws RepositorioException {
 		
-		this.entidades.put(entity.getTelefono(), entity);
-		System.out.println("Entidad " + entity + " registrada");
-		return entity.getTelefono();
+		Usuario u = new Usuario(0,nombre, telefono, email, contrasena, fotoPerfil, false ,saludo, fechaNacimiento);
+		
+		if (this.entidades.containsKey(u.getTelefono()))
+			throw new RepositorioException(u.getTelefono() + " ya existe en el repositorio");
+		
+		this.entidades.put(u.getTelefono(), u);
+		return u;
+	}
+	
+	@Override
+	public String add(Usuario entity) throws RepositorioException {
+		Usuario u = add(entity.getNombre(),entity.getTelefono(),entity.getEmail(),entity.getContrasena(),entity.getFotoPerfil(),entity.getSaludo(), entity.getFechaNacimiento());
+		return u.getTelefono(); 
 	}
 
 	@Override
@@ -63,7 +74,7 @@ public class RepositorioUsuarios implements RepositorioString<Usuario>{
 	}
 
 	@Override
-	public Usuario getById(String id) throws RepositorioException, EntidadNoEncontrada {
+	public Usuario getById(String id) throws EntidadNoEncontrada {
 		if (!this.entidades.containsKey(id))
 			throw new EntidadNoEncontrada(id + " no existe en el repositorio");
 

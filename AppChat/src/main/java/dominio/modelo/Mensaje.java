@@ -5,22 +5,23 @@ import java.time.format.DateTimeFormatter;
 
 import persistencia.dao.Identificable;
 
-public class Mensaje implements Identificable{
+public class Mensaje implements Identificable, Cloneable {
 
 	private int id;
 	private Usuario emisor;
+	private Contacto receptor; // Puede ser ContactoIndividual o Grupo
 	private String contenido;
 	private LocalDateTime fechaEnvio;
-	private Boolean tipo;
 	
 	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-	public Mensaje(int id, Usuario emisor, String contenido, LocalDateTime fechaEnvio, Boolean tipo) {
+	public Mensaje(int id, Usuario emisor, Contacto receptor, String contenido, LocalDateTime fechaEnvio) {
 		this.id = id;
 		this.emisor = emisor;
-		this.tipo = tipo;
+		this.receptor = receptor;
 		this.contenido = contenido;
-		this.fechaEnvio = fechaEnvio == null ? null : fechaEnvio.withNano(0);//Fechas ajustadas al formato
+		// Ajustar la fecha al formato sin nanosegundos para consistencia
+		this.fechaEnvio = fechaEnvio == null ? LocalDateTime.now().withNano(0) : fechaEnvio.withNano(0);
 	}
 
 	public Mensaje() {
@@ -46,9 +47,9 @@ public class Mensaje implements Identificable{
 	    Mensaje clon = new Mensaje();
 	    clon.id = this.id;
 	    clon.emisor = this.emisor;
+	    clon.receptor = this.receptor;
 	    clon.contenido = this.contenido;
 	    clon.fechaEnvio = this.fechaEnvio;
-	    clon.tipo = this.tipo;
 	    return clon;
 	}
 	
@@ -70,9 +71,13 @@ public class Mensaje implements Identificable{
 	public Usuario getEmisor() {
 		return emisor;
 	}
-
-	public Boolean getTipo() {
-		return tipo;
+	
+	/**
+	 * Obtiene el contacto destinatario del mensaje
+	 * @return El contacto receptor (puede ser ContactoIndividual o Grupo)
+	 */
+	public Contacto getReceptor() {
+		return receptor;
 	}
 
 	public String getContenido() {
@@ -90,6 +95,10 @@ public class Mensaje implements Identificable{
 	public void setEmisor(Usuario emisor) {
 		this.emisor = emisor;
 	}
+	
+	public void setReceptor(Contacto receptor) {
+		this.receptor = receptor;
+	}
 
 	public void setContenido(String contenido) {
 		this.contenido = contenido;
@@ -98,8 +107,18 @@ public class Mensaje implements Identificable{
 	public void setFechaEnvio(LocalDateTime fechaEnvio) {
 		this.fechaEnvio = fechaEnvio;
 	}
+	
+	/**
+	 * Comprueba si el mensaje contiene el texto especificado (ignorando mayúsculas/minúsculas)
+	 * @param texto El texto a buscar
+	 * @return true si el mensaje contiene el texto, false en caso contrario
+	 */
+	public boolean contienePalabra(String texto) {
+		return texto != null && contenido != null && 
+		       contenido.toLowerCase().contains(texto.toLowerCase());
+	}
 
-	public void setTipo(Boolean tipo) {
-		this.tipo = tipo;
+	public boolean isEnviado(Usuario usuario) {
+		return usuario.equals(emisor);
 	}
 }

@@ -1,5 +1,6 @@
 package dominio.modelo;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +77,12 @@ public class Contacto implements Identificable {
 	
 	public void addMensaje(Mensaje mensaje) {
 		this.mensajes.add(mensaje);
+	}
+	
+	public Mensaje addMensaje(Usuario emisor, String contenido) {
+		Mensaje m = new Mensaje(0,emisor,this,contenido, LocalDateTime.now());
+		this.addMensaje(m);
+		return m;
 	}
 	
 	public void deleteMensaje(Mensaje mensaje) {

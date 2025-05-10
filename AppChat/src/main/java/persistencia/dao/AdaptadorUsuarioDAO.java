@@ -1,5 +1,6 @@
 package persistencia.dao;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	private final String PROP_FOTO_PERFIL = "fotoPerfil";
 	private final String PROP_ES_PREMIUM = "esPremium";
 	private final String PROP_SALUDO = "saludo";
+	private final String PROP_FECHA_NACIMIENTO = "fechaNacimiento";
 	private final String PROP_CONTACTOS = "contactos";
 
 	/**
@@ -83,6 +85,8 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		propiedadesLst.add(new Propiedad(PROP_ES_PREMIUM, elemento.isEsPremium() ? "true" : "false"));// FAQ reconoce el booleano?
 		propiedadesLst.add(new Propiedad(PROP_SALUDO, elemento.getSaludo()));
 		propiedadesLst.add(new Propiedad(PROP_CONTACTOS, Utils.concatenarIds(elemento.getContactos())));
+		propiedadesLst.add(new Propiedad(PROP_FECHA_NACIMIENTO, elemento.getFechaNacimiento().toString()));
+
 		nuevaEntidad.setPropiedades(propiedadesLst);
 
 		// 5. Se registra la entidad y se asocia su id con el objeto
@@ -145,6 +149,9 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 			case PROP_SALUDO:
 				prop.setValor(elemento.getSaludo());
 				break;
+			case PROP_FECHA_NACIMIENTO:
+				prop.setValor(elemento.getFechaNacimiento().toString());
+				break;
 			default:
 				break;
 			}
@@ -176,6 +183,9 @@ public class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		usuario.setFotoPerfil(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FOTO_PERFIL));
 		usuario.setSaludo(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_SALUDO));
 		usuario.setEsPremium(servicioPersistencia.recuperarPropiedadEntidad(e, PROP_ES_PREMIUM).equals("true"));
+		
+		String fecha = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FECHA_NACIMIENTO);
+		usuario.setFechaNacimiento(LocalDate.parse(fecha));
 
 			// 3.2 Añadimos en el poolDAO para evitar bidireccionalidad infinita
 		poolDAO.addObjeto(e.getId(), usuario);

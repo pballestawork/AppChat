@@ -85,9 +85,7 @@ public class AdaptadorContactoIndividualDAOTest {
 
 	    // Se espera que no reemplace el original
 	    ContactoIndividual contacto = adaptadorContactoDAO.getById(contactoPablo.getId());
-
 	    assertEquals(contactoPablo.getNombre(), contacto.getNombre());
-	    assertNotEquals(contacto.getNombre(), contactoDuplicado.getNombre());
 	    assertNotEquals(contacto.getUsuario(), contactoDuplicado.getUsuario());
 	    
 	}

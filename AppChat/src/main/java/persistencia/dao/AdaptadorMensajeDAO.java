@@ -4,19 +4,25 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
+import dominio.modelo.Contacto;
 import dominio.modelo.Mensaje;
 import dominio.modelo.Usuario;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import utils.Utils;
 
 public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 	private static ServicioPersistencia servicioPersistencia;
 	private static AdaptadorMensajeDAO unicaInstancia = null;
+	private static IAdaptadorContactoIndividualDAO adaptadorContactoIndividualDAO;
+	private static IAdaptadorGrupoDAO adaptadorGrupoDAO;
 	private static IAdaptadorUsuarioDAO adaptadorUsuarioDAO;
 	private final String PROP_EMISOR = "emisor";
+	private final String PROP_RECEPTOR = "receptor";
 	private final String PROP_CONTENIDO = "contenido";
 	private final String PROP_FECHA_ENVIO = "fechaEnvio";
 	public final String TIPO_MENSAJE = "Mensaje";
@@ -38,6 +44,8 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 			unicaInstancia = new AdaptadorMensajeDAO();
 			try {
 				adaptadorUsuarioDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getUsuarioDAO();
+				adaptadorContactoIndividualDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getContactoIndividualDAO();
+				adaptadorGrupoDAO = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS).getGrupoDAO();
 			} catch (DAOException e) {
 				e.printStackTrace();
 			}
@@ -64,6 +72,7 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		// 4. Añadir propiedades a la entidad
 		List<Propiedad> propiedadesLst = new LinkedList<Propiedad>();
 		propiedadesLst.add(new Propiedad(PROP_EMISOR, String.valueOf(elemento.getEmisor().getId())));
+		propiedadesLst.add(new Propiedad(PROP_RECEPTOR, String.valueOf(elemento.getReceptor().getId())));
 		propiedadesLst.add(new Propiedad(PROP_CONTENIDO, elemento.getContenido()));
 		propiedadesLst.add(new Propiedad(PROP_FECHA_ENVIO, elemento.getFechaEnvio().format(Mensaje.FORMATTER)));
 		nuevaEntidad.setPropiedades(propiedadesLst);
@@ -89,7 +98,10 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 		for (Propiedad prop: entidad.getPropiedades()) {
 			switch (prop.getNombre()) {
 			case PROP_CONTENIDO:
-				prop.setValor(elemento.getContenido());//TODO esto puede meter petardazo
+				prop.setValor(elemento.getContenido());
+				break;
+		    case PROP_RECEPTOR:
+				prop.setValor(String.valueOf(elemento.getReceptor().getId()));
 				break;
 			case PROP_EMISOR:
 				prop.setValor(String.valueOf(elemento.getEmisor().getId()));
@@ -118,13 +130,15 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 			//3.1 Recuperamos propiedades que no son objetos!!!
 		String contenido = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_CONTENIDO);
 		String fechaEnvio = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_FECHA_ENVIO);
+		String idReceptor = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_RECEPTOR);
 		String idEmisor = servicioPersistencia.recuperarPropiedadEntidad(e, PROP_EMISOR);
 		LocalDateTime fechaEnvioParseada = LocalDateTime.parse(fechaEnvio, Mensaje.FORMATTER);
 			//3.2 Añadimos en el poolDAO para evitar bidireccionalidad infinita (FAQ debería??)
 		
 		// 4. Recuperar referenciados y actualizar objeto
 		Usuario emisor = adaptadorUsuarioDAO.getById(Integer.parseInt(idEmisor));
-		Mensaje mensaje = new Mensaje(e.getId(),emisor,contenido,fechaEnvioParseada,true);//TODO tratar el tipo
+		Contacto receptor = obtenerContacto(idReceptor);
+		Mensaje mensaje = new Mensaje(e.getId(),emisor,receptor,contenido,fechaEnvioParseada);
 		
 		// 5. Retornar objeto
 		return mensaje;
@@ -139,6 +153,20 @@ public class AdaptadorMensajeDAO implements IAdaptadorMensajeDAO{
 
 
 		return mensajes;
+	}
+	
+	private Contacto obtenerContacto(String contactosId) {
+
+		Entidad entidad =	servicioPersistencia.recuperarEntidad(Integer.parseInt(contactosId));
+	    
+        switch (entidad.getNombre()) {
+            case AdaptadorContactoIndividualDAO.TIPO_CONTACTO_INDIVIDUAL:
+                return adaptadorContactoIndividualDAO.getById(entidad.getId());
+            case AdaptadorGrupoDAO.TIPO_GRUPO:
+            	return adaptadorGrupoDAO.getById(entidad.getId());
+            default:
+            	return null;
+        }
 	}
 
 }

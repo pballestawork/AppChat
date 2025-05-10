@@ -12,9 +12,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import dominio.modelo.ContactoIndividual;
+import dominio.controlador.ChatController;
+import dominio.controlador.ChatControllerException;
+import dominio.modelo.Contacto;
 import dominio.modelo.Usuario;
+import dominio.modelo.Grupo;
 import tds.BubbleText;
-import utils.ChatControllerStub;
+import utils.EstiloApp;
 
 import java.awt.BorderLayout;
 import javax.swing.JButton;
@@ -38,20 +42,26 @@ import javax.swing.border.BevelBorder;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import java.awt.FlowLayout;
 
 public class MainView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
 	private JPanel contentPane;
 	private JPanel panelContatos;
 	private JPanel panelCentral;
 	private JPanel panelChat;
 	private JPanel panelBuscador;
 	private CardLayout cardLayout;
-    private JList<ContactoIndividual> listaContactos;
-	private static ChatControllerStub controlador;
+    private JList<Contacto> listaContactos;
+	private static ChatController controlador;
 	private Usuario usuarioActual;
-	private ContactoIndividual contactoSeleccionado;
+	private Contacto contactoSeleccionado;
+	private JButton btnFotoPerfil;
 	
 	public MainView(Usuario usuario) {
         this.usuarioActual = usuario;
@@ -61,44 +71,49 @@ public class MainView extends JFrame {
 	
 	public void initComponents(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 750, 750);
-        controlador = ChatControllerStub.getUnicaInstancia();
-        listaContactos = new JList<ContactoIndividual>();
+		setBounds(100, 100, 850, 750);
+		setTitle("AppChat - Mensajería");
+        try {
+			controlador = ChatController.getUnicaInstancia();
+		} catch (ChatControllerException e) {
+			e.printStackTrace();
+		}
+        listaContactos = new JList<Contacto>();
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(EstiloApp.COLOR_FONDO);
+		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.NORTH);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{10, 25, 0, 0, 0, 0, 0, 0, 0, 10, 0};
-		gbl_panel.rowHeights = new int[]{5, 25, 5, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
+		JPanel panelSuperior = new JPanel();
+		panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
+		panelSuperior.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		contentPane.add(panelSuperior, BorderLayout.NORTH);
+		panelSuperior.setLayout(new BorderLayout(10, 0));
 		
-		JButton btnFotoPerfil = new JButton("");
-		GridBagConstraints gbc_btnFotoPerfil = new GridBagConstraints();
-		gbc_btnFotoPerfil.insets = new Insets(0, 0, 5, 5);
-		gbc_btnFotoPerfil.fill = GridBagConstraints.BOTH;
-		gbc_btnFotoPerfil.gridx = 1;
-		gbc_btnFotoPerfil.gridy = 1;
-		panel.add(btnFotoPerfil, gbc_btnFotoPerfil);
+		JPanel panelUsuario = new JPanel(new BorderLayout(10, 0));
+		panelUsuario.setOpaque(false);
+		
+		btnFotoPerfil = new JButton("");
+		btnFotoPerfil.setPreferredSize(new Dimension(50, 50));
+		btnFotoPerfil.setBorder(BorderFactory.createEmptyBorder());
+		btnFotoPerfil.setFocusPainted(false);
+		btnFotoPerfil.setContentAreaFilled(false);
+		btnFotoPerfil.setToolTipText("Perfil de usuario");
+		btnFotoPerfil.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openProfileEditor();
+			}
+		});
+		
 		try {
-		    // Obtener la ruta de la foto de perfil del usuario actual
-		    String rutaFoto = usuarioActual.getFotoPerfil(); // Ej: "/FotosPerfil/Perfil_1.png"
-		    // Buscar el recurso en el classpath
+		    String rutaFoto = usuarioActual.getFotoPerfil();
 		    URL urlFoto = getClass().getResource(rutaFoto);
 		    if (urlFoto != null) {
-		        // Leer la imagen
 		        Image imagenOriginal = ImageIO.read(urlFoto);
-		        // Escalar la imagen (ajusta el ancho y alto según necesites)
-		        int anchoDeseado = 50;
-		        int altoDeseado = 50;
-		        Image imagenEscalada = imagenOriginal.getScaledInstance(anchoDeseado, altoDeseado, Image.SCALE_SMOOTH);
-		        // Asignar la imagen escalada como ícono del botón
+		        int dimension = 50;
+		        Image imagenEscalada = imagenOriginal.getScaledInstance(dimension, dimension, Image.SCALE_SMOOTH);
 		        btnFotoPerfil.setIcon(new ImageIcon(imagenEscalada));
 		    } else {
 		        System.err.println("No se pudo cargar la imagen: " + rutaFoto);
@@ -107,55 +122,66 @@ public class MainView extends JFrame {
 		    ex.printStackTrace();
 		}
 		
-		JButton btnNewButton_2 = new JButton("+C");
-		btnNewButton_2.setBackground(SystemColor.inactiveCaption);
-		btnNewButton_2.addActionListener(new ActionListener() {
+		JLabel lblNombreUsuario = new JLabel(usuarioActual.getNombre());
+		lblNombreUsuario.setFont(EstiloApp.FUENTE_SUBTITULO);
+		lblNombreUsuario.setForeground(Color.WHITE);
+		
+		JPanel centroUsuario = new JPanel(new BorderLayout());
+        centroUsuario.setOpaque(false);
+        centroUsuario.add(lblNombreUsuario, BorderLayout.CENTER);
+		
+		panelUsuario.add(btnFotoPerfil, BorderLayout.WEST);
+		panelUsuario.add(centroUsuario, BorderLayout.CENTER);
+		
+		panelSuperior.add(panelUsuario, BorderLayout.WEST);
+		
+		JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        panelBotones.setOpaque(false);
+        
+        JPanel contenedorBotones = new JPanel(new BorderLayout());
+        contenedorBotones.setOpaque(false);
+        contenedorBotones.add(panelBotones, BorderLayout.CENTER);
+		
+		Color colorBotonPrimario = EstiloApp.COLOR_SECUNDARIO;
+		Color colorTextoBoton = EstiloApp.COLOR_PRIMARIO;
+		
+		JButton btnAgregarContacto = crearBoton("+C", "Agregar Contacto", colorBotonPrimario, colorTextoBoton);
+		btnAgregarContacto.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        // Crear un JDialog modal para agregar un contacto
 		        JDialog dialog = new JDialog(MainView.this, "Agregar Contacto", true);
 		        dialog.getContentPane().add(new AgregarContactoPanel());
 		        dialog.pack();
 		        dialog.setLocationRelativeTo(MainView.this);
 		        dialog.setVisible(true);
-		        // Una vez cerrado el diálogo, se podría actualizar la lista de contactos
 		        cargarContactos();
 		    }
 		});
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_2.gridx = 3;
-		gbc_btnNewButton_2.gridy = 1;
-		panel.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		JButton btnNewButton_1 = new JButton("+G");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton btnAgregarGrupo = crearBoton("+G", "Agregar Grupo", colorBotonPrimario, colorTextoBoton);
+		btnAgregarGrupo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			    JDialog dialog = new JDialog(MainView.this, "Crear Grupo", true);
+		        dialog.getContentPane().add(new GroupView());
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(MainView.this);
+		        dialog.setVisible(true);
+		        cargarContactos(); 
 			}
 		});
-		btnNewButton_1.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 4;
-		gbc_btnNewButton_1.gridy = 1;
-		panel.add(btnNewButton_1, gbc_btnNewButton_1);
 		
-		JButton btnNewButton_3 = new JButton("Contactos");
-		btnNewButton_3.setBackground(SystemColor.inactiveCaption);
-		btnNewButton_3.addActionListener(new ActionListener() {
+		JButton btnContactos = crearBoton("Contactos", null, colorBotonPrimario, colorTextoBoton);
+		btnContactos.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        // Suponiendo que usuarioActual ya está asignado en MainView
 		        if (usuarioActual != null) {
-		            // Extraer la lista de contactos individuales del usuario
 		            List<ContactoIndividual> contactos = usuarioActual.getContactos()
 		                .stream()
 		                .filter(c -> c instanceof ContactoIndividual)
 		                .map(c -> (ContactoIndividual) c)
 		                .toList();
 		            
-		            // Crear el panel de contactos con la lista obtenida
 		            ContactosTablePanel panelContactos = new ContactosTablePanel(contactos);
 		            
-		            // Mostrar el panel en un diálogo modal
 		            JDialog dialog = new JDialog(MainView.this, "Lista de Contactos", true);
 		            dialog.getContentPane().add(panelContactos);
 		            dialog.pack();
@@ -166,34 +192,40 @@ public class MainView extends JFrame {
 		        }
 		    }
 		});
-		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_3.gridx = 5;
-		gbc_btnNewButton_3.gridy = 1;
-		panel.add(btnNewButton_3, gbc_btnNewButton_3);
 		
-		JButton btnNewButton_4 = new JButton("Premium");
-		btnNewButton_4.setBackground(SystemColor.activeCaption);
-		GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_4.gridx = 6;
-		gbc_btnNewButton_4.gridy = 1;
-		panel.add(btnNewButton_4, gbc_btnNewButton_4);
+		JButton btnPremium = crearBoton("Premium", null, EstiloApp.COLOR_ORO, EstiloApp.COLOR_TEXTO);
+		btnPremium.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        if (usuarioActual != null) {
+		            if (usuarioActual.isEsPremium()) {
+		                PremiumOptionsDialog dialogoOpciones = new PremiumOptionsDialog(MainView.this, usuarioActual);
+		                dialogoOpciones.setVisible(true);
+		            } else {
+		                PremiumDialog dialogoPremium = new PremiumDialog(MainView.this, usuarioActual);
+		                dialogoPremium.setVisible(true);
+		                cargarContactos();
+		            }
+		        } else {
+		            JOptionPane.showMessageDialog(MainView.this, 
+		                "No hay usuario autenticado.", 
+		                "Error", 
+		                JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
 		
-		JButton btnNewButton_5 = new JButton("Buscar Mensajes");
-		btnNewButton_5.setBackground(SystemColor.inactiveCaption);
-		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
-		gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_5.gridx = 7;
-		gbc_btnNewButton_5.gridy = 1;
-		panel.add(btnNewButton_5, gbc_btnNewButton_5);
+		JButton btnBuscarMensajes = crearBoton("Buscar Mensajes", null, colorBotonPrimario, colorTextoBoton);
+		btnBuscarMensajes.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog(MainView.this, "Buscar Mensajes", true);
+                dialog.getContentPane().add(new SearchView());
+                dialog.pack();
+                dialog.setLocationRelativeTo(MainView.this);
+                dialog.setVisible(true);
+            }
+        });
 		
-		JButton btnLogout = new JButton("Logout");
-		btnLogout.setBackground(SystemColor.info);
-		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
-		gbc_btnLogout.insets = new Insets(0, 0, 5, 5);
-		gbc_btnLogout.gridx = 8;
-		gbc_btnLogout.gridy = 1;
+		JButton btnLogout = crearBoton("Logout", null, new Color(255, 235, 235), EstiloApp.COLOR_ERROR);
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controlador.cerrarSesion();
@@ -202,76 +234,198 @@ public class MainView extends JFrame {
 		        dispose();
             }
 		});
-		panel.add(btnLogout, gbc_btnLogout);
 		
+		panelBotones.add(btnAgregarContacto);
+		panelBotones.add(btnAgregarGrupo);
+		panelBotones.add(btnContactos);
+		panelBotones.add(btnPremium);
+		panelBotones.add(btnBuscarMensajes);
+		panelBotones.add(btnLogout);
 		
-		BorderLayout bl_panelContatos = new BorderLayout();
-		panelContatos = new JPanel(bl_panelContatos);
-		BorderLayout borderLayout = (BorderLayout) panelContatos.getLayout();
-		borderLayout.setHgap(150);
-		panelContatos.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panelSuperior.add(contenedorBotones, BorderLayout.EAST);
+		
+		panelContatos = new JPanel(new BorderLayout());
+		panelContatos.setBackground(EstiloApp.COLOR_FONDO);
+		panelContatos.setBorder(BorderFactory.createCompoundBorder(
+		        BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(200, 200, 200)),
+		        BorderFactory.createEmptyBorder(5, 5, 5, 5)
+		));
 		contentPane.add(panelContatos, BorderLayout.WEST);
 		
-		 // JList para mostrar los contactos
-        listaContactos.setCellRenderer(new ContactoListCellRenderer()); // Aplica el renderizador
-		listaContactos.addListSelectionListener(e -> {
-			 if (!e.getValueIsAdjusting()) {
-			        ContactoIndividual contactoSeleccionado = listaContactos.getSelectedValue();
-			        if (contactoSeleccionado != null) {
-			            this.contactoSeleccionado = contactoSeleccionado;
-			            // Llamamos al método del ChatPanel para cargar los mensajes de este contacto
-			            ((ChatPanel) panelChat).cargarMensajesDe(contactoSeleccionado);
-			        }
-			    }
-		});
+		JPanel panelTituloContactos = new JPanel(new BorderLayout());
+		panelTituloContactos.setOpaque(false);
+		panelTituloContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
+		
+		JLabel lblTituloContactos = new JLabel("Mis Contactos");
+		lblTituloContactos.setFont(EstiloApp.FUENTE_LABEL);
+		lblTituloContactos.setForeground(EstiloApp.COLOR_PRIMARIO);
+		
+		panelTituloContactos.add(lblTituloContactos, BorderLayout.CENTER);
+		panelContatos.add(panelTituloContactos, BorderLayout.NORTH);
+		
+		listaContactos.setCellRenderer(new ContactoListCellRenderer());
+        listaContactos.setBackground(EstiloApp.COLOR_FONDO);
+        listaContactos.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        listaContactos.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = listaContactos.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        Contacto contactoSeleccionado = listaContactos.getModel().getElementAt(index);
+                        if (contactoSeleccionado instanceof Grupo) {
+                            Grupo grupo = (Grupo) contactoSeleccionado;
+                            openSimpleGroupEditor(grupo);
+                        }
+                    }
+                }
+            }
+        });
+        
+        listaContactos.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                Contacto contactoSeleccionado = listaContactos.getSelectedValue();
+                if (contactoSeleccionado != null) {
+                    System.out.println("Contacto seleccionado en MainView: " + contactoSeleccionado.getNombre());
+                    System.out.println("ID del contacto: " + contactoSeleccionado.getId());
+                    
+                    if (contactoSeleccionado instanceof ContactoIndividual) {
+                        ContactoIndividual contactoInd = (ContactoIndividual) contactoSeleccionado;
+                        
+                        if (!contactoInd.tieneNombre()) {
+                            String nuevoNombre = utils.DialogoUtils.mostrarDialogoEntrada(
+                                    MainView.this, 
+                                    "Asigne un nombre al contacto seleccionado:", 
+                                    "Asignar nombre");
+                                    
+                            if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+                                controlador.actualizarContacto(contactoInd, nuevoNombre.trim());
+                                cargarContactos();
+                                DefaultListModel<Contacto> model = (DefaultListModel<Contacto>) listaContactos.getModel();
+                                for (int i = 0; i < model.getSize(); i++) {
+                                    if (model.getElementAt(i).equals(contactoInd)) {
+                                        listaContactos.setSelectedIndex(i);
+                                        break;
+                                    }
+                                }
+                            } else {
+                                System.out.println("Asignación de nombre cancelada");
+                                return;
+                            }
+                        }
+                        
+                        MainView.this.contactoSeleccionado = contactoInd;
+                        System.out.println("Contacto individual seleccionado en MainView: " + contactoInd.getNombre());
+                        
+                        ((ChatPanel) panelChat).cargarMensajesDe(contactoInd);
+                    } else if (contactoSeleccionado instanceof Grupo) {
+                        Grupo grupo = (Grupo) contactoSeleccionado;
+                        
+                        MainView.this.contactoSeleccionado = grupo;
+                        System.out.println("Grupo seleccionado en MainView: " + grupo.getNombre());
+                        System.out.println("ID del grupo: " + grupo.getId());
+                        System.out.println("Número de miembros: " + grupo.getMiembros().size());
+                        
+                        ((ChatPanel) panelChat).cargarMensajesDe(grupo);
+                    }
+                }
+            }
+        });
 
-        // Agregar la lista con scroll al panel
         JScrollPane scrollLista = new JScrollPane(listaContactos);
-        scrollLista.setPreferredSize(new Dimension(200, 600)); // Ajusta el tamaño
+        scrollLista.setPreferredSize(new Dimension(220, 600));
+        scrollLista.setBorder(BorderFactory.createEmptyBorder());
+        scrollLista.getVerticalScrollBar().setUnitIncrement(16);
+        scrollLista.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panelContatos.add(scrollLista, BorderLayout.CENTER);
 		
         cardLayout = new CardLayout();
         panelCentral = new JPanel(cardLayout);
+        panelCentral.setBackground(EstiloApp.COLOR_FONDO);
         contentPane.add(panelCentral, BorderLayout.CENTER);
 		
-        // PANEL CHAT
         panelChat = new ChatPanel();
         ((ChatPanel) panelChat).setUsuarioActual(usuarioActual);
         panelCentral.add(panelChat, "panelChat");
         
-        
-
-        // PANEL BUSCADOR
         panelBuscador = new JPanel();
-        panelBuscador.add(new JLabel("Aquí puedes buscar mensajes"));
+        panelBuscador.setBackground(EstiloApp.COLOR_FONDO);
+        JLabel lblBuscador = new JLabel("Aquí puedes buscar mensajes");
+        lblBuscador.setFont(EstiloApp.FUENTE_NORMAL);
+        panelBuscador.add(lblBuscador);
         panelCentral.add(panelBuscador, "panelBuscador");
 
-        // Inicia mostrando el panel de chat
         cardLayout.show(panelCentral, "panelChat");
         
+        setLocationRelativeTo(null);
+	}
+	
+	private JButton crearBoton(String texto, String tooltip, Color colorFondo, Color colorTexto) {
+	    JButton boton = new JButton(texto);
+	    boton.setFont(EstiloApp.FUENTE_BUTTON);
+	    boton.setBackground(colorFondo);
+	    boton.setForeground(colorTexto);
+	    boton.setFocusPainted(false);
+	    boton.setBorder(BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(colorTexto, 1),
+	            BorderFactory.createEmptyBorder(7, 15, 7, 15)
+	    ));
+	    if (tooltip != null) {
+	        boton.setToolTipText(tooltip);
+	    }
+	    return boton;
 	}
 
-	private void cargarContactos() {
-		 usuarioActual = controlador.getUsuarioActual(); // Obtiene el usuario autenticado
-		    if (usuarioActual == null) {
-		        System.err.println("No hay usuario autenticado.");
-		        return;
-		    }else
-			{
-				System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
-			}
+	public void cargarContactos() {
+		usuarioActual = controlador.getUsuarioActual();
+		if (usuarioActual == null) {
+			System.err.println("No hay usuario autenticado.");
+			return;
+		} else {
+			System.out.println("Usuario autenticado: " + usuarioActual.getNombre());
+		}
 
-		    List<ContactoIndividual> contactos = usuarioActual.getContactos()
-		            .stream()
-		            .filter(c -> c instanceof ContactoIndividual)
-		            .map(c -> (ContactoIndividual) c)
-		            .toList();
+		List<Contacto> contactos = usuarioActual.getContactos();
 
-		    DefaultListModel<ContactoIndividual> model = new DefaultListModel<>();
-		    contactos.forEach(model::addElement);
-		    listaContactos.setModel(model);
-    }
+		DefaultListModel<Contacto> model = new DefaultListModel<>();
+		contactos.forEach(model::addElement);
+		listaContactos.setModel(model);
+	}
 	
-
-
+	private void openProfileEditor() {
+		ProfileEditorView editor = new ProfileEditorView(this, usuarioActual);
+		editor.setVisible(true);
+		
+		if (editor.isCambiosRealizados()) {
+			try {
+				usuarioActual = controlador.getUsuarioActual();
+				
+				actualizarFotoPerfilEnInterfaz();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(this, 
+						"Error al actualizar la interfaz: " + ex.getMessage(), 
+						"Error", 
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void actualizarFotoPerfilEnInterfaz() {
+		try {
+			ImageIcon iconoPerfil = new ImageIcon(getClass().getResource(usuarioActual.getFotoPerfil()));
+			Image imagenPerfil = iconoPerfil.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			btnFotoPerfil.setIcon(new ImageIcon(imagenPerfil));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("Error al actualizar la foto de perfil: " + ex.getMessage());
+		}
+	}
+	
+	private void openSimpleGroupEditor(Grupo grupo) {
+		GroupEditorView editor = new GroupEditorView(this, grupo);
+		editor.setVisible(true);
+		cargarContactos();
+	}
 }

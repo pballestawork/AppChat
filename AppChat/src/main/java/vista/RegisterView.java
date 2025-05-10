@@ -7,15 +7,19 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+
 import com.toedter.calendar.JDateChooser;
+
+import dominio.controlador.ChatController;
 import dominio.controlador.ChatControllerException;
-import dominio.modelo.Usuario;
-import utils.ChatControllerStub;
+import dominio.repositorio.RepositorioException;
+import utils.EstiloApp;
 import utils.Utils;
-import java.awt.SystemColor;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -24,10 +28,16 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Dimension;
 import javax.swing.JPasswordField;
 import javax.swing.JEditorPane;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 
 public class RegisterView extends JFrame {
+    
+    private static final long serialVersionUID = 1L;
+    
     private JFrame parent;
     private JTextField nameField;
     private JTextField correoField;
@@ -39,192 +49,268 @@ public class RegisterView extends JFrame {
     private JEditorPane textSaludoInicial;
     private File archivoImagen;
     private String rutaFotoPerfil; 
+    private JLabel lblImagen;
 
     public RegisterView(JFrame parent) {
         setResizable(false);
         this.parent = parent;
-        getContentPane().setBackground(SystemColor.desktop);
+        setTitle("AppChat - Registro");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setBounds(100, 100, 700, 770);
+        getContentPane().setBackground(EstiloApp.COLOR_FONDO);
         getContentPane().setLayout(new BorderLayout(0, 0));
         
-        JPanel panel_central = new JPanel();
-        panel_central.setBackground(SystemColor.desktop);
-        getContentPane().add(panel_central, BorderLayout.CENTER);
-        GridBagLayout gbl_panel_central = new GridBagLayout();
-        gbl_panel_central.columnWidths = new int[]{50, 120, 100, 20, 0, 100, 50, 0};
-        gbl_panel_central.rowHeights = new int[]{40, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 60, 8, 0, 40, 0};
-        gbl_panel_central.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-        gbl_panel_central.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        panel_central.setLayout(gbl_panel_central);
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setBackground(EstiloApp.COLOR_PRIMARIO);
+        panelSuperior.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        getContentPane().add(panelSuperior, BorderLayout.NORTH);
+        panelSuperior.setLayout(new BorderLayout(0, 0));
         
-        // Nombre
+        JLabel lblTitulo = new JLabel("AppChat");
+        lblTitulo.setForeground(Color.WHITE);
+        lblTitulo.setFont(EstiloApp.FUENTE_TITULO);
+        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        panelSuperior.add(lblTitulo, BorderLayout.CENTER);
+        
+        JPanel panelCentral = new JPanel();
+        panelCentral.setBackground(EstiloApp.COLOR_FONDO);
+        panelCentral.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
+        getContentPane().add(panelCentral, BorderLayout.CENTER);
+        
+        GridBagLayout gbl_panelCentral = new GridBagLayout();
+        gbl_panelCentral.columnWidths = new int[]{0, 0, 0, 0, 0};
+        gbl_panelCentral.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panelCentral.columnWeights = new double[]{0.0, 0.5, 0.0, 0.5, Double.MIN_VALUE};
+        gbl_panelCentral.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, Double.MIN_VALUE};
+        panelCentral.setLayout(gbl_panelCentral);
+        
+        JLabel lblRegistro = new JLabel("Crear nueva cuenta");
+        lblRegistro.setFont(EstiloApp.FUENTE_SUBTITULO);
+        lblRegistro.setForeground(EstiloApp.COLOR_TEXTO);
+        lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
+        GridBagConstraints gbc_lblRegistro = new GridBagConstraints();
+        gbc_lblRegistro.gridwidth = 4;
+        gbc_lblRegistro.insets = new Insets(0, 0, 15, 0);
+        gbc_lblRegistro.gridx = 0;
+        gbc_lblRegistro.gridy = 0;
+        panelCentral.add(lblRegistro, gbc_lblRegistro);
+        
         JLabel lblName = new JLabel("Nombre:");
-        lblName.setForeground(SystemColor.text);
-        lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblName.setFont(EstiloApp.FUENTE_LABEL);
+        lblName.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblName = new GridBagConstraints();
         gbc_lblName.anchor = GridBagConstraints.WEST;
-        gbc_lblName.insets = new Insets(0, 0, 5, 5);
-        gbc_lblName.gridx = 1;
+        gbc_lblName.insets = new Insets(0, 0, 10, 10);
+        gbc_lblName.gridx = 0;
         gbc_lblName.gridy = 1;
-        panel_central.add(lblName, gbc_lblName);
+        panelCentral.add(lblName, gbc_lblName);
         
         nameField = new JTextField();
-        nameField.setBackground(SystemColor.inactiveCaption);
+        nameField.setFont(EstiloApp.FUENTE_NORMAL);
+        nameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
         GridBagConstraints gbc_nameField = new GridBagConstraints();
-        gbc_nameField.gridwidth = 4;
-        gbc_nameField.insets = new Insets(0, 0, 5, 5);
+        gbc_nameField.insets = new Insets(0, 0, 10, 0);
         gbc_nameField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_nameField.gridx = 2;
+        gbc_nameField.gridwidth = 3;
+        gbc_nameField.gridx = 1;
         gbc_nameField.gridy = 1;
-        panel_central.add(nameField, gbc_nameField);
+        panelCentral.add(nameField, gbc_nameField);
         
-        // Correo electrónico
-        JLabel lblCorreo = new JLabel("Correo Electronico:");
-        lblCorreo.setForeground(SystemColor.text);
-        lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 16));
+        JLabel lblCorreo = new JLabel("Correo Electrónico:");
+        lblCorreo.setFont(EstiloApp.FUENTE_LABEL);
+        lblCorreo.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
-        gbc_lblCorreo.fill = GridBagConstraints.HORIZONTAL;
-        gbc_lblCorreo.insets = new Insets(0, 0, 5, 5);
-        gbc_lblCorreo.gridx = 1;
-        gbc_lblCorreo.gridy = 3;
-        panel_central.add(lblCorreo, gbc_lblCorreo);
+        gbc_lblCorreo.anchor = GridBagConstraints.WEST;
+        gbc_lblCorreo.insets = new Insets(0, 0, 10, 10);
+        gbc_lblCorreo.gridx = 0;
+        gbc_lblCorreo.gridy = 2;
+        panelCentral.add(lblCorreo, gbc_lblCorreo);
         
         correoField = new JTextField();
-        correoField.setBackground(SystemColor.inactiveCaption);
+        correoField.setFont(EstiloApp.FUENTE_NORMAL);
+        correoField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
         GridBagConstraints gbc_correoField = new GridBagConstraints();
-        gbc_correoField.gridwidth = 4;
-        gbc_correoField.insets = new Insets(0, 0, 5, 5);
-        gbc_correoField.fill = GridBagConstraints.BOTH;
-        gbc_correoField.gridx = 2;
-        gbc_correoField.gridy = 3;
-        panel_central.add(correoField, gbc_correoField);
+        gbc_correoField.insets = new Insets(0, 0, 10, 0);
+        gbc_correoField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_correoField.gridwidth = 3;
+        gbc_correoField.gridx = 1;
+        gbc_correoField.gridy = 2;
+        panelCentral.add(correoField, gbc_correoField);
         
-        // Contraseña
-        JLabel lblContrasea = new JLabel("Contraseña:");
-        lblContrasea.setForeground(SystemColor.text);
-        lblContrasea.setFont(new Font("Tahoma", Font.BOLD, 16));
-        GridBagConstraints gbc_lblContrasea = new GridBagConstraints();
-        gbc_lblContrasea.anchor = GridBagConstraints.WEST;
-        gbc_lblContrasea.insets = new Insets(0, 0, 5, 5);
-        gbc_lblContrasea.gridx = 1;
-        gbc_lblContrasea.gridy = 5;
-        panel_central.add(lblContrasea, gbc_lblContrasea);
-        
-        passwordField = new JPasswordField();
-        passwordField.setBackground(SystemColor.inactiveCaption);
-        GridBagConstraints gbc_passwordField = new GridBagConstraints();
-        gbc_passwordField.insets = new Insets(0, 0, 5, 5);
-        gbc_passwordField.fill = GridBagConstraints.BOTH;
-        gbc_passwordField.gridx = 2;
-        gbc_passwordField.gridy = 5;
-        panel_central.add(passwordField, gbc_passwordField);
-        
-        // Repetir contraseña
-        JLabel lblContrasena_1 = new JLabel("Contraseña:");
-        lblContrasena_1.setForeground(SystemColor.text);
-        lblContrasena_1.setFont(new Font("Tahoma", Font.BOLD, 16));
-        GridBagConstraints gbc_lblContrasena_1 = new GridBagConstraints();
-        gbc_lblContrasena_1.insets = new Insets(0, 0, 5, 5);
-        gbc_lblContrasena_1.anchor = GridBagConstraints.EAST;
-        gbc_lblContrasena_1.gridx = 4;
-        gbc_lblContrasena_1.gridy = 5;
-        panel_central.add(lblContrasena_1, gbc_lblContrasena_1);
-        
-        passwordField_1 = new JPasswordField();
-        passwordField_1.setBackground(SystemColor.inactiveCaption);
-        GridBagConstraints gbc_passwordField_1 = new GridBagConstraints();
-        gbc_passwordField_1.insets = new Insets(0, 0, 5, 5);
-        gbc_passwordField_1.fill = GridBagConstraints.BOTH;
-        gbc_passwordField_1.gridx = 5;
-        gbc_passwordField_1.gridy = 5;
-        panel_central.add(passwordField_1, gbc_passwordField_1);
-        
-        // Teléfono
-        JLabel lblTelfono = new JLabel("Teléfono:");
-        lblTelfono.setForeground(SystemColor.text);
-        lblTelfono.setFont(new Font("Tahoma", Font.BOLD, 16));
-        GridBagConstraints gbc_lblTelfono = new GridBagConstraints();
-        gbc_lblTelfono.anchor = GridBagConstraints.WEST;
-        gbc_lblTelfono.insets = new Insets(0, 0, 5, 5);
-        gbc_lblTelfono.gridx = 1;
-        gbc_lblTelfono.gridy = 7;
-        panel_central.add(lblTelfono, gbc_lblTelfono);
+        JLabel lblTelefono = new JLabel("Teléfono:");
+        lblTelefono.setFont(EstiloApp.FUENTE_LABEL);
+        lblTelefono.setForeground(EstiloApp.COLOR_TEXTO);
+        GridBagConstraints gbc_lblTelefono = new GridBagConstraints();
+        gbc_lblTelefono.anchor = GridBagConstraints.WEST;
+        gbc_lblTelefono.insets = new Insets(0, 0, 10, 10);
+        gbc_lblTelefono.gridx = 0;
+        gbc_lblTelefono.gridy = 3;
+        panelCentral.add(lblTelefono, gbc_lblTelefono);
         
         telefonoField = new JTextField();
-        telefonoField.setBackground(SystemColor.inactiveCaption);
+        telefonoField.setFont(EstiloApp.FUENTE_NORMAL);
+        telefonoField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
         GridBagConstraints gbc_telefonoField = new GridBagConstraints();
-        gbc_telefonoField.insets = new Insets(0, 0, 5, 5);
-        gbc_telefonoField.fill = GridBagConstraints.BOTH;
-        gbc_telefonoField.gridx = 2;
-        gbc_telefonoField.gridy = 7;
-        panel_central.add(telefonoField, gbc_telefonoField);
+        gbc_telefonoField.insets = new Insets(0, 0, 10, 0);
+        gbc_telefonoField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_telefonoField.gridwidth = 3;
+        gbc_telefonoField.gridx = 1;
+        gbc_telefonoField.gridy = 3;
+        panelCentral.add(telefonoField, gbc_telefonoField);
         
-        // Foto de perfil
-        JLabel lblFotoPerfil = new JLabel("Foto de perfil:");
-        lblFotoPerfil.setForeground(SystemColor.text);
-        lblFotoPerfil.setFont(new Font("Tahoma", Font.BOLD, 16));
-        GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
-        gbc_lblFotoPerfil.gridwidth = 2;
-        gbc_lblFotoPerfil.insets = new Insets(0, 0, 5, 5);
-        gbc_lblFotoPerfil.gridx = 4;
-        gbc_lblFotoPerfil.gridy = 7;
-        panel_central.add(lblFotoPerfil, gbc_lblFotoPerfil);
+        JLabel lblContrasena = new JLabel("Contraseña:");
+        lblContrasena.setFont(EstiloApp.FUENTE_LABEL);
+        lblContrasena.setForeground(EstiloApp.COLOR_TEXTO);
+        GridBagConstraints gbc_lblContrasena = new GridBagConstraints();
+        gbc_lblContrasena.anchor = GridBagConstraints.WEST;
+        gbc_lblContrasena.insets = new Insets(0, 0, 10, 10);
+        gbc_lblContrasena.gridx = 0;
+        gbc_lblContrasena.gridy = 4;
+        panelCentral.add(lblContrasena, gbc_lblContrasena);
         
-        // Fecha de nacimiento
+        passwordField = new JPasswordField();
+        passwordField.setFont(EstiloApp.FUENTE_NORMAL);
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
+        GridBagConstraints gbc_passwordField = new GridBagConstraints();
+        gbc_passwordField.insets = new Insets(0, 0, 10, 20);
+        gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_passwordField.gridx = 1;
+        gbc_passwordField.gridy = 4;
+        panelCentral.add(passwordField, gbc_passwordField);
+        
+        JLabel lblContrasena_1 = new JLabel("Repetir:");
+        lblContrasena_1.setFont(EstiloApp.FUENTE_LABEL);
+        lblContrasena_1.setForeground(EstiloApp.COLOR_TEXTO);
+        GridBagConstraints gbc_lblContrasena_1 = new GridBagConstraints();
+        gbc_lblContrasena_1.anchor = GridBagConstraints.WEST;
+        gbc_lblContrasena_1.insets = new Insets(0, 0, 10, 10);
+        gbc_lblContrasena_1.gridx = 2;
+        gbc_lblContrasena_1.gridy = 4;
+        panelCentral.add(lblContrasena_1, gbc_lblContrasena_1);
+        
+        passwordField_1 = new JPasswordField();
+        passwordField_1.setFont(EstiloApp.FUENTE_NORMAL);
+        passwordField_1.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
+        GridBagConstraints gbc_passwordField_1 = new GridBagConstraints();
+        gbc_passwordField_1.insets = new Insets(0, 0, 10, 0);
+        gbc_passwordField_1.fill = GridBagConstraints.HORIZONTAL;
+        gbc_passwordField_1.gridx = 3;
+        gbc_passwordField_1.gridy = 4;
+        panelCentral.add(passwordField_1, gbc_passwordField_1);
+        
         JLabel lblFechaDeNacimiento = new JLabel("Fecha de nacimiento:");
-        lblFechaDeNacimiento.setForeground(SystemColor.text);
-        lblFechaDeNacimiento.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblFechaDeNacimiento.setFont(EstiloApp.FUENTE_LABEL);
+        lblFechaDeNacimiento.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblFechaDeNacimiento = new GridBagConstraints();
-        gbc_lblFechaDeNacimiento.anchor = GridBagConstraints.EAST;
-        gbc_lblFechaDeNacimiento.insets = new Insets(0, 0, 5, 5);
-        gbc_lblFechaDeNacimiento.gridx = 1;
-        gbc_lblFechaDeNacimiento.gridy = 9;
-        panel_central.add(lblFechaDeNacimiento, gbc_lblFechaDeNacimiento);
+        gbc_lblFechaDeNacimiento.anchor = GridBagConstraints.WEST;
+        gbc_lblFechaDeNacimiento.insets = new Insets(0, 0, 10, 10);
+        gbc_lblFechaDeNacimiento.gridx = 0;
+        gbc_lblFechaDeNacimiento.gridy = 5;
+        panelCentral.add(lblFechaDeNacimiento, gbc_lblFechaDeNacimiento);
         
         fechaNacimientoField = new JDateChooser();
         fechaNacimientoField.setDateFormatString("dd/MM/yyyy");
-        fechaNacimientoField.setBackground(SystemColor.inactiveCaption);
+        fechaNacimientoField.setFont(EstiloApp.FUENTE_NORMAL);
+        fechaNacimientoField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
         GridBagConstraints gbc_fechaNacimientoField = new GridBagConstraints();
-        gbc_fechaNacimientoField.insets = new Insets(0, 0, 5, 5);
-        gbc_fechaNacimientoField.fill = GridBagConstraints.BOTH;
-        gbc_fechaNacimientoField.gridx = 2;
-        gbc_fechaNacimientoField.gridy = 9;
-        panel_central.add(fechaNacimientoField, gbc_fechaNacimientoField);
+        gbc_fechaNacimientoField.insets = new Insets(0, 0, 10, 0);
+        gbc_fechaNacimientoField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_fechaNacimientoField.gridwidth = 3;
+        gbc_fechaNacimientoField.gridx = 1;
+        gbc_fechaNacimientoField.gridy = 5;
+        panelCentral.add(fechaNacimientoField, gbc_fechaNacimientoField);
         
-        // Imagen/Foto seleccionada
-        JLabel lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
-        lblImagen.setForeground(SystemColor.text);
-        GridBagConstraints gbc_lblImagen = new GridBagConstraints();
-        gbc_lblImagen.gridheight = 3;
-        gbc_lblImagen.gridwidth = 2;
-        gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
-        gbc_lblImagen.gridx = 4;
-        gbc_lblImagen.gridy = 9;
-        panel_central.add(lblImagen, gbc_lblImagen);
-        
-        // Saludo inicial
         JLabel lblSaludoInicial = new JLabel("Saludo inicial:");
-        lblSaludoInicial.setForeground(SystemColor.text);
-        lblSaludoInicial.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblSaludoInicial.setFont(EstiloApp.FUENTE_LABEL);
+        lblSaludoInicial.setForeground(EstiloApp.COLOR_TEXTO);
         GridBagConstraints gbc_lblSaludoInicial = new GridBagConstraints();
         gbc_lblSaludoInicial.anchor = GridBagConstraints.WEST;
-        gbc_lblSaludoInicial.insets = new Insets(0, 0, 5, 5);
-        gbc_lblSaludoInicial.gridx = 1;
-        gbc_lblSaludoInicial.gridy = 11;
-        panel_central.add(lblSaludoInicial, gbc_lblSaludoInicial);
+        gbc_lblSaludoInicial.insets = new Insets(0, 0, 10, 10);
+        gbc_lblSaludoInicial.gridx = 0;
+        gbc_lblSaludoInicial.gridy = 6;
+        panelCentral.add(lblSaludoInicial, gbc_lblSaludoInicial);
         
         textSaludoInicial = new JEditorPane();
-        textSaludoInicial.setBackground(SystemColor.inactiveCaption);
-        GridBagConstraints gbc_editorPane = new GridBagConstraints();
-        gbc_editorPane.insets = new Insets(0, 0, 5, 5);
-        gbc_editorPane.fill = GridBagConstraints.BOTH;
-        gbc_editorPane.gridx = 2;
-        gbc_editorPane.gridy = 11;
-        panel_central.add(textSaludoInicial, gbc_editorPane);
+        textSaludoInicial.setFont(EstiloApp.FUENTE_NORMAL);
+        textSaludoInicial.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
+        textSaludoInicial.setPreferredSize(new Dimension(0, 40));
         
-        // Botón para seleccionar imagen de perfil
-        JButton btnNewButton = new JButton("Seleccionar Imagen");
-        btnNewButton.setBackground(SystemColor.inactiveCaption);
-        btnNewButton.addActionListener(e -> {
+        GridBagConstraints gbc_textSaludoInicial = new GridBagConstraints();
+        gbc_textSaludoInicial.insets = new Insets(0, 0, 10, 0);
+        gbc_textSaludoInicial.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textSaludoInicial.weighty = 0.0;
+        gbc_textSaludoInicial.gridwidth = 3;
+        gbc_textSaludoInicial.gridx = 1;
+        gbc_textSaludoInicial.gridy = 6;
+        panelCentral.add(textSaludoInicial, gbc_textSaludoInicial);
+        
+        JLabel lblFotoPerfil = new JLabel("Foto de perfil:");
+        lblFotoPerfil.setFont(EstiloApp.FUENTE_LABEL);
+        lblFotoPerfil.setForeground(EstiloApp.COLOR_TEXTO);
+        GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
+        gbc_lblFotoPerfil.anchor = GridBagConstraints.NORTHWEST;
+        gbc_lblFotoPerfil.insets = new Insets(0, 0, 0, 10);
+        gbc_lblFotoPerfil.gridx = 0;
+        gbc_lblFotoPerfil.gridy = 8;
+        panelCentral.add(lblFotoPerfil, gbc_lblFotoPerfil);
+        
+        JPanel panelImagen = new JPanel(new BorderLayout(0, 15));
+        panelImagen.setBackground(EstiloApp.COLOR_FONDO);
+        
+        GridBagConstraints gbc_panelImagen = new GridBagConstraints();
+        gbc_panelImagen.fill = GridBagConstraints.BOTH;
+        gbc_panelImagen.gridwidth = 3;
+        gbc_panelImagen.gridx = 1;
+        gbc_panelImagen.gridy = 8;
+        panelCentral.add(panelImagen, gbc_panelImagen);
+        
+        JPanel panelImagenSuperior = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelImagenSuperior.setBackground(EstiloApp.COLOR_FONDO);
+        panelImagen.add(panelImagenSuperior, BorderLayout.CENTER);
+        
+        lblImagen = new JLabel("No se ha seleccionado ninguna imagen");
+        lblImagen.setFont(EstiloApp.FUENTE_NORMAL);
+        lblImagen.setForeground(Color.GRAY);
+        lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
+        lblImagen.setPreferredSize(new Dimension(200, 170));
+        panelImagenSuperior.add(lblImagen);
+        
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        panelBoton.setBackground(EstiloApp.COLOR_FONDO);
+        panelImagen.add(panelBoton, BorderLayout.SOUTH);
+        
+        JButton btnSeleccionarImagen = new JButton("Seleccionar Imagen");
+        btnSeleccionarImagen.setFont(EstiloApp.FUENTE_NORMAL);
+        btnSeleccionarImagen.setBackground(EstiloApp.COLOR_SECUNDARIO);
+        btnSeleccionarImagen.setForeground(EstiloApp.COLOR_PRIMARIO);
+        btnSeleccionarImagen.setFocusPainted(false);
+        btnSeleccionarImagen.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloApp.COLOR_PRIMARIO),
+                BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+        btnSeleccionarImagen.setPreferredSize(new Dimension(200, 40));
+        btnSeleccionarImagen.addActionListener(e -> {
             panelArrastre = new AgregarFotoPerfilView(parent);
             java.util.List<File> imagenes = panelArrastre.showDialog();
             if (imagenes != null && !imagenes.isEmpty()) {
@@ -232,7 +318,7 @@ public class RegisterView extends JFrame {
                 try {
                     rutaFotoPerfil = Utils.getRutaResourceFromFile(archivoImagen);
                     ImageIcon iconoImagen = new ImageIcon(getClass().getResource(rutaFotoPerfil));
-                    Image imagenEscalada = iconoImagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                    Image imagenEscalada = iconoImagen.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
                     lblImagen.setIcon(new ImageIcon(imagenEscalada));
                     lblImagen.setText("");
                 } catch (Exception ex) {
@@ -245,38 +331,36 @@ public class RegisterView extends JFrame {
                 JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna imagen", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
-        GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-        gbc_btnNewButton.gridwidth = 5;
-        gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-        gbc_btnNewButton.gridx = 1;
-        gbc_btnNewButton.gridy = 13;
-        panel_central.add(btnNewButton, gbc_btnNewButton);
+        panelBoton.add(btnSeleccionarImagen);
         
-        JPanel panel_superior = new JPanel();
-        panel_superior.setBackground(SystemColor.desktop);
-        getContentPane().add(panel_superior, BorderLayout.NORTH);
-        
-        JLabel lblNewLabel = new JLabel("AppChat");
-        lblNewLabel.setForeground(SystemColor.text);
-        lblNewLabel.setFont(new Font("Segoe UI Black", Font.BOLD, 60));
-        panel_superior.add(lblNewLabel);
-        
-        JPanel panel_inferior = new JPanel();
-        panel_inferior.setBackground(SystemColor.desktop);
-        getContentPane().add(panel_inferior, BorderLayout.SOUTH);
+        JPanel panelInferior = new JPanel();
+        panelInferior.setBackground(EstiloApp.COLOR_FONDO);
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+        getContentPane().add(panelInferior, BorderLayout.SOUTH);
+        panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBackground(new Color(153, 180, 209));
+        btnCancelar.setFont(EstiloApp.FUENTE_NORMAL);
+        btnCancelar.setBackground(Color.WHITE);
+        btnCancelar.setForeground(EstiloApp.COLOR_TEXTO);
+        btnCancelar.setFocusPainted(false);
+        btnCancelar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
         btnCancelar.addActionListener(e -> {
             parent.setVisible(true);
             dispose();
         });
-        panel_inferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel_inferior.add(btnCancelar);
+        panelInferior.add(btnCancelar);
         
-        JButton btnSubmit = new JButton("Registrar");
-        btnSubmit.setBackground(SystemColor.activeCaption);
-        btnSubmit.addActionListener(e -> {
+        JButton btnRegistrar = new JButton("Registrar");
+        btnRegistrar.setFont(EstiloApp.FUENTE_NORMAL);
+        btnRegistrar.setBackground(EstiloApp.COLOR_PRIMARIO);
+        btnRegistrar.setForeground(Color.WHITE);
+        btnRegistrar.setFocusPainted(false);
+        btnRegistrar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btnRegistrar.addActionListener(e -> {
             try {
                 String nombre = nameField.getText().trim();
                 String telefono = telefonoField.getText().trim();
@@ -285,13 +369,12 @@ public class RegisterView extends JFrame {
                 String contrasenaRepetida = new String(passwordField_1.getPassword());
                 String saludo = textSaludoInicial.getText().trim();
                 
-                LocalDateTime fechaNacimiento = null;
+                LocalDate fechaNacimiento = null;
                 if (fechaNacimientoField.getDate() != null) {
                     fechaNacimiento = fechaNacimientoField.getDate().toInstant()
-                        .atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+                        .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
                 }
                 
-                // Validaciones de formato:
                 if (!nombre.matches("[A-Za-zÀ-ÿ\\s]+")) {
                     JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras y espacios.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -304,7 +387,7 @@ public class RegisterView extends JFrame {
                     JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (fechaNacimiento == null) {
+                if (fechaNacimiento == null || fechaNacimiento.isAfter(LocalDate.now())) {
                     JOptionPane.showMessageDialog(this, "Debe seleccionar una fecha de nacimiento válida.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -318,8 +401,8 @@ public class RegisterView extends JFrame {
                     return;
                 }
                 
-                ChatControllerStub controlador = ChatControllerStub.getUnicaInstancia();
-                controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, contrasenaRepetida, saludo);
+                ChatController controlador = ChatController.getUnicaInstancia();
+                controlador.registrarUsuario(nombre, fechaNacimiento, correo, rutaFotoPerfil, telefono, contrasena, saludo);
                 
                 JOptionPane.showMessageDialog(this, "Registro exitoso. Ahora puedes iniciar sesión.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 parent.setVisible(true);
@@ -329,16 +412,12 @@ public class RegisterView extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (ChatControllerException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            } catch (RepositorioException ex) {
+            	JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
         });
-        panel_inferior.add(btnSubmit);
-        setBackground(SystemColor.desktop);
-        setAlwaysOnTop(true);
-        setTitle("Registro");
-        setSize(700, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        panelInferior.add(btnRegistrar);
+        
         setLocationRelativeTo(null);
-        parent.setVisible(false);
-        setVisible(true);
     }
 }
