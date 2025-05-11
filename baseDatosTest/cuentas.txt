@@ -1,0 +1,12 @@
+---Usuario 1
+nombre: Alvaro
+telefono: 1
+contrasena: a
+---Usuario 2
+nombre: Pablo
+telefono: 2
+contrasena: a
+---Usuario 3
+nombre: Pepe
+telefono: 3
+contrasena: a
